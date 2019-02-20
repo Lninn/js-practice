@@ -5,12 +5,12 @@ class SceneMain extends Scene {
     this.paddle = Paddle.new(game)
     this.ball = Ball.new(game)
     this.player = Palyer.new(game)
+    this.bg = GameImage.new(game, 'mainBg')
 
     // blocks
     this.blocks = []
     this.blocksNum = 0
-    this.loadLevel()
-
+    
     this.init()
   }
 
@@ -32,22 +32,51 @@ class SceneMain extends Scene {
     this.registerAction('f', function() {
       self.ball.fired = true
     })
+    
+    this.addElement(this.bg)
+    this.addElement(this.paddle)
+    this.addElement(this.ball)
+    this.loadLevel()
 
-    this.elements.push(this.paddle, this.ball)
+    // 拖动功能
+    let enableDrag = false
+    this.game.canvas.addEventListener('mousedown', function(event) {
+      const x = event.offsetX
+      const y = event.offsetY  
+      
+      if (self.ball.hasPoint(x, y)) {
+        enableDrag = true
+      }
+    })
+
+    this.game.canvas.addEventListener('mousemove', function(event) {
+      const x = event.offsetX
+      const y = event.offsetY 
+      
+      if (enableDrag) {
+        self.ball.x = x
+        self.ball.y = y
+      }
+    })
+
+    this.game.canvas.addEventListener('mouseup', function(event) {
+      enableDrag = false
+    })
   }
 
   loadLevel() {
     this.blocks = []
+
     const data = JSON.parse(localStorage.getItem('LEVELS'))
     const level = data[this.player.level] || []
    
     this.blocksNum = level.length
-    for (let i = 0; i < this.blocksNum; i++) {
-      const p = level[i]
-      const b = Block.new(this.game, p)
+
+    level.forEach(function(point) {
+      const b = Block.new(this.game, point)
       this.blocks.push(b)
-      this.elements.push(b)
-    }
+      this.addElement(b)
+    }, this)
   }
 
   update() {
@@ -86,11 +115,9 @@ class SceneMain extends Scene {
   }
 
   draw() {
-    // bg
-    this.drawBg('mainBg')
-    this.drawTitle('#4885ed')
-
     super.draw()
+    
+    this.drawHead('#4885ed')
 
     this.player.draw()
   }

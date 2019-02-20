@@ -17,31 +17,27 @@ class Scene {
     this.actions[key] = action
   }
 
-  drawText(font = '16px serif', style='white', text, point) {
-    this.game.context.font = font
-    this.game.context.fillStyle = style
-    this.game.context.fillText(text, point.x, point.y)
+  addElement(el) {
+    this.elements.push(el)
   }
 
-  drawTitle(color) {
+  drawText(obj) {
+    const g = this.game.context
+    g.font = obj.font
+    g.fillStyle = obj.style || '#000'
+    g.fillText(obj.text, obj.x, obj.y)
+  }
+
+  drawHead(color) {
     this.game.context.fillStyle = color
     this.game.context.fillRect(this.headArea.x, this.headArea.y, this.headArea.w, this.headArea.h)
-  }
-
-  drawBg(name) {
-    let img = this.game.imageByName(name)
-    this.game.context.drawImage(img.image, 0, 0, 500, 800)
   }
 
   update() {}
 
   draw() {
-    if (this.elements.length !== 0) {
-      this.elements.forEach(function(el) {
-        el.draw()
-      }, this)
-    }
+    this.elements.forEach(function(el) {
+      el.draw()
+    }, this)
   }
-
- 
 }

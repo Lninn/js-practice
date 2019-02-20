@@ -8,6 +8,7 @@ class SceneTitle extends Scene {
       '开启全屏(Q) 清空记录(C)',
     ]
     this.fullScreen = false
+    this.bg = GameImage.new(this.game, 'titleBg')
 
     this.init()
   }
@@ -19,10 +20,12 @@ class SceneTitle extends Scene {
       const s = SceneMain.new(self.game)
       self.game.replaceScene(s)
     })
+
     this.registerAction('e', function() {
       const s = SceneEditor.new(self.game)
       self.game.replaceScene(s)
     })
+
     this.registerAction('q', function() {
       if (self.fullScreen) {
         self.fullScreen = false
@@ -32,20 +35,31 @@ class SceneTitle extends Scene {
         document.documentElement.webkitRequestFullScreen()
       }
     })
+    
     this.registerAction('c', function() {
       log('清空当前游戏进度')
     })
   }
 
   draw() {
-    // bg
-    this.drawBg('titleBg')
+    this.game.context.drawImage(this.bg.image, 0, 0, 400, 600)
 
     // text
-    this.drawText('50px serif', '#db3236', this.name, { x: 70, y: 120 })
+    this.drawText({
+      font: '50px Arial',
+      style: '#db3236', 
+      text: this.name,
+      x: 60,
+      y: 120,
+    })
 
     this.opText.forEach(function(text, i) {
-      this.drawText('22px 黑体', '#000', text, { x: 70, y: 360 + (i * 30), })
+      this.drawText({
+        font: '22px 黑体',
+        text: text,
+        x: 70,
+        y: 360 + (i * 30),
+      })
     }, this)
   }
 }

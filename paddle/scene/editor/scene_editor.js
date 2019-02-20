@@ -2,23 +2,29 @@ class SceneEditor extends Scene {
   constructor(game) {
     super(game)
 
-    this.levels = []
-    this.currentLevel = null
-    this.start = false
-
+    this.setup()
     this.init()
   }
 
+  setup() {
+    this.levels = []
+    this.currentLevel = null
+    this.start = false
+    this.bg = GameImage.new(this.game, 'editorBg')
+  }
+
   init() {
-    const self = this
+    this.addElement(this.bg)
 
     // event
+    const self = this
     this.registerAction('c', function() {
       self.clear()
+      log('清除当前数据')
     })
     this.registerAction('s', function() {
       self.save()
-      log('保存成功')
+      log('保存当前数据')
     })
     this.registerAction('r', function() {
       const s = SceneTitle.new(self.game)
@@ -26,23 +32,28 @@ class SceneEditor extends Scene {
     })
 
     this.game.canvas.addEventListener('click', function(event) {
-      let x = event.offsetX
-      let y = event.offsetY
-
-      const hasPoint = (rect, point) => {
-        if (point.x >= rect.x && point.x <= rect.x + rect.w) {
-          if (point.y >= rect.y && point.y <= rect.y + rect.h) {
-            return true
-          }
-        }
-        
-        return false
+      const point = {
+        x: event.offsetX,
+        y: event.offsetY,
       }
 
-      if (!self.start || hasPoint(self.headArea, { x, y, })) {
+      const bool = self.levels.some(function(level) {
+        const o = {
+          w: 40,
+          h: 19,
+          x: level[0],
+          y: level[1], 
+        }
+
+        return hasPoint(o, point)
+      })
+      
+      if (!self.start || hasPoint(self.headArea, point) || bool) {
         return
       }
-      self.levels.push([x, y])
+
+      self.levels.push([point.x, point.y])
+      self.addBlock([point.x, point.y])
     })
 
     window.addEventListener('keydown', function(event) {
@@ -63,6 +74,15 @@ class SceneEditor extends Scene {
   loadLevel(level) {
     const data = JSON.parse(localStorage.getItem('LEVELS'))
     this.levels = data[level] || []
+    
+    this.levels.forEach(function(level) {
+      this.addBlock(level)
+    }, this)
+  }
+
+  addBlock(point) {
+    const b = Block.new(this.game, point)
+    this.addElement(b)
   }
 
   clear() {
@@ -88,24 +108,33 @@ class SceneEditor extends Scene {
   }
 
   draw() {
-    // bg
-    this.drawBg('editorBg')
-    this.drawTitle('#4885ed')
+    super.draw()
+
+    this.drawHead('#4885ed')
 
     // draw text
     if (this.start) {
       let t ='第 '+ this.currentLevel + ' 关 ' + '返回(R) 清空(C) 保存(S) 数量: ' + this.levels.length
-      this.drawText('16px serif', '#fff', t, { x: 10, y: 30, })
+      this.drawText({
+        font: '16px 黑体',
+        text: t,
+        x: 10,
+        y: 30, 
+      })
     } else {
-      this.drawText('16px serif', '#fff', '关卡编辑器', { x: 10, y: 30, })
-      this.drawText('22px serif', '#000', '按数字键选择你要编辑的关卡(1-9)', { x: 30, y: 300, })
+      this.drawText({
+        style: '#fff',
+        text: '关卡编辑器',
+        x: 10,
+        y: 30, 
+      })
+
+      this.drawText({
+        font: '22px 黑体',
+        text: '按数字键选择你要编辑的关卡(1-9)',
+        x: 30,
+        y: 300, 
+      })
     }
-  
-    // draw block
-    this.levels.forEach(function(level) {
-      const img = this.game.images['block']
- 
-      this.game.context.drawImage(img, level[0], level[1])
-    }, this)
   }
 }

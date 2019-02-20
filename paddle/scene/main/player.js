@@ -58,15 +58,11 @@ class Palyer {
     const t = '第 ' + this.level + ' 关 分数: ' + this.score
     ctx.fillText(t, 240, 30)
 
-       // 生命
-    // img = this.game.imageByName('star')
-    // for (let i = 1; i <= this.star; i++) {
-    //   ctx.drawImage(img.image, 25 * i, 10)
-    // }
-
-    ctx.fillStyle = "#db3236"
+    // 生命
     for (let i = 0; i < Math.floor(this.lifeValue / 60); i++) {
-      ctx.fillRect(i * 50 + 2, 18, 48, 18)
+      // ctx.fillRect(i * 50 + 2, 18, 48, 18)
+      const img = this.game.imageByName('heart')
+      ctx.drawImage(img.image, 25 * i, 18, 20, 20)
     }
   }
 }

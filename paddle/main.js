@@ -69,7 +69,7 @@ const __main = function() {
     paddle: 'img/paddle.png',
     ball: 'img/ball.png',
     block: 'img/block.png',
-    star: 'img/star.png',
+    heart: 'img/heart.png',
     titleBg: 'img/title_bg.png',
     mainBg: 'img/main_bg.png',
     editorBg: 'img/editor_bg.png',

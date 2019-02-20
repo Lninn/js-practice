@@ -1,5 +1,5 @@
 class GameImage {
-  constructor(game, name, x, y) {
+  constructor(game, name, x = 0, y = 0) {
     this.game = game
     this.name = name
     this.x = x

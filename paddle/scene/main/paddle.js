@@ -2,7 +2,7 @@ class Paddle extends GameImage {
   constructor(game) {
     super(game, 'paddle', 60, 530)
 
-    this.speed = 15
+    this.speed = 10
   }
 
   move(x) {
