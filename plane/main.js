@@ -1,6 +1,7 @@
-const Game = function() {
+const Game = function(images) {
   const canvas = e('#id-canvas')
   const o = {
+    images,
     canvas,
     ctx: canvas.getContext('2d'),
     actions: {},
@@ -50,23 +51,53 @@ const Game = function() {
     o.actions[key] = action
   }
 
-  o.__start = function() {
-    o.init()
-    o.runloop()
+  o.textureByName = function(name) {
+    const img = o.images[name]
+
+    return {
+      image: img,
+      w: img.width,
+      h: img.height,
+    }
+  }
+
+  o.loadImg = function(callback) {
+    loads = []
+    const names = Object.keys(o.images)
+    for (const name of names) {
+      const path = o.images[name]
+      const img = new Image()
+      img.src = path
+      img.onload = function() {
+        loads.push(1)
+        o.images[name] = img
+        if (names.length == loads.length) {
+          callback()
+        }
+      }
+    }
+  }
+
+  o.__start = function(app) {
+    o.loadImg(function() {
+      app(o)
+      o.init()
+      o.runloop()
+    })
   }
 
   return o
 }
 
 const Bullet = function(game, x, y) {
-  const img = imageFromPath('bullet_1.png')
+  const texture = game.textureByName('bullet1')
   const o = {
     game,
-    image: img,
     speed: 5,
     x,
     y,
   }
+  Object.assign(o, texture)
 
   o.update = function() {
     o.y -= o.speed
@@ -80,16 +111,17 @@ const Bullet = function(game, x, y) {
 }
 
 const Plane = function(game) {
-  const img = imageFromPath('plane_1.png')
+  const texture = game.textureByName('plane1')
+ 
   const o = {
     game,
-    image: img,
     x: (800 - 128) / 2,
     y: 600,
     speed: 10,
     bullets: [],
     cooldown: 0,
   }
+  Object.assign(o, texture)
 
   o.moveUp = function() {
     o.y -= o.speed
@@ -137,16 +169,16 @@ const Plane = function(game) {
 }
 
 const Enemy = function(game) {
-  const img = imageFromPath('enemy_1.png')
+  const texture = game.textureByName('enemy1')
   const o = {
     game,
-    image: img,
     x: between(60, 700),
     y: between(-500, 0),
     speed: 5,
     bullets: [],
     cooldown: 0,
   }
+  Object.assign(o, texture)
 
   o.move = function() {
     if (o.y > 1100) {
@@ -188,9 +220,7 @@ const Enemy = function(game) {
   return o
 }
 
-const __main = function() {
-  const game = Game()
-
+const App = function(game) {
   const plane = Plane(game)
 
   let enemys = []
@@ -239,8 +269,17 @@ const __main = function() {
       e.draw()
     }
   }
+}
 
-  game.__start()
+const __main = function() {
+  const images = {
+    bg1: 'bg_1.png',
+    bullet1: 'bullet_1.png',
+    enemy1: 'enemy_1.png',
+    plane1: 'plane_1.png',
+  }
+  
+  Game(images).__start(App)
 }
 
 __main()
