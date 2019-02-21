@@ -7,14 +7,18 @@ class SceneEditor extends Scene {
   }
 
   setup() {
+    this.enableEdit = false
+    this.currentLevel = 1
+    // 先将所有位置数据以数组的形式保存
     this.levels = []
-    this.currentLevel = null
-    this.start = false
     this.bg = GameImage.new(this.game, 'editorBg')
+   
+    this.positions = []
   }
 
   init() {
     this.addElement(this.bg)
+    this.initBlockPosition()
 
     // event
     const self = this
@@ -31,49 +35,86 @@ class SceneEditor extends Scene {
       self.game.replaceScene(s)
     })
 
-    this.game.canvas.addEventListener('click', function(event) {
+    bindEvent(this.game.canvas, 'click', function(event) {
       const point = {
         x: event.offsetX,
         y: event.offsetY,
       }
 
-      const bool = self.levels.some(function(level) {
-        const o = {
-          w: 40,
-          h: 19,
-          x: level[0],
-          y: level[1], 
-        }
-
-        return hasPoint(o, point)
-      })
-      
-      if (!self.start || hasPoint(self.headArea, point) || bool) {
+      if (!self.enableEdit || hasPoint(self.headArea, point)) {
         return
       }
 
-      self.levels.push([point.x, point.y])
-      self.addBlock([point.x, point.y])
+      const b = self.getBlock(point)
+      if (b) {
+        self.addElement(b)
+      }
     })
+    // this.game.canvas.addEventListener('click', function(event) {
+   
+    // })
 
     window.addEventListener('keydown', function(event) {
       const k = event.key
 
       if ('123456789'.includes(k)) {
-        // if (self.start) {
-        //   return
-        // }
+        if (self.enableEdit) {
+          return
+        }
 
-        self.start = true
+        self.enableEdit = true
         self.currentLevel = k
-        self.loadLevel(Number(k))
+        self.loadLevel()
       }
     })
+
+    let enableDrag = false
+    this.game.canvas.addEventListener('mousedown', function(event) {
+      const x = event.offsetX
+      const y = event.offsetY  
+      
+      if (x >= 0 && x <= 400) {
+        if (y >= 0 && y <= 600) {
+          enableDrag = true
+        }
+      }
+    })
+
+    this.game.canvas.addEventListener('mousemove', function(event) {
+      const point = {
+        x: event.offsetX,
+        y: event.offsetY,
+      }
+
+      if (!self.enableEdit || hasPoint(self.headArea, point) || !enableDrag) {
+        return
+      }
+
+      const b = self.getBlock(point)
+      if (b) {
+        log('add')
+        self.levels.push([b.x, b.y])
+        self.addElement(b)
+      }
+    })
+
+    this.game.canvas.addEventListener('mouseup', function(event) {
+      enableDrag = false
+    })
+    //
   }
 
-  loadLevel(level) {
+  initBlockPosition() {
+   for (let i = 0; i <= 600; i += 20) {
+      for (let j = 0; j <= 400; j += 40) {
+        this.positions.push([j, i])
+      }
+    }
+  }
+
+  loadLevel() {
     const data = JSON.parse(localStorage.getItem('LEVELS'))
-    this.levels = data[level] || []
+    this.levels = data[this.currentLevel] || []
     
     this.levels.forEach(function(level) {
       this.addBlock(level)
@@ -83,6 +124,17 @@ class SceneEditor extends Scene {
   addBlock(point) {
     const b = Block.new(this.game, point)
     this.addElement(b)
+  }
+
+  getBlock(point = []) {
+    for (const p of this.positions) {
+      const b = Block.new(this.game, p)
+      if (hasPoint(b, point)) {
+        return b
+      }
+    }
+
+    return null
   }
 
   clear() {
@@ -113,7 +165,8 @@ class SceneEditor extends Scene {
     this.drawHead('#4885ed')
 
     // draw text
-    if (this.start) {
+    if (this.enableEdit) {
+      // TODO 这里数量有问题
       let t ='第 '+ this.currentLevel + ' 关 ' + '返回(R) 清空(C) 保存(S) 数量: ' + this.levels.length
       this.drawText({
         font: '16px 黑体',

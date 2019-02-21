@@ -75,3 +75,9 @@ const hasPoint = (rect, point) => {
   
   return false
 }
+
+const bindEvent = function(target, eventName, callback) {
+  target.addEventListener(eventName, function(event) {
+    callback(event)
+  })
+}

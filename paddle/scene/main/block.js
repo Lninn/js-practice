@@ -2,8 +2,15 @@ class Block extends GameImage {
   constructor(game, position) {
     super(game, 'block', position[0], position[1])
 
+    this.setup(position)
+  }
+
+  setup(position) {
+    this.position = position
     this.alive = true
-    this.lives = position[2] || 1
+    this.lives = this.position[2] || 1
+
+    this.h += 1
   }
 
   collide(ball) {
