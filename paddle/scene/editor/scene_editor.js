@@ -7,6 +7,8 @@ class SceneEditor extends Scene {
   }
 
   setup() {
+    super.setup()
+
     this.enableEdit = false
     this.currentLevel = 1
     // 先将所有位置数据以数组的形式保存
@@ -14,27 +16,64 @@ class SceneEditor extends Scene {
     this.bg = GameImage.new(this.game, 'editorBg')
    
     this.positions = []
+    this.blocks = []
   }
 
   init() {
+    // event
+    const self = this
+
+    // this.events['c'] = function() {
+    //   self.setData(self.currentLevel, [])
+    // }
+
+    // this.registerAction('c', function() {
+    //   self.setData(self.currentLevel, [])
+    // })
+
+    // this.registerAction('s', function() {
+    //   self.setData(self.currentLevel, self.levels)
+    // })
+
+    this.events['r'] = function(event) {
+      self.toggle(event)
+    }
+    this.events['123456789'] = function(event) {
+      const k = event.key
+
+      if ('123456789'.includes(k) && !self.enableEdit) {
+        self.loadLevel(k)
+      }
+    }
+
+    // bindEvent(window, 'keydown', function(event) {
+    //   const k = event.key
+
+    //   if ('123456789'.includes(k) && !self.enableEdit) {
+    //     self.loadLevel(k)
+    //   }
+    // })
+
+    // this.registerAction('r', function() {
+    //   if (self.enableEdit) {
+    //     log('keydown r: ', self.enableEdit)
+    //     self.enableEdit = !self.enableEdit
+    //   } else {
+    //     const s = SceneTitle.new(self.game)
+    //     self.game.replaceScene(s)
+    //   }
+    // })
+
     this.addElement(this.bg)
     this.initBlockPosition()
 
-    // event
-    const self = this
-    this.registerAction('c', function() {
-      self.clear()
-      log('清除当前数据')
-    })
-    this.registerAction('s', function() {
-      self.save()
-      log('保存当前数据')
-    })
-    this.registerAction('r', function() {
-      const s = SceneTitle.new(self.game)
-      self.game.replaceScene(s)
-    })
+    this.initEvent()
+    this.initText()
+    //
+  }
 
+  initEvent() {
+    const self = this
     bindEvent(this.game.canvas, 'click', function(event) {
       const point = {
         x: event.offsetX,
@@ -50,26 +89,11 @@ class SceneEditor extends Scene {
         self.addElement(b)
       }
     })
-    // this.game.canvas.addEventListener('click', function(event) {
-   
-    // })
-
-    window.addEventListener('keydown', function(event) {
-      const k = event.key
-
-      if ('123456789'.includes(k)) {
-        if (self.enableEdit) {
-          return
-        }
-
-        self.enableEdit = true
-        self.currentLevel = k
-        self.loadLevel()
-      }
-    })
+  
+  
 
     let enableDrag = false
-    this.game.canvas.addEventListener('mousedown', function(event) {
+    bindEvent(this.game.canvas, 'mousedown', function(event) {
       const x = event.offsetX
       const y = event.offsetY  
       
@@ -80,7 +104,7 @@ class SceneEditor extends Scene {
       }
     })
 
-    this.game.canvas.addEventListener('mousemove', function(event) {
+    bindEvent(this.game.canvas, 'mousemove', function(event) {
       const point = {
         x: event.offsetX,
         y: event.offsetY,
@@ -92,16 +116,33 @@ class SceneEditor extends Scene {
 
       const b = self.getBlock(point)
       if (b) {
-        log('add')
-        self.levels.push([b.x, b.y])
+        self.changeTitle()
+        self.addLevel([b.x, b.y])
         self.addElement(b)
       }
     })
 
-    this.game.canvas.addEventListener('mouseup', function(event) {
+    bindEvent(this.game.canvas, 'mouseup', function(event) {
       enableDrag = false
     })
-    //
+  }
+
+  initText() {
+    this.title = GameText.new(this.game, {
+      text: '关卡编辑器',
+      x: 10,
+      y: 30,
+    })
+
+    this.tips = GameText.new(this.game, {
+      font: '22px 黑体',
+      text: '按数字键选择你要编辑的关卡(1-9)',
+      x: 30,
+      y: 300,
+    })
+
+    this.addElement(this.title)
+    this.addElement(this.tips)
   }
 
   initBlockPosition() {
@@ -112,18 +153,63 @@ class SceneEditor extends Scene {
     }
   }
 
-  loadLevel() {
-    const data = JSON.parse(localStorage.getItem('LEVELS'))
-    this.levels = data[this.currentLevel] || []
+  toggle(event) {
+    if (this.enableEdit) {
+      this.enableEdit = !this.enableEdit
+      this.changeTitle()
+      this.tips.toggle()
+      this.removeBlock()
+    } else {
+      const s = SceneTitle.new(this.game)
+      this.game.replaceScene(s)
+    }
+  }
+
+  loadLevel(level) {
+    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
+    this.levels = data[level] || []
     
-    this.levels.forEach(function(level) {
-      this.addBlock(level)
+    this.levels.forEach(function(l) {
+      this.addBlock(l)
     }, this)
+    
+    this.enableEdit = true
+    this.currentLevel = level
+    this.changeTitle()
+    this.tips.toggle()
+  }
+
+  changeTitle() {
+    let t = ''
+    if (this.enableEdit) {
+      t = `第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: ${this.levels.length}`
+    } else {
+      t = '关卡编辑器'
+    }
+
+    this.title.text = t
   }
 
   addBlock(point) {
     const b = Block.new(this.game, point)
+    this.blocks.push(b)
     this.addElement(b)
+  }
+
+  removeBlock() {
+    this.blocks.forEach(function(b) {
+      this.removeElement(b)
+    }, this)
+  }
+
+  addLevel(point) {
+    const i = this.levels.findIndex(p => (p[0] === point[0] && p[1] === point[1]))
+
+    if (i > 0) {
+      return
+    }
+
+    this.levels.push(point)
   }
 
   getBlock(point = []) {
@@ -137,57 +223,17 @@ class SceneEditor extends Scene {
     return null
   }
 
-  clear() {
-    if (this.levels.length === 0) {
-      return
-    }
+  setData(num, levels) {
+    log('set data: ', num, levels)
 
-    this.levels = []
-
-    const levels = JSON.parse(localStorage.getItem('LEVELS'))
-    levels[this.currentLevel] = this.levels
-    localStorage.setItem('LEVELS', JSON.stringify(levels))
+    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
+    data[num] = levels
+    localStorage.setItem('LEVELS', JSON.stringify(data))
   }
 
-  save() {
-    if (this.levels.length === 0) {
-      return
-    }
-
-    const levels = JSON.parse(localStorage.getItem('LEVELS'))
-    levels[this.currentLevel] = this.levels
-    localStorage.setItem('LEVELS', JSON.stringify(levels))
-  }
-
-  draw() {
-    super.draw()
-
-    this.drawHead('#4885ed')
-
-    // draw text
-    if (this.enableEdit) {
-      // TODO 这里数量有问题
-      let t ='第 '+ this.currentLevel + ' 关 ' + '返回(R) 清空(C) 保存(S) 数量: ' + this.levels.length
-      this.drawText({
-        font: '16px 黑体',
-        text: t,
-        x: 10,
-        y: 30, 
-      })
-    } else {
-      this.drawText({
-        style: '#fff',
-        text: '关卡编辑器',
-        x: 10,
-        y: 30, 
-      })
-
-      this.drawText({
-        font: '22px 黑体',
-        text: '按数字键选择你要编辑的关卡(1-9)',
-        x: 30,
-        y: 300, 
-      })
-    }
+  getData(num) {
+    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
+    log('load data: ', num, data[num])
+    return data[num] || []
   }
 }

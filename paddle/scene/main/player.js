@@ -53,7 +53,7 @@ class Palyer {
       ctx.fillText('恭 喜 过 关!', 110, 300)
     }
 
-    ctx.fillStyle = "white"
+    ctx.fillStyle = "#000"
     ctx.font = '16px serif'
     const t = '第 ' + this.level + ' 关 分数: ' + this.score
     ctx.fillText(t, 240, 30)

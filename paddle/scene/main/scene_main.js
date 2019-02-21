@@ -117,8 +117,6 @@ class SceneMain extends Scene {
   draw() {
     super.draw()
     
-    this.drawHead('#4885ed')
-
     this.player.draw()
   }
 }
