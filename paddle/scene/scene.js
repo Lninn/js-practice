@@ -1,6 +1,8 @@
 class Scene {
   constructor(game) {
     this.game = game
+    
+    this.setup()
   }
 
   static new(game) {
@@ -13,29 +15,45 @@ class Scene {
     this.actions = {}
 
     // 每个场景的按键事件 非状态
-    this.events = {}
-
+    this.keydownEvents = {}
+    
     this.elements = []
     this.headArea = { x: 0, y: 0, w: 400, h: 40, }
 
-    const self = this
-    window.addEventListener('keydown', function(event) {
-      const k = event.key
-      const keys = Object.keys(self.events)
-      keys.forEach(function(key) {
-        if (key === k) {
-          self.events[k](event)
-        } else {
-          if (key.includes(k)) {
-            self.events[key](event)
-          }
+    // keydown
+    this.addListener = this.listener.bind(this)
+    window.addEventListener('keydown', this.addListener)
+  }
+
+  listener(event) {
+    const k = event.key
+
+    const keys = Object.keys(this.keydownEvents)
+    keys.forEach(function(key) {
+      if (key === k) {
+        this.keydownEvents[k](event)
+      } else {
+        if (key.includes(k)) {
+          this.keydownEvents[key](event.key)
         }
-      })
-    })
+      }
+    }, this)
+  }
+
+  done() {
+    window.removeEventListener('keydown', this.addListener)
   }
 
   registerAction(key, action) {
     this.actions[key] = action
+  }
+
+  addKEvent(key, callback) {
+    this.keydownEvents[key] = callback
+  }
+
+  addCanvasEvent(type, callback) {
+    this.targetEvents[type] = callback
   }
 
   addElement(el) {

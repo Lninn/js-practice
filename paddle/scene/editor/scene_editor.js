@@ -2,67 +2,40 @@ class SceneEditor extends Scene {
   constructor(game) {
     super(game)
 
-    this.setup()
     this.init()
   }
 
-  setup() {
-    super.setup()
-
+  init() {
     this.enableEdit = false
     this.currentLevel = 1
+    this.enableDrag = false
+
     // 先将所有位置数据以数组的形式保存
     this.levels = []
+
     this.bg = GameImage.new(this.game, 'editorBg')
-   
     this.positions = []
     this.blocks = []
-  }
 
-  init() {
-    // event
+    // keydown event
     const self = this
-
-    // this.events['c'] = function() {
-    //   self.setData(self.currentLevel, [])
-    // }
-
-    // this.registerAction('c', function() {
-    //   self.setData(self.currentLevel, [])
-    // })
-
-    // this.registerAction('s', function() {
-    //   self.setData(self.currentLevel, self.levels)
-    // })
-
-    this.events['r'] = function(event) {
-      self.toggle(event)
-    }
-    this.events['123456789'] = function(event) {
-      const k = event.key
-
-      if ('123456789'.includes(k) && !self.enableEdit) {
-        self.loadLevel(k)
+    this.addKEvent('123456789', function(key) {
+      if ('123456789'.includes(key) && !self.enableEdit) {
+        self.loadLevel(key)
       }
-    }
+    })
 
-    // bindEvent(window, 'keydown', function(event) {
-    //   const k = event.key
+    this.addKEvent('c', function() {
+      self.clear()
+    })
 
-    //   if ('123456789'.includes(k) && !self.enableEdit) {
-    //     self.loadLevel(k)
-    //   }
-    // })
+    this.addKEvent('s', function() {
+      self.setData(self.currentLevel, self.levels)
+    })
 
-    // this.registerAction('r', function() {
-    //   if (self.enableEdit) {
-    //     log('keydown r: ', self.enableEdit)
-    //     self.enableEdit = !self.enableEdit
-    //   } else {
-    //     const s = SceneTitle.new(self.game)
-    //     self.game.replaceScene(s)
-    //   }
-    // })
+    this.addKEvent('r', function() {
+      self.toggle()
+    })
 
     this.addElement(this.bg)
     this.initBlockPosition()
@@ -73,65 +46,20 @@ class SceneEditor extends Scene {
   }
 
   initEvent() {
-    const self = this
-    bindEvent(this.game.canvas, 'click', function(event) {
-      const point = {
-        x: event.offsetX,
-        y: event.offsetY,
-      }
+    const c = this.game.canvas
 
-      if (!self.enableEdit || hasPoint(self.headArea, point)) {
-        return
-      }
-
-      const b = self.getBlock(point)
-      if (b) {
-        self.addElement(b)
-      }
-    })
-  
-  
-
-    let enableDrag = false
-    bindEvent(this.game.canvas, 'mousedown', function(event) {
-      const x = event.offsetX
-      const y = event.offsetY  
-      
-      if (x >= 0 && x <= 400) {
-        if (y >= 0 && y <= 600) {
-          enableDrag = true
-        }
-      }
-    })
-
-    bindEvent(this.game.canvas, 'mousemove', function(event) {
-      const point = {
-        x: event.offsetX,
-        y: event.offsetY,
-      }
-
-      if (!self.enableEdit || hasPoint(self.headArea, point) || !enableDrag) {
-        return
-      }
-
-      const b = self.getBlock(point)
-      if (b) {
-        self.changeTitle()
-        self.addLevel([b.x, b.y])
-        self.addElement(b)
-      }
-    })
-
-    bindEvent(this.game.canvas, 'mouseup', function(event) {
-      enableDrag = false
-    })
+    c.addEventListener('click', this.getPosition.bind(this))
+    c.addEventListener('mousedown', this.mousedown.bind(this))
+    c.addEventListener('mousemove', this.mousemove.bind(this))
+    c.addEventListener('mouseup', this.mouseup.bind(this))
   }
 
   initText() {
     this.title = GameText.new(this.game, {
-      text: '关卡编辑器',
-      x: 10,
-      y: 30,
+      font: '30px 黑体',
+      text: '关 卡 编 辑',
+      x: 120,
+      y: 120,
     })
 
     this.tips = GameText.new(this.game, {
@@ -153,7 +81,7 @@ class SceneEditor extends Scene {
     }
   }
 
-  toggle(event) {
+  toggle() {
     if (this.enableEdit) {
       this.enableEdit = !this.enableEdit
       this.changeTitle()
@@ -161,55 +89,92 @@ class SceneEditor extends Scene {
       this.removeBlock()
     } else {
       const s = SceneTitle.new(this.game)
+      this.done()
       this.game.replaceScene(s)
     }
   }
 
   loadLevel(level) {
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    this.levels = data[level] || []
-    
-    this.levels.forEach(function(l) {
-      this.addBlock(l)
-    }, this)
-    
     this.enableEdit = true
     this.currentLevel = level
-    this.changeTitle()
     this.tips.toggle()
+
+    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
+    const ps = data[level] || []
+    
+    if (ps.length !== 0) {
+      for (const p of ps) {
+        const b = Block.new(this.game, [p.x, p.y])
+        this.addBlock(b)
+      }
+    } else {
+      this.changeTitle()
+    }
+  }
+
+  getPosition(event) {
+    const point = {
+      x: event.offsetX,
+      y: event.offsetY,
+    }
+
+    if (!this.enableEdit || hasPoint(this.headArea, point)) {
+      return
+    }
+
+    const b = this.getBlock(point)
+
+    // 判断重复
+    const i = this.levels.findIndex(function(p) {
+      return p.x === b.x && p.y === b.y
+    })
+
+    if (i > 0 || !b) {
+      return
+    }
+
+    this.addBlock(b)
   }
 
   changeTitle() {
-    let t = ''
+    let o = {}
     if (this.enableEdit) {
-      t = `第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: ${this.levels.length}`
+      o = {
+        text: `第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: ${this.levels.length}`,
+        font: '16px 微软雅黑',
+        x: 10,
+        y: 30,
+      }
     } else {
-      t = '关卡编辑器'
+      o = {
+        font: '30px 黑体',
+        text: '关 卡 编 辑',
+        x: 120,
+        y: 120,
+      }
     }
 
-    this.title.text = t
+    Object.assign(this.title, o)
   }
 
-  addBlock(point) {
-    const b = Block.new(this.game, point)
-    this.blocks.push(b)
-    this.addElement(b)
+  addBlock(block) {
+    this.blocks.push(block)
+    this.levels.push({
+      x: block.x,
+      y: block.y,
+    })
+    
+    this.addElement(block)
+    this.changeTitle()
   }
 
   removeBlock() {
     this.blocks.forEach(function(b) {
       this.removeElement(b)
     }, this)
-  }
 
-  addLevel(point) {
-    const i = this.levels.findIndex(p => (p[0] === point[0] && p[1] === point[1]))
-
-    if (i > 0) {
-      return
-    }
-
-    this.levels.push(point)
+    this.blocks = []
+    this.levels = []
   }
 
   getBlock(point = []) {
@@ -221,6 +186,33 @@ class SceneEditor extends Scene {
     }
 
     return null
+  }
+
+  mousedown(event) {
+    const x = event.offsetX
+    const y = event.offsetY  
+
+    if (x >= 0 && x <= 400 && y >= 0 && y <= 600) {
+      this.enableDrag = true
+    }
+  }
+
+  mousemove(event) {
+    if (!this.enableDrag) {
+      return
+    }
+
+    this.getPosition(event)
+  }
+
+  mouseup(event) {
+    this.enableDrag = false
+  }
+
+  clear() {
+    this.setData(this.currentLevel, [])
+    this.removeBlock()
+    this.changeTitle()
   }
 
   setData(num, levels) {
@@ -236,4 +228,4 @@ class SceneEditor extends Scene {
     log('load data: ', num, data[num])
     return data[num] || []
   }
-}
+} // 206

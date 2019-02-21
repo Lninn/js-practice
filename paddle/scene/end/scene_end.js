@@ -11,14 +11,13 @@ class SceneEnd extends Scene {
       const s = SceneTitle.new(self.game)
       self.game.replaceScene(s)
     })
-  }
 
-  draw() {
-    this.drawText({
+    const tips = GameText.new(this.game, {
       font: '22px 黑体',
       text: '游戏结束, 按 R 返回标题界面',
       x: 40,
       y: 300,
     })
+    this.addElement(tips)
   }
 }

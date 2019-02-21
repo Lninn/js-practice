@@ -73,7 +73,7 @@ class SceneMain extends Scene {
     this.blocksNum = level.length
 
     level.forEach(function(point) {
-      const b = Block.new(this.game, point)
+      const b = Block.new(this.game, [point.x, point.y])
       this.blocks.push(b)
       this.addElement(b)
     }, this)

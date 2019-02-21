@@ -2,13 +2,10 @@ class SceneTitle extends Scene {
   constructor(game) {
     super(game)
 
-    this.setup()
     this.init()
   }
 
-  setup() {
-    super.setup()
-
+  init() {
     this.name = 'Paddle Game'
     this.opText = [
       '开始游戏(K) 编辑关卡(E)',
@@ -16,9 +13,8 @@ class SceneTitle extends Scene {
     ]
     this.fullScreen = false
     this.bg = GameImage.new(this.game, 'titleBg')
-  }
 
-  init() {
+
     const self = this
     this.registerAction('k', function() {
       const s = SceneMain.new(self.game)
