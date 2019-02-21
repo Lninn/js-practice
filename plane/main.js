@@ -136,10 +136,69 @@ const Plane = function(game) {
   return o
 }
 
+const Enemy = function(game) {
+  const img = imageFromPath('enemy_1.png')
+  const o = {
+    game,
+    image: img,
+    x: between(60, 700),
+    y: between(-500, 0),
+    speed: 5,
+    bullets: [],
+    cooldown: 0,
+  }
+
+  o.move = function() {
+    if (o.y > 1100) {
+      o.y = -200
+      o.x = between(60, 700)
+    }
+
+    o.y += o.speed
+  }
+
+  o.fire = function() {
+    if (o.cooldown == 0) {
+      o.cooldown = 4
+      const b = Bullet(o.game, o.x + o.image.width / 2 - 10, o.y)
+      o.bullets.push(b)
+    }
+  }
+
+  o.update = function() {
+    o.move()
+
+    if (o.cooldown > 0) {
+      o.cooldown -= 1
+    }
+
+    for (const b of o.bullets) {
+      b.update()
+    }
+  }
+
+  o.draw = function() {
+    o.game.ctx.drawImage(o.image, o.x, o.y)
+
+    for (const b of o.bullets) {
+      b.draw()
+    }
+  }
+
+  return o
+}
+
 const __main = function() {
   const game = Game()
 
   const plane = Plane(game)
+
+  let enemys = []
+  let enemyOfNumber = 6
+  for (let i = 0; i < enemyOfNumber; i++) {
+    const e = Enemy(game)
+    enemys.push(e)
+  }
 
   game.registerAction('a', function() {
     plane.moveLeft()
@@ -163,6 +222,10 @@ const __main = function() {
 
   game.update = function() {
     plane.update()
+
+    for (const e of enemys) {
+      e.update()
+    }
   }
 
   game.draw = function() {
@@ -171,6 +234,10 @@ const __main = function() {
     game.ctx.fillRect(0, 0, game.canvas.width, game.canvas.height)
 
     plane.draw()
+
+    for (const e of enemys) {
+      e.draw()
+    }
   }
 
   game.__start()

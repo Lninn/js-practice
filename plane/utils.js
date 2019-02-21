@@ -7,3 +7,7 @@ const imageFromPath = function(path) {
   img.src = path
   return img
 }
+
+const between = function(start, end) {
+  return Math.floor(Math.random() * (end - start + 1)) + start 
+}
