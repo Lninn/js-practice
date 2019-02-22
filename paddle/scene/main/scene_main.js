@@ -87,6 +87,10 @@ class SceneMain extends Scene {
         this.ball.rebound(block)
         this.player.addScore()
         this.blocksNum -= 1
+
+        // 播放音效
+        var horn = new Audio('audio/water.mp3')
+        horn.play()  
       }
     }, this)
 
