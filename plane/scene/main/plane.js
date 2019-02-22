@@ -1,6 +1,4 @@
 const Plane = function(game) {
-  const img = game.imageByName('plane1')
- 
   const o = {
     game,
     x: (800 - 128) / 2,
@@ -10,28 +8,31 @@ const Plane = function(game) {
     cooldown: 0,
   }
 
-  o.image = img
-  o.w = img.width
-  o.h = img.height
+  const animation = Animation.new(game, 'plane')
+  animation.x = o.x
+  animation.y = o.y
+
+  o.w = 100
+  o.h = 100
 
   o.setHorizon = function(x) {
     if (x <= 0) {
-      o.x = 0
+      x = 0
     } else if (x >= 800 - o.w) {
-      o.x = 800 - o.w
-    } else {
-      o.x = x
+      x = 800 - o.w
     }
+
+    animation.x = x
   }
 
   o.setVertical = function(y) {
     if (y <= 0) {
-      o.y = 0
+      y = 0
     } else if (y >= 1000 - o.h) {
-      o.y = 1000 - o.h
-    } else {
-      o.y = y
+      y = 1000 - o.h
     }
+    
+    animation.y = y
   }
 
   o.move = function(key) {
@@ -44,17 +45,21 @@ const Plane = function(game) {
     } else if (key == 's') {
       o.setVertical(o.y += o.speed)
     }
+
+    animation.setDir(key)
   }
 
   o.fire = function() {
     if (o.cooldown == 0) {
       o.cooldown = 4
-      const b = Bullet(o.game, o.x + o.image.width / 2 - 10, o.y)
+      const b = Bullet(o.game, o.x + o.w / 2 - 10, o.y)
       o.bullets.push(b)
     }
   }
 
   o.update = function() {
+    animation.update()
+
     if (o.cooldown > 0) {
       o.cooldown -= 1
     }
@@ -65,7 +70,7 @@ const Plane = function(game) {
   }
 
   o.draw = function() {
-    o.game.drawImage(o)
+    animation.draw()
 
     for (const b of o.bullets) {
       b.draw()
