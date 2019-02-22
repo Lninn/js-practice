@@ -1,17 +1,19 @@
 const Enemy = function(game) {
-  const texture = game.textureByName('enemy1')
+  const img = game.imageByName('enemy1')
   const o = {
     game,
     bullets: [],
     cooldown: 0,
   }
 
-  Object.assign(o, texture)
+  o.image = img
+  o.w = img.width
+  o.h = img.height
 
   o.setup = function() {
-    o.h -= 23
-    o.w -= 25
-    o.y = -randomBetween(0, 200)
+    // o.h -= 23
+    // o.w -= 25
+    o.y = -randomBetween(200, 400)
     o.x = randomBetween(0, 750)
     o.speed = randomBetween(3, 5)
   }
@@ -24,6 +26,17 @@ const Enemy = function(game) {
       const b = Bullet(o.game, o.x + o.image.width / 2 - 10, o.y)
       o.bullets.push(b)
     }
+  }
+
+  o.collide = function(plane) {
+    for (const b of plane.bullets) {
+      if (intersect(o, b)) {
+        plane.bullets.splice(plane.bullets.indexOf(b), 1)
+        return true
+      }
+    }
+
+    return false
   }
 
   o.update = function() {
@@ -42,7 +55,7 @@ const Enemy = function(game) {
   }
 
   o.draw = function() {
-    o.game.ctx.drawImage(o.image, o.x, o.y)
+    o.game.drawImage(o)
 
     for (const b of o.bullets) {
       b.draw()

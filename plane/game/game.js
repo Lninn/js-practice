@@ -30,7 +30,7 @@ const Game = function(images) {
       const keys = Object.keys(self.actions)
       for (const key of keys) {
         if (self.keydowns[key]) {
-          self.actions[key]()
+          self.actions[key](key)
         }
       }
 
@@ -48,18 +48,14 @@ const Game = function(images) {
     }, 1000 / self.fps)
   }
 
-  o.registerAction = function(key, action) {
-    o.actions[key] = action
-  }
-
-  o.textureByName = function(name) {
+  o.imageByName = function(name) {
     const img = o.images[name]
 
-    return {
-      image: img,
-      w: img.width,
-      h: img.height,
-    }
+    return img
+  }
+
+  o.drawImage = function({ image, x, y, w, h }) {
+    o.ctx.drawImage(image, x, y, w, h)
   }
 
   o.replaceScene = function(scene) {

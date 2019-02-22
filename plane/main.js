@@ -47,7 +47,7 @@ const enableDebugMode = function(game, enable) {
 }
 
 const App = function(game) {
-  const s = Scene(game)
+  const s = SceneMain.new(game)
   return s
 }
 

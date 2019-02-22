@@ -1,10 +1,28 @@
-// const Texture = function(game, name) {
-//   const o = game.textureByName(name)
-//   o.game = game
+class Texture {
+  constructor(game, name, x, y) {
+    this.game = game
+    this.name = name
+    this.x = x
+    this.y = y
 
-//   o.draw = function() {
-//     o.game.ctx.drawImage(o.image, o.x, o.y)
-//   }
+    this.setup()
+  }
 
-//   return o
-// }
+  static new(...args) {
+    return new this(...args)
+  }
+
+  setup() {
+    const img = this.game.imageByName(this.name)
+
+    this.image = img
+    this.w = img.width
+    this.h = img.height
+  }
+
+  update() {}
+
+  draw() {
+    this.game.drawImage(this)
+  }
+}

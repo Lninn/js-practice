@@ -1,5 +1,5 @@
 const Plane = function(game) {
-  const texture = game.textureByName('plane1')
+  const img = game.imageByName('plane1')
  
   const o = {
     game,
@@ -9,22 +9,41 @@ const Plane = function(game) {
     bullets: [],
     cooldown: 0,
   }
-  Object.assign(o, texture)
 
-  o.moveUp = function() {
-    o.y -= o.speed
+  o.image = img
+  o.w = img.width
+  o.h = img.height
+
+  o.setHorizon = function(x) {
+    if (x <= 0) {
+      o.x = 0
+    } else if (x >= 800 - o.w) {
+      o.x = 800 - o.w
+    } else {
+      o.x = x
+    }
   }
 
-  o.moveDown = function() {
-    o.y += o.speed
+  o.setVertical = function(y) {
+    if (y <= 0) {
+      o.y = 0
+    } else if (y >= 1000 - o.h) {
+      o.y = 1000 - o.h
+    } else {
+      o.y = y
+    }
   }
 
-  o.moveLeft = function() {
-    o.x -= o.speed
-  }
-
-  o.moveRight = function() {
-    o.x += o.speed
+  o.move = function(key) {
+    if (key == 'a') {
+      o.setHorizon(o.x -= o.speed)
+    } else if (key == 'd') {
+      o.setHorizon(o.x += o.speed)
+    } else if (key == 'w') {
+      o.setVertical(o.y -= o.speed)
+    } else if (key == 's') {
+      o.setVertical(o.y += o.speed)
+    }
   }
 
   o.fire = function() {
@@ -46,7 +65,7 @@ const Plane = function(game) {
   }
 
   o.draw = function() {
-    o.game.ctx.drawImage(o.image, o.x, o.y)
+    o.game.drawImage(o)
 
     for (const b of o.bullets) {
       b.draw()
