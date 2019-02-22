@@ -8,6 +8,6 @@ const log = console.log.bind(console)
 //   return img
 // }
 
-const between = function(start, end) {
+const randomBetween = function(start, end) {
   return Math.floor(Math.random() * (end - start + 1)) + start 
 }

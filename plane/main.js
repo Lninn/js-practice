@@ -172,22 +172,19 @@ const Enemy = function(game) {
   const texture = game.textureByName('enemy1')
   const o = {
     game,
-    x: between(60, 700),
-    y: between(-500, 0),
-    speed: 5,
     bullets: [],
     cooldown: 0,
   }
+
   Object.assign(o, texture)
-
-  o.move = function() {
-    if (o.y > 1100) {
-      o.y = -200
-      o.x = between(60, 700)
-    }
-
-    o.y += o.speed
+  
+  o.setup = function() {
+    o.y = -randomBetween(0, 200)
+    o.x = randomBetween(0, 750)
+    o.speed = randomBetween(3, 5)
   }
+
+  o.setup()
 
   o.fire = function() {
     if (o.cooldown == 0) {
@@ -198,7 +195,10 @@ const Enemy = function(game) {
   }
 
   o.update = function() {
-    o.move()
+    o.y += o.speed
+    if (o.y > 1200) {
+      o.setup()
+    }
 
     if (o.cooldown > 0) {
       o.cooldown -= 1
