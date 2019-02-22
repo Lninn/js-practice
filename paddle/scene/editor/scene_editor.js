@@ -60,17 +60,19 @@ class SceneEditor extends Scene {
 
   initText() {
     this.title = GameText.new(this.game, {
-      font: '30px 黑体',
+      font: '60px 黑体',
+      style: '#db3236',
       text: '关 卡 编 辑',
-      x: 120,
-      y: 120,
+      x: 150,
+      y: 300,
     })
 
     this.tips = GameText.new(this.game, {
-      font: '22px 黑体',
+      font: '26px 黑体',
+      style: 'rgba(0, 0, 0, 0.7)',
       text: '按数字键选择你要编辑的关卡(1-9)',
-      x: 30,
-      y: 300,
+      x: 130,
+      y: 450,
     })
 
     this.addElement(this.title)
@@ -127,7 +129,10 @@ class SceneEditor extends Scene {
     }
 
     const b = this.getBlock(point)
-
+    if (!b) {
+      return
+    }
+    
     // 判断重复
     const i = this.levels.findIndex(function(p) {
       return p.x === b.x && p.y === b.y
@@ -146,15 +151,17 @@ class SceneEditor extends Scene {
       o = {
         text: `第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: ${this.levels.length}`,
         font: '16px 微软雅黑',
+        style: 'black',
         x: 10,
         y: 30,
       }
     } else {
       o = {
-        font: '30px 黑体',
+        font: '60px 黑体',
+        style: '#db3236',
         text: '关 卡 编 辑',
-        x: 120,
-        y: 120,
+        x: 150,
+        y: 300,
       }
     }
 

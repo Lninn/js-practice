@@ -26,9 +26,7 @@ const enableDebugMode = function(enable, game) {
   window.addEventListener('keydown', function(event) {
     const k = event.key
 
-    if ('123456'.includes(k)) {
-      blocks = levelLoad(Number(k))
-    } else if (k === 'p') {
+    if (k === 'p') {
       window.paused = !window.paused
     }
   })
@@ -76,8 +74,8 @@ const __main = function() {
   Game.instance(images, function(game) {
     enableDebugMode(true, game)
     
-    // const s = SceneTitle.new(game)
-    const s = SceneMain.new(game)
+    const s = SceneTitle.new(game)
+    // const s = SceneMain.new(game)
     game.runWithScene(s)
   })
 }

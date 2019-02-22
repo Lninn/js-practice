@@ -43,5 +43,7 @@ class Ball extends GameImage {
     this.x = (this.game.canvas.width - this.w) / 2
     this.y = 800 - this.h
     this.fired = false
+    this.speedX = -5
+    this.speedY = -5
   }
 }
