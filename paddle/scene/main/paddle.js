@@ -1,15 +1,16 @@
 class Paddle extends GameImage {
   constructor(game) {
-    super(game, 'paddle', 60, 530)
+    super(game, 'paddle1', 0, 803)
 
+    this.x = (game.canvas.width - this.w) / 2
     this.speed = 10
   }
 
   move(x) {
     if (x < 0) {
       x = 0
-    } else if (x > 400 - this.w) {
-      x = 400 - this.w
+    } else if (x > 640 - this.w) {
+      x = 640 - this.w
     }
 
     this.x = x
@@ -25,5 +26,10 @@ class Paddle extends GameImage {
 
   collide(ball) {
     return intersect(this, ball)
+  }
+
+  reset() {
+    this.x = (this.game.canvas.width - this.w) / 2
+    this.y = 803
   }
 }

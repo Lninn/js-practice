@@ -5,7 +5,7 @@ class SceneMain extends Scene {
     this.paddle = Paddle.new(game)
     this.ball = Ball.new(game)
     this.player = Palyer.new(game)
-    this.bg = GameImage.new(game, 'mainBg')
+    this.bg = GameImage.new(game, 'bg1')
 
     // blocks
     this.blocks = []
@@ -80,6 +80,20 @@ class SceneMain extends Scene {
   }
 
   update() {
+    // blocks
+    this.blocks.forEach(function(block) {
+      if (block.collide(this.ball)) {   
+        block.kill()
+        this.ball.rebound(block)
+        this.player.addScore()
+        this.blocksNum -= 1
+      }
+    }, this)
+
+    if (window.paused) {
+      return
+    }
+
     this.player.update()
 
     if (this.player.pass) {
@@ -103,15 +117,7 @@ class SceneMain extends Scene {
       this.ball.rebound(this.paddle)
     }
 
-    // blocks
-    this.blocks.forEach(function(block) {
-      if (block.collide(this.ball)) {   
-        block.kill()
-        this.ball.rebound(block)
-        this.player.addScore()
-        this.blocksNum -= 1
-      }
-    }, this)
+  
   }
 
   draw() {

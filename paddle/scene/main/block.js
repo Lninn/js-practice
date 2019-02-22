@@ -1,6 +1,6 @@
 class Block extends GameImage {
   constructor(game, position) {
-    super(game, 'block', position[0], position[1])
+    super(game, 'blockBlue', position[0], position[1])
 
     this.setup(position)
   }
@@ -11,6 +11,10 @@ class Block extends GameImage {
     this.lives = this.position[2] || 1
 
     this.h += 1
+
+    // 减少碰撞的误差
+    this.w -= 8
+    this.h -= 7
   }
 
   collide(ball) {

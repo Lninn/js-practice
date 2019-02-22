@@ -13,9 +13,13 @@ class SceneEditor extends Scene {
     // 先将所有位置数据以数组的形式保存
     this.levels = []
 
-    this.bg = GameImage.new(this.game, 'editorBg')
+    this.bg = GameImage.new(this.game, 'bg1')
     this.positions = []
     this.blocks = []
+
+    const canvas = this.game.canvas
+    this.w = canvas.width
+    this.h = canvas.height
 
     // keydown event
     const self = this
@@ -74,8 +78,8 @@ class SceneEditor extends Scene {
   }
 
   initBlockPosition() {
-   for (let i = 0; i <= 600; i += 20) {
-      for (let j = 0; j <= 400; j += 40) {
+   for (let i = 0; i <= this.h; i += 32) {
+      for (let j = 0; j <= this.w; j += 64) {
         this.positions.push([j, i])
       }
     }
@@ -192,7 +196,7 @@ class SceneEditor extends Scene {
     const x = event.offsetX
     const y = event.offsetY  
 
-    if (x >= 0 && x <= 400 && y >= 0 && y <= 600) {
+    if (x >= 0 && x <= this.w && y >= 0 && y <= this.h) {
       this.enableDrag = true
     }
   }

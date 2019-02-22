@@ -12,8 +12,7 @@ class SceneTitle extends Scene {
       '开启全屏(Q) 清空记录(C)',
     ]
     this.fullScreen = false
-    this.bg = GameImage.new(this.game, 'titleBg')
-
+    this.bg = GameImage.new(this.game, 'bg1')
 
     const self = this
     this.registerAction('k', function() {

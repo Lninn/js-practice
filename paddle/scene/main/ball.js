@@ -1,17 +1,20 @@
 class Ball extends GameImage {
-  constructor(game, position) {
-    super(game, 'ball', 60, 400)
+  constructor(game) {
+    super(game, 'ball1', 0, 0)
 
-    this.speedX = 3
-    this.speedY = 3
+    this.x = (game.canvas.width - this.w) / 2
+    this.y = 800 - this.h
+    
+    this.speedX = -5
+    this.speedY = -5
     this.fired = false
   }
 
   move(height) {
     if (this.fired) {
-      if (this.x <= 0 || this.x + this.w >= 400) {
+      if (this.x <= 0 || this.x + this.w >= 640) {
         this.speedX *= -1
-      } else if (this.y <= height || this.y + this.h >= 600) {
+      } else if (this.y <= height || this.y + this.h >= 960) {
         this.speedY *= -1
       }
 
@@ -37,8 +40,8 @@ class Ball extends GameImage {
   }
 
   reset() {
-    this.x = 60
-    this.y = 400
+    this.x = (this.game.canvas.width - this.w) / 2
+    this.y = 800 - this.h
     this.fired = false
   }
 }

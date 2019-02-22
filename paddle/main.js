@@ -7,21 +7,21 @@ const enableDebugMode = function(enable, game) {
   window.paused = false
   window.blocks = []
 
-  const levelLoad = function(n) {
-    const blocks = []
-    n = n - 1
-    const level = levels[n]
+  // const levelLoad = function(n) {
+  //   const blocks = []
+  //   n = n - 1
+  //   const level = levels[n]
     
-    for (let i = 0; i < level.length; i++) {
-      const p = level[i]
-      const b = Block.new(game, p)
-      blocks.push(b)
-    }
+  //   for (let i = 0; i < level.length; i++) {
+  //     const p = level[i]
+  //     const b = Block.new(game, p)
+  //     blocks.push(b)
+  //   }
 
-    return blocks
-  }
+  //   return blocks
+  // }
 
-  blocks = levelLoad(1)
+  // blocks = levelLoad(1)
 
   window.addEventListener('keydown', function(event) {
     const k = event.key
@@ -66,20 +66,18 @@ const enableDebugMode = function(enable, game) {
 
 const __main = function() {
   const images = {
-    paddle: 'img/paddle.png',
-    ball: 'img/ball.png',
-    block: 'img/block.png',
+    ball1: 'img/ball_1.png',
+    paddle1: 'img/paddle_1.png',
+    blockBlue: 'img/block_blue.png',
+    bg1: 'img/bg_1.png',
     heart: 'img/heart.png',
-    titleBg: 'img/title_bg.png',
-    mainBg: 'img/main_bg.png',
-    editorBg: 'img/editor_bg.png',
   }
 
   Game.instance(images, function(game) {
-    enableDebugMode(false, game)
+    enableDebugMode(true, game)
     
-    const s = SceneTitle.new(game)
-    // const s = SceneMain.new(game)
+    // const s = SceneTitle.new(game)
+    const s = SceneMain.new(game)
     game.runWithScene(s)
   })
 }
