@@ -45,31 +45,36 @@ class SceneTitle extends Scene {
   }
 
   initText() {
-    const name = GameText.new(this.game, {
-      font: '70px Arial',
+    const c = this.game.context
+
+    const name = GameText.new(c, {
+      fontSize: 60,
       style: '#db3236', 
       text: this.name,
-      x: 120,
-      y: 300,
+      x: this.w / 2,
+      y: 400,
+      center: true,
     })
 
     this.opText.forEach(function(text, i) {
-      this.addElement(GameText.new(this.game, {
-        style: 'rgba(0, 0, 0, 0.5)',
-        font: '26px 微软雅黑',
+      this.addElement(GameText.new(c, {
+        style: 'gray',
+        fontSize: 30,
         text: text,
-        x: 170,
+        x: this.w / 2,
         y: 500 + (i * 50),
+        center: true,
       }))
     }, this)
 
     const x = (this.game.canvas.width - 100) / 2
-    const author = GameText.new(this.game, {
-      font: '20px 微软雅黑',
+    const author = GameText.new(c, {
+      fontSize: 20,
       style: 'black', 
       text: `make by ${this.author}`,
-      x: x,
+      x: this.w / 2,
       y: 900,
+      center: true,
     })
 
     this.addElement(name)

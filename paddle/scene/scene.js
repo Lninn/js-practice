@@ -18,11 +18,33 @@ class Scene {
     this.keydownEvents = {}
     
     this.elements = []
+
     this.headArea = { x: 0, y: 0, w: 400, h: 40, }
 
     // keydown
     this.addListener = this.listener.bind(this)
     window.addEventListener('keydown', this.addListener)
+
+    // 设定场景的大小
+    const g = this.game
+    this.w = g.w
+    this.h = g.h
+  }
+
+  // 绘制一个区域
+  drawArea({ x, y, w, h }, color = 'blue') {
+    const c = this.game.context
+    c.fillStyle = color
+    c.fillRect(x, y, w, h)
+  }
+
+  // draw text
+  drawText({ font, style, text, x, y}) {
+    const c = this.game.context
+    // log(c.measureText(text))
+    c.font = font
+    c.fillStyle = style
+    c.fillText(text, x, y)
   }
 
   listener(event) {
@@ -73,5 +95,5 @@ class Scene {
     this.elements.forEach(function(el) {
       el.draw()
     }, this)
-  }
+  } 
 }

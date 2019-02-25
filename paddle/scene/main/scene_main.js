@@ -90,7 +90,7 @@ class SceneMain extends Scene {
 
         // 播放音效
         var horn = new Audio('audio/water.mp3')
-        horn.play()  
+        horn.play()
       }
     }, this)
 

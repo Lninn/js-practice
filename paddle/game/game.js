@@ -20,6 +20,10 @@ class Game {
   }
 
   init() {
+    const c = this.canvas
+    this.w = c.width
+    this.h = c.height
+
     const self = this
     window.addEventListener('keydown', function(event) {
       const k = event.key
@@ -57,7 +61,7 @@ class Game {
     this.scene = scene
     this.runloop()
   }
-
+  
   replaceScene(scene) {
     this.scene = scene
   }

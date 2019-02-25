@@ -1,3 +1,9 @@
+class GameInfo {
+
+}
+
+
+
 class SceneEditor extends Scene {
   constructor(game) {
     super(game)
@@ -6,27 +12,39 @@ class SceneEditor extends Scene {
   }
 
   init() {
+    this.setEditorVar()
+    this.setKeydownEvent()
+    this.setMouseEvent()
+    this.initBlockPosition()
+
+    // 设置信息显示的区域
+    this.boardArea = {
+      x: 20,
+      y: 10,
+      w: this.w - 40,
+      h: 40,
+    }
+   
+    this.initText()
+  }
+
+  setEditorVar() {
     this.enableEdit = false
     this.currentLevel = 1
     this.enableDrag = false
-
-    // 先将所有位置数据以数组的形式保存
+   
     this.levels = []
-
-    this.bg = GameImage.new(this.game, 'bg1')
     this.positions = []
     this.blocks = []
 
-    const canvas = this.game.canvas
-    this.w = canvas.width
-    this.h = canvas.height
+    this.bg = GameImage.new(this.game, 'bg1')
+    this.addElement(this.bg)
+  }
 
-    // keydown event
+  setKeydownEvent() {
     const self = this
-    this.addKEvent('123456789', function(key) {
-      if ('123456789'.includes(key) && !self.enableEdit) {
-        self.loadLevel(key)
-      }
+    this.addKEvent('123456789', function(num) {
+      self.handleLevel(num)
     })
 
     this.addKEvent('c', function() {
@@ -34,22 +52,15 @@ class SceneEditor extends Scene {
     })
 
     this.addKEvent('s', function() {
-      self.setData(self.currentLevel, self.levels)
+      self.save()
     })
 
     this.addKEvent('r', function() {
       self.toggle()
     })
-
-    this.addElement(this.bg)
-    this.initBlockPosition()
-
-    this.initEvent()
-    this.initText()
-    //
   }
 
-  initEvent() {
+  setMouseEvent() {
     const c = this.game.canvas
 
     c.addEventListener('click', this.getPosition.bind(this))
@@ -59,24 +70,59 @@ class SceneEditor extends Scene {
   }
 
   initText() {
-    this.title = GameText.new(this.game, {
-      font: '60px 黑体',
+    // 初始化所有的文本
+    const c = this.game.context
+
+    this.controlText = GameText.new(c, {
+      text: '1 关 返回(R) 清空(C) 保存(S) 数量: 0',
+      fontSize: 20,
+      style: '#2b1216',
+      x: this.boardArea.x,
+      y: this.boardArea.y + 20 + (this.boardArea.h - 20) / 2,
+    })
+
+    this.titleText = GameText.new(c, {
+      text: '关卡编辑',
+      fontSize: 60,
       style: '#db3236',
-      text: '关 卡 编 辑',
-      x: 150,
-      y: 300,
+      x: this.w / 2,
+      y: 400,
+      center: true,
     })
-
-    this.tips = GameText.new(this.game, {
-      font: '26px 黑体',
-      style: 'rgba(0, 0, 0, 0.7)',
+    
+    this.tipText = GameText.new(c, {
       text: '按数字键选择你要编辑的关卡(1-9)',
-      x: 130,
-      y: 450,
+      fontSize: 30,
+      style: '#2d2e36',
+      x: this.w / 2,
+      y: 500,
+      center: true,
     })
 
-    this.addElement(this.title)
-    this.addElement(this.tips)
+    this.addElement(this.titleText)
+    this.addElement(this.tipText)
+  }
+
+  handleLevel(num) {
+    log('handle level ', num)
+    if (!self.enableEdit) {
+      this.enableEdit = true
+      this.currentLevel = num
+  
+      const ps = this.getData(num)
+      
+      if (ps.length !== 0) {
+        for (const p of ps) {
+          const b = Block.new(this.game, [p.x, p.y])
+          this.addBlock(b)
+        }
+      }
+
+      this.controlText.changeText(`第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: 10`)
+      this.addElement(this.controlText)
+      this.removeElement(this.titleText)
+      this.removeElement(this.tipText)
+    }
   }
 
   initBlockPosition() {
@@ -88,33 +134,14 @@ class SceneEditor extends Scene {
   }
 
   toggle() {
+    // log('toggle')
     if (this.enableEdit) {
       this.enableEdit = !this.enableEdit
-      this.changeTitle()
-      this.tips.toggle()
       this.removeBlock()
     } else {
       const s = SceneTitle.new(this.game)
       this.done()
       this.game.replaceScene(s)
-    }
-  }
-
-  loadLevel(level) {
-    this.enableEdit = true
-    this.currentLevel = level
-    this.tips.toggle()
-
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    const ps = data[level] || []
-    
-    if (ps.length !== 0) {
-      for (const p of ps) {
-        const b = Block.new(this.game, [p.x, p.y])
-        this.addBlock(b)
-      }
-    } else {
-      this.changeTitle()
     }
   }
 
@@ -145,29 +172,6 @@ class SceneEditor extends Scene {
     this.addBlock(b)
   }
 
-  changeTitle() {
-    let o = {}
-    if (this.enableEdit) {
-      o = {
-        text: `第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: ${this.levels.length}`,
-        font: '16px 微软雅黑',
-        style: 'black',
-        x: 10,
-        y: 30,
-      }
-    } else {
-      o = {
-        font: '60px 黑体',
-        style: '#db3236',
-        text: '关 卡 编 辑',
-        x: 150,
-        y: 300,
-      }
-    }
-
-    Object.assign(this.title, o)
-  }
-
   addBlock(block) {
     this.blocks.push(block)
     this.levels.push({
@@ -176,7 +180,6 @@ class SceneEditor extends Scene {
     })
     
     this.addElement(block)
-    this.changeTitle()
   }
 
   removeBlock() {
@@ -239,4 +242,16 @@ class SceneEditor extends Scene {
     log('load data: ', num, data[num])
     return data[num] || []
   }
+
+  save() {
+    this.setData(this.currentLevel, this.levels)
+  }
+
+  // draw() {
+  //   super.draw()
+
+  //   // this.drawArea(this.boardArea)
+  //   // this.drawText(this.controlText)
+  //   // this.drawText(this.tipText)
+  // }
 } // 206
