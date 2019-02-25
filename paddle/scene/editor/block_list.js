@@ -24,38 +24,39 @@ class BlockList{
         this.positions.push({
           x,
           y,
+          w: 64,
+          h: 32,
         })
       }
     }
   }
 
   setBlock(point) {
-    let b = null
+    const { enableClick, game, } = this.scene
 
     for (const p of this.positions) {
-      const t = Block.new(this.scene.game, p)
-      if (hasPoint(t, point)) {
-        b = t
+      if (hasPoint(p, point)) {
+        point = p
         break
       }
     }
-  
-    if (b !== null && this.check(b)) {
+
+    let i = this.findIndex(point)
+    if (i < 0) {
+      this.points.push(point)
+      const b = Block.new(game, point)
       this.blocks.push(b)
-      this.points.push({
-        x: b.x,
-        y: b.y,
-      })
       this.numOfBlock += 1
+    } else if (enableClick) {
+      this.scene.enableClick = false
+      this.blocks[i].addLives()
     }
   }
 
-  check(block) {
-    const i = this.points.findIndex(function(point) {
-      return point.x === block.x && point.y === block.y
+  findIndex(point) {
+    return this.points.findIndex(function(p) {
+      return p.x === point.x && p.y === point.y
     })
-
-    return i < 0
   }
 
   setPointList(num) {
@@ -94,7 +95,13 @@ class BlockList{
 
   setData() {
     const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    data[this.level] = this.points
+    data[this.level] = this.blocks.map(function(b) {
+      return {
+        x: b.x,
+        y: b.y,
+        lives: b.lives,
+      }
+    })
     localStorage.setItem('LEVELS', JSON.stringify(data))
   }
 

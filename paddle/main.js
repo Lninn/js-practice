@@ -72,7 +72,11 @@ const __main = function() {
   const images = {
     ball1: 'img/ball_1.png',
     paddle1: 'img/paddle_1.png',
+    blockRed: 'img/block_red.png',
     blockBlue: 'img/block_blue.png',
+    blockYellow: 'img/block_yellow.png',
+    blockGreen: 'img/block_green.png',
+    blockPurple: 'img/block_purple.png',
     bg1: 'img/bg_1.png',
     heart: 'img/heart.png',
   }

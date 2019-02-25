@@ -16,6 +16,7 @@ class SceneEditor extends Scene {
   setEditorVar() {
     this.enableEdit = false
     this.enableDrag = false
+    this.enableClick = false
     this.boardArea = {
       x: 20,
       y: 10,
@@ -24,11 +25,15 @@ class SceneEditor extends Scene {
     }
 
     this.fontSize = 25
-
     this.blockList = new BlockList(this)
 
     this.bg = GameImage.new(this.game, 'bg1')
     this.addElement(this.bg)
+
+    // 判断当前操作是点击还是拖动
+    this.startTime = 0
+    this.endTime = 0
+    this.timeInterval = 1000
   }
 
   setKeydownEvent() {
@@ -60,6 +65,11 @@ class SceneEditor extends Scene {
         y: event.offsetY,
       }
 
+      if ((self.endTime - self.startTime) <= self.timeInterval) {
+        return
+      }
+   
+      self.enableClick = true
       self.checkPoint(point)
     })
 
@@ -131,7 +141,8 @@ class SceneEditor extends Scene {
   }
 
   checkPoint(point) {
-    if (!this.enableEdit || hasPoint(this.boardArea, point)) {
+    if (!this.enableEdit
+        || point.y <= this.boardArea.y + this.boardArea.h + 15 ) {
       return
     }
 
@@ -157,10 +168,13 @@ class SceneEditor extends Scene {
       y: event.offsetY,
     }
 
+    this.startTime = (new Date()).getTime()
     this.checkPoint(point)
   }
 
   mouseup(event) {
+    this.endTime = (new Date()).getTime()
+    event.stopPropagation()
     this.enableDrag = false
   }
 }

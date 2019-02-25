@@ -19,7 +19,7 @@ class GameImage {
     return new this(...args)
   }
 
-  draw() {
+  draw(image = this.image) {
     this.game.context.drawImage(this.image, this.x, this.y)
   }
 }
