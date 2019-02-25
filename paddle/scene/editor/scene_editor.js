@@ -1,9 +1,3 @@
-class GameInfo {
-
-}
-
-
-
 class SceneEditor extends Scene {
   constructor(game) {
     super(game)
@@ -15,27 +9,23 @@ class SceneEditor extends Scene {
     this.setEditorVar()
     this.setKeydownEvent()
     this.setMouseEvent()
-    this.initBlockPosition()
+   
+    this.setText()
+  }
 
-    // 设置信息显示的区域
+  setEditorVar() {
+    this.enableEdit = false
+    this.enableDrag = false
     this.boardArea = {
       x: 20,
       y: 10,
       w: this.w - 40,
       h: 40,
     }
-   
-    this.initText()
-  }
 
-  setEditorVar() {
-    this.enableEdit = false
-    this.currentLevel = 1
-    this.enableDrag = false
-   
-    this.levels = []
-    this.positions = []
-    this.blocks = []
+    this.fontSize = 25
+
+    this.blockList = new BlockList(this)
 
     this.bg = GameImage.new(this.game, 'bg1')
     this.addElement(this.bg)
@@ -48,11 +38,11 @@ class SceneEditor extends Scene {
     })
 
     this.addKEvent('c', function() {
-      self.clear()
+      self.blockList.clear()
     })
 
     this.addKEvent('s', function() {
-      self.save()
+      self.blockList.setData()
     })
 
     this.addKEvent('r', function() {
@@ -62,23 +52,32 @@ class SceneEditor extends Scene {
 
   setMouseEvent() {
     const c = this.game.canvas
+    const self = this
 
-    c.addEventListener('click', this.getPosition.bind(this))
+    c.addEventListener('click', function(event) {
+      const point = {
+        x: event.offsetX,
+        y: event.offsetY,
+      }
+
+      self.checkPoint(point)
+    })
+
     c.addEventListener('mousedown', this.mousedown.bind(this))
+
     c.addEventListener('mousemove', this.mousemove.bind(this))
+
     c.addEventListener('mouseup', this.mouseup.bind(this))
   }
 
-  initText() {
-    // 初始化所有的文本
+  setText() {
     const c = this.game.context
-
-    this.controlText = GameText.new(c, {
-      text: '1 关 返回(R) 清空(C) 保存(S) 数量: 0',
-      fontSize: 20,
+    this.directText = GameText.new(c, {
+      text: '返回(R) 清空(C) 保存(S)',
+      fontSize: this.fontSize,
       style: '#2b1216',
-      x: this.boardArea.x,
-      y: this.boardArea.y + 20 + (this.boardArea.h - 20) / 2,
+      x: this.boardArea.x + 100,
+      y: this.boardArea.y + this.fontSize + (this.boardArea.h - this.fontSize) / 2,
     })
 
     this.titleText = GameText.new(c, {
@@ -104,40 +103,26 @@ class SceneEditor extends Scene {
   }
 
   handleLevel(num) {
-    log('handle level ', num)
-    if (!self.enableEdit) {
+    if (!this.enableEdit) {
       this.enableEdit = true
-      this.currentLevel = num
-  
-      const ps = this.getData(num)
-      
-      if (ps.length !== 0) {
-        for (const p of ps) {
-          const b = Block.new(this.game, [p.x, p.y])
-          this.addBlock(b)
-        }
-      }
+      this.blockList.setPointList(num)
 
-      this.controlText.changeText(`第 ${this.currentLevel} 关 返回(R) 清空(C) 保存(S) 数量: 10`)
-      this.addElement(this.controlText)
+      this.addElement(this.directText)
+      this.addElement(this.blockList)
+   
       this.removeElement(this.titleText)
       this.removeElement(this.tipText)
     }
   }
 
-  initBlockPosition() {
-   for (let i = 0; i <= this.h; i += 32) {
-      for (let j = 0; j <= this.w; j += 64) {
-        this.positions.push([j, i])
-      }
-    }
-  }
-
   toggle() {
-    // log('toggle')
     if (this.enableEdit) {
       this.enableEdit = !this.enableEdit
-      this.removeBlock()
+      this.removeElement(this.directText)
+      this.blockList.clear(false)
+
+      this.addElement(this.titleText)
+      this.addElement(this.tipText)
     } else {
       const s = SceneTitle.new(this.game)
       this.done()
@@ -145,61 +130,12 @@ class SceneEditor extends Scene {
     }
   }
 
-  getPosition(event) {
-    const point = {
-      x: event.offsetX,
-      y: event.offsetY,
-    }
-
-    if (!this.enableEdit || hasPoint(this.headArea, point)) {
+  checkPoint(point) {
+    if (!this.enableEdit || hasPoint(this.boardArea, point)) {
       return
     }
 
-    const b = this.getBlock(point)
-    if (!b) {
-      return
-    }
-    
-    // 判断重复
-    const i = this.levels.findIndex(function(p) {
-      return p.x === b.x && p.y === b.y
-    })
-
-    if (i > 0 || !b) {
-      return
-    }
-
-    this.addBlock(b)
-  }
-
-  addBlock(block) {
-    this.blocks.push(block)
-    this.levels.push({
-      x: block.x,
-      y: block.y,
-    })
-    
-    this.addElement(block)
-  }
-
-  removeBlock() {
-    this.blocks.forEach(function(b) {
-      this.removeElement(b)
-    }, this)
-
-    this.blocks = []
-    this.levels = []
-  }
-
-  getBlock(point = []) {
-    for (const p of this.positions) {
-      const b = Block.new(this.game, p)
-      if (hasPoint(b, point)) {
-        return b
-      }
-    }
-
-    return null
+    this.blockList.setBlock(point)
   }
 
   mousedown(event) {
@@ -216,42 +152,15 @@ class SceneEditor extends Scene {
       return
     }
 
-    this.getPosition(event)
+    const point = {
+      x: event.offsetX,
+      y: event.offsetY,
+    }
+
+    this.checkPoint(point)
   }
 
   mouseup(event) {
     this.enableDrag = false
   }
-
-  clear() {
-    this.setData(this.currentLevel, [])
-    this.removeBlock()
-    this.changeTitle()
-  }
-
-  setData(num, levels) {
-    log('set data: ', num, levels)
-
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    data[num] = levels
-    localStorage.setItem('LEVELS', JSON.stringify(data))
-  }
-
-  getData(num) {
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    log('load data: ', num, data[num])
-    return data[num] || []
-  }
-
-  save() {
-    this.setData(this.currentLevel, this.levels)
-  }
-
-  // draw() {
-  //   super.draw()
-
-  //   // this.drawArea(this.boardArea)
-  //   // this.drawText(this.controlText)
-  //   // this.drawText(this.tipText)
-  // }
-} // 206
+}

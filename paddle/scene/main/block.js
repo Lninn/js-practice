@@ -1,14 +1,13 @@
 class Block extends GameImage {
-  constructor(game, position) {
-    super(game, 'blockBlue', position[0], position[1])
+  constructor(game, { x, y, life = 1}) {
+    super(game, 'blockBlue', x, y)
 
-    this.setup(position)
+    this.setup(life)
   }
 
-  setup(position) {
-    this.position = position
+  setup(life) {
     this.alive = true
-    this.lives = this.position[2] || 1
+    this.lives = life
 
     this.h += 1
 
@@ -29,6 +28,7 @@ class Block extends GameImage {
   }
 
   draw() {
+    // log('block draw')
     if (this.alive) {
       super.draw()
     }

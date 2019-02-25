@@ -79,12 +79,16 @@ class Scene {
   }
 
   addElement(el) {
-    this.elements.push(el)
+    if (Array.isArray(el)) {
+      this.elements.concat(el)
+    } else {
+      this.elements.push(el)
+    }
   }
 
   removeElement(el) {
     const i = this.elements.indexOf(el)
-    if (i > 0) {
+    if (i >= 0) {
       this.elements.splice(i, 1)
     }
   }
