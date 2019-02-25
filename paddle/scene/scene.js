@@ -19,16 +19,21 @@ class Scene {
     
     this.elements = []
 
-    this.headArea = { x: 0, y: 0, w: 400, h: 40, }
-
-    // keydown
-    this.addListener = this.listener.bind(this)
-    window.addEventListener('keydown', this.addListener)
-
     // 设定场景的大小
     const g = this.game
     this.w = g.w
     this.h = g.h
+
+    this.boardArea = {
+      x: 20,
+      y: 10,
+      w: this.w - 40,
+      h: 40,
+    }
+
+    // keydown
+    this.addListener = this.listener.bind(this)
+    window.addEventListener('keydown', this.addListener)
   }
 
   // 绘制一个区域

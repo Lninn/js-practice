@@ -4,12 +4,13 @@ class SceneMain extends Scene {
 
     this.paddle = Paddle.new(game)
     this.ball = Ball.new(game)
-    this.player = Palyer.new(game)
+    this.player = Palyer.new(this)
     this.bg = GameImage.new(game, 'bg1')
 
     // blocks
     this.blocks = []
     this.blocksNum = 0
+    this.fontSize = 30
     
     this.init()
   }
@@ -73,7 +74,7 @@ class SceneMain extends Scene {
     this.blocksNum = level.length
 
     level.forEach(function(point) {
-      const b = Block.new(this.game, [point.x, point.y])
+      const b = Block.new(this.game, point)
       this.blocks.push(b)
       this.addElement(b)
     }, this)
@@ -115,13 +116,11 @@ class SceneMain extends Scene {
       this.ball.reset()
     }
 
-    this.ball.move(this.headArea.h)
+    this.ball.move(this.boardArea.h)
 
     if (this.paddle.collide(this.ball)) {
       this.ball.rebound(this.paddle)
     }
-
-  
   }
 
   draw() {

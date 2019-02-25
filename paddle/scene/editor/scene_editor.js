@@ -17,12 +17,6 @@ class SceneEditor extends Scene {
     this.enableEdit = false
     this.enableDrag = false
     this.enableClick = false
-    this.boardArea = {
-      x: 20,
-      y: 10,
-      w: this.w - 40,
-      h: 40,
-    }
 
     this.fontSize = 25
     this.blockList = new BlockList(this)

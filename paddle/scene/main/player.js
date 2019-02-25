@@ -1,9 +1,9 @@
 class Palyer {
-  constructor(game) {
-    this.game = game
+  constructor(scene) {
+    this.scene = scene
 
     this.score = 0
-    this.lifeValue = 180
+    this.lifeValue = 360
     this.level = 1
     this.pass = false
 
@@ -37,32 +37,48 @@ class Palyer {
 
   update() {
     if (this.lifeValue === 0) {
-      const s = SceneEnd.new(this.game)
-      this.game.replaceScene(s)
+      const s = SceneEnd.new(this.scene.game)
+      this.scene.game.replaceScene(s)
     }
   }
 
   draw() {
-    const ctx = this.game.context
-    if (this.pass) {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
-      ctx.fillRect(0, 0, 400, 600)
+    const { boardArea, game, fontSize} = this.scene
+    const c = game.context
 
-      ctx.fillStyle = "white"
-      ctx.font = '34px serif'
-      ctx.fillText('恭 喜 过 关!', 110, 300)
+    if (this.pass) {
+      c.fillStyle = "rgba(0, 0, 0, 0.6)"
+      c.fillRect(0, 0, this.scene.w, this.scene.h)
+
+      c.fillStyle = "#fff"
+      c.font = '60px 微软雅黑'
+      const text = '恭 喜 过 关!'
+      const t = c.measureText(text).width
+      c.fillText(
+        text, 
+        (this.scene.w-t) / 2, 
+        this.scene.h / 2,
+        )
     }
 
-    ctx.fillStyle = "#000"
-    ctx.font = '16px serif'
-    const t = '第 ' + this.level + ' 关 分数: ' + this.score
-    ctx.fillText(t, 240, 30)
+    c.fillStyle = "#000"
+    c.font = `${fontSize}px 微软雅黑`
+    c.fillText(
+      `第 ${this.level} 关  分数: ${this.score}`,
+      boardArea.x,
+      boardArea.y + fontSize + (boardArea.h - fontSize) / 2,
+    )
 
     // 生命
-    for (let i = 0; i < Math.floor(this.lifeValue / 60); i++) {
-      // ctx.fillRect(i * 50 + 2, 18, 48, 18)
-      const img = this.game.imageByName('heart')
-      ctx.drawImage(img.image, 25 * i, 18, 20, 20)
+    for (let i = Math.floor(this.lifeValue / 60); i >= 0; i--) {
+      const img = game.imageByName('heart')
+      c.drawImage(
+        img.image, 
+        this.scene.w - boardArea.x * 3  - 35 * i, 
+        boardArea.y + (boardArea.h - 20) / 2, 
+        30, 
+        30,
+        )
     }
   }
 }

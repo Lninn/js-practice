@@ -19,15 +19,15 @@ class SceneEnd extends Scene {
   }
 
   initText() {
-    const tips = GameText.new(this.game, {
-      font: '30px Arial',
-      style: 'black', 
-      text: '返回开始界面(R)',
-      x: 200,
-      y: 400,
-    })
+    // const tips = GameText.new(this.game, {
+    //   font: '30px Arial',
+    //   style: 'black', 
+    //   text: '返回开始界面(R)',
+    //   x: 200,
+    //   y: 400,
+    // })
 
-    this.addElement(tips)
+    // this.addElement(tips)
   }
 
   // draw() {
