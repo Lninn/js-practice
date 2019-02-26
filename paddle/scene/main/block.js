@@ -55,6 +55,9 @@ class Block extends Spirit {
       this.lives = 0
       this.alive = false
     }
+
+    this.setImage()
+    return this.alive
   }
 
   draw() {

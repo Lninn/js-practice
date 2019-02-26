@@ -3,9 +3,9 @@ const enableDebugMode = function(enable, game) {
     return
   }
 
-  window.fps = 30
-  window.paused = false
-  window.blocks = []
+  // window.fps = 30
+  // window.paused = false
+  // window.blocks = []
 
   // const levelLoad = function(n) {
   //   const blocks = []
@@ -23,13 +23,13 @@ const enableDebugMode = function(enable, game) {
 
   // blocks = levelLoad(1)
 
-  window.addEventListener('keydown', function(event) {
-    const k = event.key
+  // window.addEventListener('keydown', function(event) {
+  //   const k = event.key
 
-    if (k === 'p') {
-      window.paused = !window.paused
-    }
-  })
+  //   if (k === 'p') {
+  //     window.paused = !window.paused
+  //   }
+  // })
 
   // e('#id-input-speed').addEventListener('input', function(event) {
   //   const target = event.target
@@ -85,8 +85,8 @@ const __main = function() {
     enableDebugMode(true, game)
     
     // const s = SceneTitle.new(game)
-    const s = SceneEditor.new(game)
-    // const s = SceneMain.new(game)
+    // const s = SceneEditor.new(game)
+    const s = SceneMain.new(game)
     game.runWithScene(s)
   })
 }

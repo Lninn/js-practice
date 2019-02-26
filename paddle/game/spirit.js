@@ -1,5 +1,5 @@
 class Spirit {
-  constructor(game, name, x = 0, y = 0, w = this.w, h = this.h) {
+  constructor(game, name, x = 0, y = 0, w, h) {
     this.game = game
     this.name = name
     this.x = x
@@ -7,8 +7,8 @@ class Spirit {
 
     // log(game, name)
     const img = game.imageByName(name)
-    this.w = img.width
-    this.h = img.height
+    this.w = w || img.width
+    this.h = h || img.height
     this.image = img
   }
 

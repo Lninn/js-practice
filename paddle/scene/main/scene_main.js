@@ -2,89 +2,93 @@ class SceneMain extends Scene {
   constructor(game) {
     super(game)
 
-    this.paddle = Paddle.new(game, 'paddle1')
-    this.ball = Ball.new(game, 'ball1')
-    this.player = Palyer.new(this)
-    this.bg = Spirit.new(game, 'bg1')
-
-    // blocks
-    this.blocks = []
-    this.numOfBlock = 0
-    this.fontSize = 30
     this.init()
   }
 
   init() {
-    const self = this
+    this.paused = false
 
+    const g = this.game
+    this.paddle = Paddle.new(g, 'paddle1')
+    this.ball = Ball.new(g, 'ball1')
+    this.player = Palyer.new(this)
+    this.bg = Spirit.new(g, 'bg1')
+
+    // blocks
+    this.blocks = []
+    this.numOfBlock = 0
+
+    this.setKeydownEvent()
+
+    this.addElement(this.bg)
+    this.addElement(this.paddle)
+    this.addElement(this.ball)
+    this.addElement(this.player)
+    this.load()
+  }
+
+  setKeydownEvent() {
+    const self = this
     this.registerAction('a', function() {
-      if (!self.player.pass) {
+      if (!self.player.pass && !self.paused) {
         self.paddle.moveLeft()
       }
     })
   
     this.registerAction('d', function() {
-      if (!self.player.pass) {
+      if (!self.player.pass && !self.paused) {
         self.paddle.moveRight()
       }
     })
   
     this.registerAction('f', function() {
-      self.ball.fired = true
-    })
-    
-    this.addElement(this.bg)
-    this.addElement(this.paddle)
-    this.addElement(this.ball)
-    this.loadLevel()
-
-    // 拖动功能
-    let enableDrag = false
-    this.game.canvas.addEventListener('mousedown', function(event) {
-      const point = {
-        x: event.offsetX,
-        y: event.offsetY,
-      }
-   
-      // if (self.ball.hasPoint(x, y)) {
-      //   enableDrag = true
-      // }
-      if (hasPoint(self.ball, point)) {
-        enableDrag = true
-      }
+      self.ball.fire()
     })
 
-    this.game.canvas.addEventListener('mousemove', function(event) {
-      const x = event.offsetX
-      const y = event.offsetY 
-      
-      if (enableDrag) {
-        self.ball.x = x
-        self.ball.y = y
-      }
+    this.addKEvent('p', function() {
+      self.pause()        
     })
 
-    this.game.canvas.addEventListener('mouseup', function(event) {
-      enableDrag = false
+    this.addKEvent('y', function() {
+      self.paused = false        
+    })
+
+    this.addKEvent('n', function() {
+      const s = SceneTitle.new(self.game)
+      self.game.replaceScene(s)        
     })
   }
 
-  loadLevel() {
+  load(num = 1) {
     this.blocks = []
 
-    const data = JSON.parse(localStorage.getItem('LEVELS'))
-    const level = data[this.player.level] || []
+    const data = getDataFromLS('LEVELS') || []
+    const points = data[num] || []
    
-    this.numOfBlock = level.length
+    this.numOfBlock = points.length
+    for (const point of points) {
+      this.addBlock(point)
+    }
+  }
 
-    level.forEach(function(point) {
-      const b = Block.new(this.game, 'blockRed', point)
-      this.blocks.push(b)
-      this.addElement(b)
-    }, this)
+  addBlock(point) {
+    const b = Block.new(this.game, 'blockRed', point)
+    this.blocks.push(b)
+    this.addElement(b)
+  }
+
+  pause() {
+    // log('暂停游戏')
+    this.paused = true
   }
 
   update() {
+    super.update()
+
+    if (this.paused || this.player.pass) {
+      return
+    }
+
     // blocks
     this.blocks.forEach(function(block) {
       if (block.collide(this.ball)) {  
@@ -95,20 +99,12 @@ class SceneMain extends Scene {
         block.kill()
         this.ball.rebound(block)
         this.player.addScore()
-        this.numOfBlock -= 1
+        // 如果 alive false 表示减少一个
+        if (!block.alive) {
+          this.numOfBlock -= 1
+        }
       }
     }, this)
-
-    if (window.paused) {
-      return
-    }
-
-    this.player.update()
-
-    if (this.player.pass) {
-      this.player.next(this)
-      return
-    }
 
     if (this.numOfBlock === 0) {
       this.player.pass = true
@@ -125,11 +121,5 @@ class SceneMain extends Scene {
     if (this.paddle.collide(this.ball)) {
       this.ball.rebound(this.paddle)
     }
-  }
-
-  draw() {
-    super.draw()
-    
-    this.player.draw()
   }
 }

@@ -81,3 +81,20 @@ const bindEvent = function(target, eventName, callback) {
     callback(event)
   })
 }
+
+const getDataFromLS = function(name) {
+  try {
+    return JSON.parse(localStorage.getItem(name))
+  } catch (error) {
+    log('getDataFromLS error')
+    return null
+  }
+}
+
+const setDataToLS = function(name, data) {
+  try {
+    localStorage.setItem(name, JSON.stringify(data))
+  } catch (error) {
+    log('setDataToLS error')
+  }
+}

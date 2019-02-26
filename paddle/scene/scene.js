@@ -31,13 +31,16 @@ class Scene {
       h: 40,
     }
 
+    this.drawArea = this.drawArea.bind(this)
+    this.drawText = this.drawText.bind(this)
+
     // keydown
     this.addListener = this.listener.bind(this)
     window.addEventListener('keydown', this.addListener)
   }
 
   // 绘制一个区域
-  drawArea({ x, y, w, h }, color = 'blue') {
+  drawArea({ x, y, w, h, color = 'blue'}) {
     const c = this.game.context
     c.fillStyle = color
     c.fillRect(x, y, w, h)

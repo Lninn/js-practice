@@ -9,6 +9,10 @@ class Ball extends Spirit {
     this.reset()
   }
 
+  fire() {
+    this.fired = true
+  }
+
   move() {
     const g = this.game
     // 小球移动的高度 hardcode
