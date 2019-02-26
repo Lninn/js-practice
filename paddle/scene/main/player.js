@@ -33,7 +33,7 @@ class Palyer {
     if (this.timer >= this.timeInterval) {
       this.level += 1
       this.pass = false
-      this.lifeValue = 5
+      this.lives = config.initial_lives
       this.timer = 0
       this.count = 4
       this.scene.load(this.level)

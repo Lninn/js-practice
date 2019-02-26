@@ -16,7 +16,7 @@ class SceneEditor extends Scene {
   setEditorVar() {
     this.enableEdit = false
     this.enableDrag = false
-    this.enableClick = false
+    this.enableMove = false
 
     this.fontSize = 25
     this.blockList = new BlockList(this)
@@ -43,29 +43,28 @@ class SceneEditor extends Scene {
 
   setMouseEvent() {
     const c = this.game.canvas
-    const self = this
-
-    c.addEventListener('contextmenu', function(event) {
-      event.preventDefault()
-      self.enableClick = true
-     
-      return false
-    }, false)
-
-    // c.addEventListener('click', function(event) {
-    //   const point = {
-    //     x: event.offsetX,
-    //     y: event.offsetY,
-    //   }
-
-    //   self.enableAltKey = event.altKey
-    // })
 
     c.addEventListener('mousedown', this.mousedown.bind(this))
 
     c.addEventListener('mousemove', this.mousemove.bind(this))
 
     c.addEventListener('mouseup', this.mouseup.bind(this))
+
+    const self = this
+    c.addEventListener('click', function(event) {
+      const point = {
+        x: event.offsetX,
+        y: event.offsetY,
+      }
+
+      // 解决拖动和点击共存的问题
+      if (self.enableMove) {
+        self.enableMove = false
+        return
+      }
+
+      self.checkPoint(point)
+    })
   }
 
   setText() {
@@ -120,12 +119,13 @@ class SceneEditor extends Scene {
     }
   }
 
-  checkPoint(point) {
+  checkPoint(point, isMove = false) {
     if (!this.enableEdit
         || point.y <= this.boardArea.y + this.boardArea.h + 15 ) {
       return
     }
-    this.blockList.setBlock(point)
+
+    this.blockList.addPoint(point, isMove)
   }
 
   mousedown(event) {
@@ -147,12 +147,11 @@ class SceneEditor extends Scene {
       y: event.offsetY,
     }
 
-    this.checkPoint(point)
+    this.enableMove = true
+    this.checkPoint(point, true)
   }
 
   mouseup(event) {
-    event.stopPropagation()
-
     this.enableDrag = false
   }
 }

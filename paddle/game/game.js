@@ -9,7 +9,9 @@ class Game {
   }
 
   setup() {
-    this.canvas = document.getElementById('id-canvas')
+    this.canvas = e('#' + config.canvas_name)
+    this.canvas.width = config.w
+    this.canvas.height = config.h
     this.context = this.canvas.getContext('2d')
 
     this.keydowns = {}

@@ -13,8 +13,8 @@ const config = {
   ],
   paddle_height: 800,
   paddle_speed: 12,
-  ball_speedX: -8,
-  ball_speedY: -8,
+  ball_speedX: -7,
+  ball_speedY: -7,
   initial_lives: 5,
   images: {
     ball1: 'img/ball_1.png',
@@ -31,12 +31,5 @@ const config = {
     heart: 'img/heart.png'
   }
 }
-
-window.onload = function() {
-  e('#' + config.canvas_name).width = config.w
-  e('#' + config.canvas_name).height = config.h
-}
-
-
 
 

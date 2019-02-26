@@ -10,7 +10,7 @@ class SceneMain extends Scene {
 
     const g = this.game
     this.paddle = Paddle.new(g, 'paddleBig')
-    this.ball = Ball.new(g, 'ball2')
+    this.ball = Ball.new(g, 'ball1')
     this.player = Palyer.new(this)
     
     // blocks

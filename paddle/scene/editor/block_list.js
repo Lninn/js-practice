@@ -29,27 +29,25 @@ class BlockList{
     }
   }
 
-  setBlock(point) {
-    const { game, enableClick, } = this.scene
+  addPoint(point, isMove = false) {
+    const p = this.getClosestPoint(point)
+    const i = this.findIndex(p)
 
+    if (i < 0) {
+      this.addBlock(p)
+    } else if (!isMove) {
+      this.blocks[i].addLives()
+    }
+  }
+
+  getClosestPoint(point) {
     for (const p of this.positions) {
       if (hasPoint(p, point)) {
-        point = p
-        break
+        return p
       }
     }
 
-    let i = this.findIndex(point)
- 
-    if (i < 0) {
-      this.points.push(point)
-      const b = Block.new(game, 'blockRed', point)
-      this.blocks.push(b)
-      this.numOfBlock += 1
-    } else if (enableClick) {     
-      this.scene.enableClick = false
-      this.blocks[i].addLives()
-    }
+    return null
   }
 
   findIndex(point) {
@@ -58,10 +56,16 @@ class BlockList{
     })
   }
 
+  addBlock(point) {
+    this.points.push(point)
+    const b = Block.new(this.scene.game, 'blockRed', point)
+    this.blocks.push(b)
+  }
+
   setPointList(num) {
     this.level = num
     
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
+    const data = getDataFromLS('LEVELS')
     const pointList = data[num] || []
 
     if (pointList.length == 0) {
