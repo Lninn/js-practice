@@ -6,4 +6,5 @@
 
 ### Paddle
 
-![title](screenshot/screenshot1.jpg) ![editor](screenshot/screenshot2.jpg) ![main](screenshot/screenshot3.jpg)
+![title](screenshot/screenshot1.jpg) ![editor](screenshot/screenshot2.jpg)
+![main](screenshot/screenshot3.jpg) ![main](screenshot/screenshot4.jpg)

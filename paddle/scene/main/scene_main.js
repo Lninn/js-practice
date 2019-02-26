@@ -154,10 +154,6 @@ class SceneMain extends Scene {
     // blocks
     this.blocks.forEach(function(block) {
       if (block.collide(this.ball)) {  
-        // 播放音效
-        var horn = new Audio('audio/water.mp3')
-        horn.play()
-
         block.kill()
         this.ball.rebound(block)
         this.player.addScore()
