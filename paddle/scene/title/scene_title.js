@@ -13,7 +13,7 @@ class SceneTitle extends Scene {
     ]
     this.author = 'Lninn'
     this.fullScreen = false
-    this.bg = GameImage.new(this.game, 'bg1')
+    this.bg = Spirit.new(this.game, 'bg1')
 
     const self = this
     this.registerAction('k', function() {

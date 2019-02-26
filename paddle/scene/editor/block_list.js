@@ -44,7 +44,7 @@ class BlockList{
     let i = this.findIndex(point)
     if (i < 0) {
       this.points.push(point)
-      const b = Block.new(game, point)
+      const b = Block.new(game, 'blockRed', point)
       this.blocks.push(b)
       this.numOfBlock += 1
     } else if (enableClick) {
@@ -70,7 +70,7 @@ class BlockList{
       this.clear()     
     } else {
       for (const point of pointList) {
-        const t = Block.new(this.scene.game, point)
+        const t = Block.new(this.scene.game, 'blockRed', point)
         this.blocks.push(t)
       }
   
@@ -134,6 +134,7 @@ class BlockList{
   }
 
   draw() {
+    // log('block list draw')
     for (const b of this.blocks) {
       b.draw()
     }

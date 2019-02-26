@@ -3,11 +3,30 @@ class Palyer {
     this.scene = scene
 
     this.score = 0
-    this.lifeValue = 360
+    this.lives = 5
     this.level = 1
     this.pass = false
 
     this.timer = 0
+
+    this.setup() 
+  }
+
+  setup() {
+    const { boardArea, game, } = this.scene
+    
+    // 生命
+    for (let i = this.lives; i >= 0; i--) {
+      const img = Spirit.new(
+        game,
+        'heart', 
+        this.scene.w - boardArea.x * 3  - 35 * i,
+        boardArea.y + (boardArea.h - 20) / 2,
+        30, 
+        30,
+      )
+      this.scene.addElement(img)
+    }
   }
 
   static new(...args) {
@@ -29,7 +48,7 @@ class Palyer {
       this.level += 1
       this.pass = false
       this.timer = 0
-      this.lifeValue = 180
+      this.lifeValue = 5
       scene.loadLevel()
       scene.ball.reset()
     }
@@ -69,16 +88,6 @@ class Palyer {
       boardArea.y + fontSize + (boardArea.h - fontSize) / 2,
     )
 
-    // 生命
-    for (let i = Math.floor(this.lifeValue / 60); i >= 0; i--) {
-      const img = game.imageByName('heart')
-      c.drawImage(
-        img.image, 
-        this.scene.w - boardArea.x * 3  - 35 * i, 
-        boardArea.y + (boardArea.h - 20) / 2, 
-        30, 
-        30,
-        )
-    }
+ 
   }
 }

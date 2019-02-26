@@ -98,7 +98,11 @@ class Scene {
     }
   }
 
-  update() {}
+  update() {
+    this.elements.forEach(function(el) {
+      el.update && el.update()
+    }, this)
+  }
 
   draw() {
     this.elements.forEach(function(el) {

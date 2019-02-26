@@ -1,20 +1,23 @@
-class Ball extends GameImage {
-  constructor(game) {
-    super(game, 'ball1', 0, 0)
+class Ball extends Spirit {
+  constructor(game, name) {
+    super(game, name)
 
-    this.x = (game.canvas.width - this.w) / 2
-    this.y = 800 - this.h
-    
-    this.speedX = -5
-    this.speedY = -5
-    this.fired = false
+   this.setup()
   }
 
-  move(height) {
+  setup() {
+    this.reset()
+  }
+
+  move() {
+    const g = this.game
+    // 小球移动的高度 hardcode
+    const h = 50
+
     if (this.fired) {
-      if (this.x <= 0 || this.x + this.w >= 640) {
+      if (this.x <= 0 || this.x + this.w >= g.w) {
         this.speedX *= -1
-      } else if (this.y <= height || this.y + this.h >= 960) {
+      } else if (this.y <= h || this.y + this.h >= g.h) {
         this.speedY *= -1
       }
 
@@ -32,18 +35,13 @@ class Ball extends GameImage {
     }
   }
 
-  hasPoint(x, y) {
-    const xIn = x > this.x && x < this.x + this.w
-    const yIn = y > this.y && y < this.y + this.h
-
-    return xIn && yIn
-  }
-
   reset() {
-    this.x = (this.game.canvas.width - this.w) / 2
-    this.y = 800 - this.h
-    this.fired = false
+    this.x = (this.game.w - this.w) / 2
+    // 初始化高度应该从配置文件里面读取
+    this.y = 800 - this.h - 3
+    
     this.speedX = -5
     this.speedY = -5
+    this.fired = false
   }
 }

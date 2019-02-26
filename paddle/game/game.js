@@ -3,6 +3,12 @@ class Game {
     this.images = images
     this.callback = callback
 
+    this.setup()
+    this.init()
+    this.__start()
+  }
+
+  setup() {
     this.canvas = document.getElementById('id-canvas')
     this.context = this.canvas.getContext('2d')
 
@@ -10,8 +16,8 @@ class Game {
     this.fps = 60
     this.scene = null
 
-    this.init()
-    this.__start()
+    this.w = this.canvas.width
+    this.h = this.canvas.height
   }
 
   static instance(...args) {
@@ -40,13 +46,8 @@ class Game {
   }
 
   imageByName(name) {
-    const image = this.images[name]
-
-    return {
-      w: image.width,
-      h: image.height,
-      image,
-    }
+    const i = this.images[name]
+    return i
   }
 
   update() {

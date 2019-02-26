@@ -2,16 +2,15 @@ class SceneMain extends Scene {
   constructor(game) {
     super(game)
 
-    this.paddle = Paddle.new(game)
-    this.ball = Ball.new(game)
+    this.paddle = Paddle.new(game, 'paddle1')
+    this.ball = Ball.new(game, 'ball1')
     this.player = Palyer.new(this)
-    this.bg = GameImage.new(game, 'bg1')
+    this.bg = Spirit.new(game, 'bg1')
 
     // blocks
     this.blocks = []
-    this.blocksNum = 0
+    this.numOfBlock = 0
     this.fontSize = 30
-    
     this.init()
   }
 
@@ -42,10 +41,15 @@ class SceneMain extends Scene {
     // 拖动功能
     let enableDrag = false
     this.game.canvas.addEventListener('mousedown', function(event) {
-      const x = event.offsetX
-      const y = event.offsetY  
-      
-      if (self.ball.hasPoint(x, y)) {
+      const point = {
+        x: event.offsetX,
+        y: event.offsetY,
+      }
+   
+      // if (self.ball.hasPoint(x, y)) {
+      //   enableDrag = true
+      // }
+      if (hasPoint(self.ball, point)) {
         enableDrag = true
       }
     })
@@ -71,10 +75,10 @@ class SceneMain extends Scene {
     const data = JSON.parse(localStorage.getItem('LEVELS'))
     const level = data[this.player.level] || []
    
-    this.blocksNum = level.length
+    this.numOfBlock = level.length
 
     level.forEach(function(point) {
-      const b = Block.new(this.game, point)
+      const b = Block.new(this.game, 'blockRed', point)
       this.blocks.push(b)
       this.addElement(b)
     }, this)
@@ -83,15 +87,15 @@ class SceneMain extends Scene {
   update() {
     // blocks
     this.blocks.forEach(function(block) {
-      if (block.collide(this.ball)) {   
-        block.kill()
-        this.ball.rebound(block)
-        this.player.addScore()
-        this.blocksNum -= 1
-
+      if (block.collide(this.ball)) {  
         // 播放音效
         var horn = new Audio('audio/water.mp3')
         horn.play()
+
+        block.kill()
+        this.ball.rebound(block)
+        this.player.addScore()
+        this.numOfBlock -= 1
       }
     }, this)
 
@@ -106,7 +110,7 @@ class SceneMain extends Scene {
       return
     }
 
-    if (this.blocksNum === 0) {
+    if (this.numOfBlock === 0) {
       this.player.pass = true
     }
     

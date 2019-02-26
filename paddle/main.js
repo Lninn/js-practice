@@ -84,8 +84,8 @@ const __main = function() {
   Game.instance(images, function(game) {
     enableDebugMode(true, game)
     
-    const s = SceneTitle.new(game)
-    // const s = SceneEditor.new(game)
+    // const s = SceneTitle.new(game)
+    const s = SceneEditor.new(game)
     // const s = SceneMain.new(game)
     game.runWithScene(s)
   })

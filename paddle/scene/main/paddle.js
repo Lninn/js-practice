@@ -1,16 +1,21 @@
-class Paddle extends GameImage {
-  constructor(game) {
-    super(game, 'paddle1', 0, 803)
+class Paddle extends Spirit {
+  constructor(game, name) {
+    super(game, name)
 
-    this.x = (game.canvas.width - this.w) / 2
-    this.speed = 10
+    this.setup()
+  }
+
+  setup() {
+    this.reset()
   }
 
   move(x) {
+    const w = this.game.w
+
     if (x < 0) {
       x = 0
-    } else if (x > 640 - this.w) {
-      x = 640 - this.w
+    } else if (x > w - this.w) {
+      x = w - this.w
     }
 
     this.x = x
@@ -29,7 +34,10 @@ class Paddle extends GameImage {
   }
 
   reset() {
-    this.x = (this.game.canvas.width - this.w) / 2
-    this.y = 803
+    this.x = (this.game.w - this.w) / 2
+    // 初始化高度应该从配置文件里面读取
+    this.y = 800
+
+    this.speed = 10
   }
 }

@@ -21,7 +21,7 @@ class SceneEditor extends Scene {
     this.fontSize = 25
     this.blockList = new BlockList(this)
 
-    this.bg = GameImage.new(this.game, 'bg1')
+    this.bg = Spirit.new(this.game, 'bg1')
     this.addElement(this.bg)
 
     // 判断当前操作是点击还是拖动
