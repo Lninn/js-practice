@@ -85,8 +85,8 @@ const __main = function() {
     enableDebugMode(true, game)
     
     // const s = SceneTitle.new(game)
-    // const s = SceneEditor.new(game)
-    const s = SceneMain.new(game)
+    const s = SceneEnd.new(game)
+    // const s = SceneMain.new(game)
     game.runWithScene(s)
   })
 }
