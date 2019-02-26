@@ -103,3 +103,18 @@ const isMobile = function() {
   const re = /Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i
   return re.test(navigator.userAgent)
 }
+
+const debounce = function(func, delay = 100) {
+  let lastTime = new Date().getTime()
+
+  return function() {
+    let current = new Date().getTime()
+    let context = this
+    let args = arguments
+
+    if (current - lastTime >= delay) {
+        func(args)
+        lastTime = current
+    }
+  }
+}

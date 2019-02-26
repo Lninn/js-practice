@@ -16,6 +16,7 @@ const config = {
   ball_speedX: -7,
   ball_speedY: -7,
   initial_lives: 5,
+  color_mode: true,
   images: {
     ball1: 'img/ball_1.png',
     ball2: 'img/ball_2.png',

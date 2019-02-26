@@ -46,7 +46,7 @@ class SceneEditor extends Scene {
 
     c.addEventListener('mousedown', this.mousedown.bind(this))
 
-    c.addEventListener('mousemove', this.mousemove.bind(this))
+    c.addEventListener('mousemove', debounce(this.mousemove.bind(this), 200))
 
     c.addEventListener('mouseup', this.mouseup.bind(this))
 
@@ -125,7 +125,12 @@ class SceneEditor extends Scene {
       return
     }
 
-    this.blockList.addPoint(point, isMove)
+    // 如果 color_mode 为 true，可以拖出随机颜色的砖块
+    // 否则只能设置一种颜色
+    this.blockList.addPoint(
+      point,
+      config.color_mode ? false : isMove
+    )
   }
 
   mousedown(event) {
@@ -137,10 +142,12 @@ class SceneEditor extends Scene {
     }
   }
 
-  mousemove(event) {
+  mousemove(args) {
     if (!this.enableDrag) {
       return
     }
+
+    const event = args[0]
 
     const point = {
       x: event.offsetX,
