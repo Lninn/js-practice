@@ -8,10 +8,13 @@ class SceneTitle extends Scene {
   init() {
     this.name = 'Paddle Game'
     this.opText = [
-      '开始游戏(K)  编辑关卡(E)',
-      '开启全屏(Q)  清空记录(C)',
+      '开始游戏 (K)',
+      '编辑关卡 (E)',
+      '开启全屏 (Q)',
+      '清空记录 (C)',
     ]
     this.author = 'Lninn'
+
     this.fullScreen = false
     this.bg = Spirit.new(this.game, 'bg1')
 
@@ -52,7 +55,7 @@ class SceneTitle extends Scene {
       style: '#db3236', 
       text: this.name,
       x: this.w / 2,
-      y: 400,
+      y: 300,
       center: true,
     })
 
@@ -62,7 +65,7 @@ class SceneTitle extends Scene {
         fontSize: 30,
         text: text,
         x: this.w / 2,
-        y: 500 + (i * 50),
+        y: 400 + (i * 50),
         center: true,
       }))
     }, this)
@@ -80,10 +83,4 @@ class SceneTitle extends Scene {
     this.addElement(name)
     this.addElement(author)
   }
-
-  // draw() {
-  //   this.game.context.drawImage(this.bg.image, 0, 0, 400, 600)
-
-  //   super.draw()
-  // }
 }

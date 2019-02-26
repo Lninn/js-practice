@@ -65,9 +65,9 @@ const enableDebugMode = function(enable, game) {
 const __main = function() {
 
   // 播放背景音乐
-  // const audio = new Audio('audio/bg.mp3')
-  // audio.autoplay = true
-  // audio.loop = true
+  const audio = new Audio('audio/bg.mp3')
+  audio.autoplay = true
+  audio.loop = true
 
   const images = {
     ball1: 'img/ball_1.png',
@@ -84,8 +84,8 @@ const __main = function() {
   Game.instance(images, function(game) {
     enableDebugMode(true, game)
     
-    // const s = SceneTitle.new(game)
-    const s = SceneEnd.new(game)
+    const s = SceneTitle.new(game)
+    // const s = SceneEnd.new(game)
     // const s = SceneMain.new(game)
     game.runWithScene(s)
   })
