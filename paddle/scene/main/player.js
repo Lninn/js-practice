@@ -11,9 +11,10 @@ class Palyer {
     this.level = 1
     this.pass = false
     this.timer = 0
-    this.timeInterval = 100
+    this.timeInterval = 180
 
     this.fontSize = 30
+    this.count = 4
   }
 
   static new(...args) {
@@ -34,6 +35,7 @@ class Palyer {
       this.pass = false
       this.lifeValue = 5
       this.timer = 0
+      this.count = 4
       this.scene.load(this.level)
       this.scene.ball.reset()
     } else {
@@ -76,5 +78,17 @@ class Palyer {
       boardArea.x,
       boardArea.y + this.fontSize + (boardArea.h - this.fontSize) / 2,
     )
+
+    if (this.pass) {
+      this.timer % 60 == 0 && this.count--
+   
+      c.fillStyle = "#fff"
+      c.font = `${100}px 微软雅黑`
+      c.fillText(
+        this.count,
+        config.w / 2 - 50,
+        config.h / 2 - 200,
+      )
+    }
   }
 }
