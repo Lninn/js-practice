@@ -98,3 +98,8 @@ const setDataToLS = function(name, data) {
     log('setDataToLS error')
   }
 }
+
+const isMobile = function() {
+  const re = /Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i
+  return re.test(navigator.userAgent)
+}

@@ -6,18 +6,7 @@ class SceneTitle extends Scene {
   }
 
   init() {
-    this.name = 'Paddle Game'
-    this.opText = [
-      '开始游戏 (K)',
-      '编辑关卡 (E)',
-      '开启全屏 (Q)',
-      '清空记录 (C)',
-    ]
-    this.author = 'Lninn'
-
     this.fullScreen = false
-    this.bg = Spirit.new(this.game, 'bg1')
-
     const self = this
     this.registerAction('k', function() {
       const s = SceneMain.new(self.game)
@@ -42,45 +31,46 @@ class SceneTitle extends Scene {
     this.registerAction('c', function() {
       log('清空当前游戏进度')
     })
-
-    this.addElement(this.bg)
-    this.initText()
   }
 
-  initText() {
-    const c = this.game.context
+  draw() {
+    super.draw()
 
-    const name = GameText.new(c, {
-      fontSize: 60,
-      style: '#db3236', 
-      text: this.name,
-      x: this.w / 2,
-      y: 300,
-      center: true,
-    })
+    const { game, } = this
+    const c = game.context
 
-    this.opText.forEach(function(text, i) {
-      this.addElement(GameText.new(c, {
-        style: 'gray',
-        fontSize: 30,
-        text: text,
-        x: this.w / 2,
-        y: 400 + (i * 50),
-        center: true,
-      }))
+    const fontSize = 60
+    const interval = 100
+
+    c.fillStyle = "#db3236"
+    c.font =`${fontSize}px 微软雅黑`
+    let text = config.game_name
+    let l1 = c.measureText(text).width
+    c.fillText(
+      text, 
+      (config.w - l1) / 2, 
+      config.h / 2 - interval * 2,
+    )
+
+    c.fillStyle = '#fff'
+    config.optionList.forEach(function(text, i) {
+      c.font = `${fontSize / 2}px 微软雅黑`
+      let len = c.measureText(text).width
+      c.fillText(
+        text, 
+        (config.w - len) / 2, 
+        interval * 4 + (i * 50),
+      )
     }, this)
-
-    const x = (this.game.canvas.width - 100) / 2
-    const author = GameText.new(c, {
-      fontSize: 20,
-      style: 'black', 
-      text: `make by ${this.author}`,
-      x: this.w / 2,
-      y: 900,
-      center: true,
-    })
-
-    this.addElement(name)
-    this.addElement(author)
+    
+    c.fillStyle = '#fff'
+    c.font = `${fontSize / 3}px 微软雅黑`
+    text = `make by ${config.author_name}`
+    let l2 = c.measureText(text).width
+    c.fillText(
+      text, 
+      (config.w - l2) / 2, 
+      config.h - interval,
+    )
   }
 }

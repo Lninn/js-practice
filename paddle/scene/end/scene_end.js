@@ -6,9 +6,6 @@ class SceneEnd extends Scene {
   }
 
   init() {
-    this.bg = Spirit.new(this.game, 'bg1')
-    this.addElement(this.bg)
-
     const self = this
     this.addKEvent('r', function() {
       const s = SceneTitle.new(self.game)
@@ -24,53 +21,53 @@ class SceneEnd extends Scene {
   draw() {
     super.draw()
 
-    const { boardArea, game, drawArea, } = this
-    const c = game.context
+    const { context: c, } = this.game
+    const space = 30
+    c.fillStyle = 'rgba(0, 0, 0, 0.3)'
+    c.fillRect(
+      space, 
+      space, 
+      config.w - space * 2,
+      config.h - 2 * space,
+    )
 
-    const tipBoard = {
-      color: 'rgba(0, 0, 0, 0.3)',
-      x: 30,
-      y: 30,
-      w: game.w - 2 * 30,
-      h: game.h - 2 * 30,
-    }
-
-    drawArea(tipBoard)
-
+    const fontSize = 60
+    const interval = 100
     c.fillStyle = "#fff"
-    c.font = '60px 微软雅黑'
-    let text = 'GAME OVER'
+
+    c.font =`${fontSize / 3}px 微软雅黑`
+    let text = '成绩: 10000'
     let l1 = c.measureText(text).width
     c.fillText(
       text, 
-      (game.w-l1) / 2, 
-      game.h / 2 - 100,
+      (config.w - l1) / 2, 
+      config.h / 2 - interval * 2,
     )
-
-    c.font = '30px 微软雅黑'
-    text = '成绩: 10000'
+    
+    c.font = `${fontSize}px 微软雅黑`
+    text = 'GAME OVER'
     let l2 = c.measureText(text).width
     c.fillText(
       text, 
-      (game.w - l2) / 2, 
-      game.h / 2 - 200,
+      (config.w - l2) / 2, 
+      config.h / 2 - interval,
     )
 
+    c.font =`${fontSize / 2}px 微软雅黑`
     text = '重新开始 (K)'
     let l3 = c.measureText(text).width
     c.fillText(
       text, 
-      (game.w) / 2 - l3 * 1.5, 
-      game.h / 2 + 200,
+      (config.w) / 2 - l3 * 1.5, 
+      config.h / 2 + interval,
     )
 
     text = '返回主页 (R)'
     let l4 = c.measureText(text).width
     c.fillText(
       text, 
-      (game.w + l4) / 2, 
-      game.h / 2 + 200,
+      (config.w + l4) / 2, 
+      config.h / 2 + interval,
     )
-
   }
 }

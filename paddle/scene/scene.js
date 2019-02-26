@@ -19,11 +19,6 @@ class Scene {
     
     this.elements = []
 
-    // 设定场景的大小
-    const g = this.game
-    this.w = g.w
-    this.h = g.h
-
     this.boardArea = {
       x: 20,
       y: 10,
@@ -31,28 +26,12 @@ class Scene {
       h: 40,
     }
 
-    this.drawArea = this.drawArea.bind(this)
-    this.drawText = this.drawText.bind(this)
-
+    this.bg = Spirit.new(this.game.context, config.bg_image)
+    this.elements.push(this.bg)
+    
     // keydown
     this.addListener = this.listener.bind(this)
     window.addEventListener('keydown', this.addListener)
-  }
-
-  // 绘制一个区域
-  drawArea({ x, y, w, h, color = 'blue'}) {
-    const c = this.game.context
-    c.fillStyle = color
-    c.fillRect(x, y, w, h)
-  }
-
-  // draw text
-  drawText({ font, style, text, x, y}) {
-    const c = this.game.context
-    // log(c.measureText(text))
-    c.font = font
-    c.fillStyle = style
-    c.fillText(text, x, y)
   }
 
   listener(event) {
@@ -82,10 +61,6 @@ class Scene {
     this.keydownEvents[key] = callback
   }
 
-  addCanvasEvent(type, callback) {
-    this.targetEvents[type] = callback
-  }
-
   addElement(el) {
     if (Array.isArray(el)) {
       this.elements.concat(el)
@@ -111,5 +86,5 @@ class Scene {
     this.elements.forEach(function(el) {
       el.draw()
     }, this)
-  } 
+  }
 }

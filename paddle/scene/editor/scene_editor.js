@@ -20,14 +20,6 @@ class SceneEditor extends Scene {
 
     this.fontSize = 25
     this.blockList = new BlockList(this)
-
-    this.bg = Spirit.new(this.game, 'bg1')
-    this.addElement(this.bg)
-
-    // 判断当前操作是点击还是拖动
-    this.startTime = 0
-    this.endTime = 0
-    this.timeInterval = 1000
   }
 
   setKeydownEvent() {
@@ -53,19 +45,21 @@ class SceneEditor extends Scene {
     const c = this.game.canvas
     const self = this
 
-    c.addEventListener('click', function(event) {
-      const point = {
-        x: event.offsetX,
-        y: event.offsetY,
-      }
-
-      if ((self.endTime - self.startTime) <= self.timeInterval) {
-        return
-      }
-   
+    c.addEventListener('contextmenu', function(event) {
+      event.preventDefault()
       self.enableClick = true
-      self.checkPoint(point)
-    })
+     
+      return false
+    }, false)
+
+    // c.addEventListener('click', function(event) {
+    //   const point = {
+    //     x: event.offsetX,
+    //     y: event.offsetY,
+    //   }
+
+    //   self.enableAltKey = event.altKey
+    // })
 
     c.addEventListener('mousedown', this.mousedown.bind(this))
 
@@ -76,19 +70,12 @@ class SceneEditor extends Scene {
 
   setText() {
     const c = this.game.context
-    this.directText = GameText.new(c, {
-      text: '返回(R) 清空(C) 保存(S)',
-      fontSize: this.fontSize,
-      style: '#2b1216',
-      x: this.boardArea.x + 100,
-      y: this.boardArea.y + this.fontSize + (this.boardArea.h - this.fontSize) / 2,
-    })
 
     this.titleText = GameText.new(c, {
       text: '关卡编辑',
       fontSize: 60,
       style: '#db3236',
-      x: this.w / 2,
+      x: config.w / 2,
       y: 400,
       center: true,
     })
@@ -97,7 +84,7 @@ class SceneEditor extends Scene {
       text: '按数字键选择你要编辑的关卡(1-9)',
       fontSize: 30,
       style: '#2d2e36',
-      x: this.w / 2,
+      x: config.w / 2,
       y: 500,
       center: true,
     })
@@ -111,7 +98,6 @@ class SceneEditor extends Scene {
       this.enableEdit = true
       this.blockList.setPointList(num)
 
-      this.addElement(this.directText)
       this.addElement(this.blockList)
    
       this.removeElement(this.titleText)
@@ -139,15 +125,14 @@ class SceneEditor extends Scene {
         || point.y <= this.boardArea.y + this.boardArea.h + 15 ) {
       return
     }
-
     this.blockList.setBlock(point)
   }
 
   mousedown(event) {
     const x = event.offsetX
     const y = event.offsetY  
-
-    if (x >= 0 && x <= this.w && y >= 0 && y <= this.h) {
+    
+    if (x >= 0 && x <= config.w && y >= 0 && y <= config.h) {
       this.enableDrag = true
     }
   }
@@ -162,13 +147,12 @@ class SceneEditor extends Scene {
       y: event.offsetY,
     }
 
-    this.startTime = (new Date()).getTime()
     this.checkPoint(point)
   }
 
   mouseup(event) {
-    this.endTime = (new Date()).getTime()
     event.stopPropagation()
+
     this.enableDrag = false
   }
 }

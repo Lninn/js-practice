@@ -1,6 +1,6 @@
 class Paddle extends Spirit {
-  constructor(game, name) {
-    super(game, name)
+  constructor({ context, }, name) {
+    super(context, name)
 
     this.setup()
   }
@@ -10,12 +10,10 @@ class Paddle extends Spirit {
   }
 
   move(x) {
-    const w = this.game.w
-
     if (x < 0) {
       x = 0
-    } else if (x > w - this.w) {
-      x = w - this.w
+    } else if (x > config.w - this.w) {
+      x = config.w - this.w
     }
 
     this.x = x
@@ -34,10 +32,8 @@ class Paddle extends Spirit {
   }
 
   reset() {
-    this.x = (this.game.w - this.w) / 2
-    // 初始化高度应该从配置文件里面读取
-    this.y = 800
-
-    this.speed = 10
+    this.x = (config.w - this.w) / 2
+    this.y = config.paddle_height
+    this.speed = config.paddle_speed
   }
 }

@@ -65,23 +65,11 @@ const enableDebugMode = function(enable, game) {
 const __main = function() {
 
   // 播放背景音乐
-  const audio = new Audio('audio/bg.mp3')
-  audio.autoplay = true
-  audio.loop = true
+  // const audio = new Audio('audio/bg.mp3')
+  // audio.autoplay = true
+  // audio.loop = true
 
-  const images = {
-    ball1: 'img/ball_1.png',
-    paddle1: 'img/paddle_1.png',
-    blockRed: 'img/block_red.png',
-    blockBlue: 'img/block_blue.png',
-    blockYellow: 'img/block_yellow.png',
-    blockGreen: 'img/block_green.png',
-    blockPurple: 'img/block_purple.png',
-    bg1: 'img/bg_1.png',
-    heart: 'img/heart.png',
-  }
-
-  Game.instance(images, function(game) {
+  Game.instance(config.images, function(game) {
     enableDebugMode(true, game)
     
     const s = SceneTitle.new(game)

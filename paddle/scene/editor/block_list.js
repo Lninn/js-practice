@@ -13,26 +13,24 @@ class BlockList{
     this.texts = []
 
     this.level = 1
-
-    this.w = this.scene.w
-    this.h = this.scene.h
   }
 
   init() {
-    for (let y = 0; y <= this.h; y += 32) {
-      for (let x = 0; x <= this.w; x += 64) {
+    const img = config.images['blockRed']
+    for (let y = 0; y <= config.h; y += img.height) {
+      for (let x = 0; x <= config.w; x += img.width) {
         this.positions.push({
           x,
           y,
-          w: 64,
-          h: 32,
+          w: img.width,
+          h: img.height,
         })
       }
     }
   }
 
   setBlock(point) {
-    const { enableClick, game, } = this.scene
+    const { game, enableClick, } = this.scene
 
     for (const p of this.positions) {
       if (hasPoint(p, point)) {
@@ -42,12 +40,13 @@ class BlockList{
     }
 
     let i = this.findIndex(point)
+ 
     if (i < 0) {
       this.points.push(point)
       const b = Block.new(game, 'blockRed', point)
       this.blocks.push(b)
       this.numOfBlock += 1
-    } else if (enableClick) {
+    } else if (enableClick) {     
       this.scene.enableClick = false
       this.blocks[i].addLives()
     }
@@ -66,7 +65,6 @@ class BlockList{
     const pointList = data[num] || []
 
     if (pointList.length == 0) {
-      log(this.blocks)
       this.clear()     
     } else {
       for (const point of pointList) {
@@ -94,15 +92,16 @@ class BlockList{
   }
 
   setData() {
-    const data = JSON.parse(localStorage.getItem('LEVELS')) || []
-    data[this.level] = this.blocks.map(function(b) {
-      return {
+    const data = getDataFromLS('LEVELS')
+    data[this.level] = this.blocks
+      .filter(b => b.lives > 0)
+      .map(b => ({
         x: b.x,
         y: b.y,
         lives: b.lives,
-      }
-    })
-    localStorage.setItem('LEVELS', JSON.stringify(data))
+      }))
+
+    setDataToLS('LEVELS', data)
   }
 
   update() {
@@ -136,7 +135,11 @@ class BlockList{
   draw() {
     // log('block list draw')
     for (const b of this.blocks) {
-      b.draw()
+      try {
+        b.draw()
+      } catch (error) {
+        log('block list draw error')
+      }
     }
 
     this.drawText() 

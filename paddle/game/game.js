@@ -15,9 +15,6 @@ class Game {
     this.keydowns = {}
     this.fps = 60
     this.scene = null
-
-    this.w = this.canvas.width
-    this.h = this.canvas.height
   }
 
   static instance(...args) {
@@ -26,10 +23,6 @@ class Game {
   }
 
   init() {
-    const c = this.canvas
-    this.w = c.width
-    this.h = c.height
-
     const self = this
     window.addEventListener('keydown', function(event) {
       const k = event.key
@@ -39,15 +32,6 @@ class Game {
       const k = event.key
       self.keydowns[k] = false
     })
-  }
-
-  drawImage(gameImage) {
-    this.context.drawImage(gameImage.image, gameImage.x, gameImage.y)
-  }
-
-  imageByName(name) {
-    const i = this.images[name]
-    return i
   }
 
   update() {
@@ -97,7 +81,7 @@ class Game {
       const img = new Image()
       img.src = self.images[name]
       img.onload = function() {
-        self.images[name] = img
+        config.images[name] = img
         loads.push(1)
         if (loads.length === names.length) {
           self.callback(self)

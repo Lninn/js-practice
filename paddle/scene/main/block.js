@@ -1,6 +1,6 @@
 class Block extends Spirit {
-  constructor(game, name = 'blockRed', { x, y, lives = 1}) {
-    super(game, name, x, y)
+  constructor({ context, }, name = 'blockRed', { x, y, lives = 1}) {
+    super(context, name, x, y)
 
     this.setup(lives)
   }
@@ -28,12 +28,16 @@ class Block extends Spirit {
     const l = Object.keys(this.nameOfColors).length
 
     if (this.lives >= l) {
-      this.lives = 0
-      this.alive = false
+      this.miss()
     } else {
       this.lives += 1
       this.alive = true
     }
+  }
+
+  miss() {
+    this.lives = 0
+    this.alive = false
   }
 
   update() {
@@ -45,15 +49,14 @@ class Block extends Spirit {
   setImage() {
     const name = this.nameOfColors[this.lives]
     this.name = name
-    this.image = this.game.images[name]
+    this.image = config.images[name]
   }
 
   kill() {
     this.lives -= 1
 
     if (this.lives <= 0) {
-      this.lives = 0
-      this.alive = false
+      this.miss()
     }
 
     this.setImage()
