@@ -15,13 +15,10 @@ class Player {
     this.plane = Plane(this.game)
   
     this.enemys = []
-    this.enemyOfNumber = 10
-    for (let i = 0; i < this.enemyOfNumber; i++) {
-      const e = Enemy(this.game)
-      this.enemys.push(e)
-    }
+    this.enemyOfNumMax = 10
     
     this.score = 0
+    this.fps = 0
   }
 
   init() {
@@ -35,7 +32,18 @@ class Player {
     })
   }
 
+  generateEnemys() {
+    if (this.fps % 10 == 0 && this.enemys.length < this.enemyOfNumMax) {
+      const e = Enemy(this.game)
+      this.enemys.push(e)
+    }
+  }
+
   update() {
+    this.fps++
+
+    this.generateEnemys()
+
     this.plane.update()
 
     for (const e of this.enemys) {

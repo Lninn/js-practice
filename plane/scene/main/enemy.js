@@ -14,8 +14,8 @@ const Enemy = function(game) {
     // o.h -= 23
     // o.w -= 25
     o.y = -randomBetween(200, 400)
-    o.x = randomBetween(0, 750)
-    o.speed = randomBetween(3, 5)
+    o.x = randomBetween(0, 700)
+    o.speed = randomBetween(3, 7)
   }
 
   o.setup()

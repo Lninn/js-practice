@@ -2,7 +2,7 @@ const Bullet = function(game, x, y) {
   const img = game.imageByName('bullet1')
   const o = {
     game,
-    speed: 5,
+    speed: 10,
     x,
     y,
   }
