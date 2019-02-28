@@ -118,3 +118,23 @@ const debounce = function(func, delay = 100) {
     }
   }
 }
+
+const scriptToJson = function (key){
+  return JSON.stringify(getDataFromLS(key))
+}
+
+const saveFile = function (key){
+  // const title = prompt("Save file as: ")
+  const title = key
+  if (!title){ return }
+
+  const file = new Blob([scriptToJson(key)], {type: 'application/json'})
+  const reader = new FileReader()
+  const a = document.createElement('a')
+  reader.onloadend = function(){
+      a.href = reader.result
+      a.download = title + '.josn'
+      a.click()
+  }
+  reader.readAsDataURL(file)
+}
