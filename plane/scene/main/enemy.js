@@ -11,11 +11,9 @@ const Enemy = function(game) {
   o.h = img.height
 
   o.setup = function() {
-    // o.h -= 23
-    // o.w -= 25
     o.y = -randomBetween(200, 400)
-    o.x = randomBetween(0, 700)
-    o.speed = randomBetween(3, 7)
+    o.x = randomBetween(0, config.w.value - 100)
+    o.speed = randomBetween(3, 6)
   }
 
   o.setup()
@@ -41,7 +39,7 @@ const Enemy = function(game) {
 
   o.update = function() {
     o.y += o.speed
-    if (o.y > 1200) {
+    if (o.y > config.h.value + 100) {
       o.setup()
     }
 

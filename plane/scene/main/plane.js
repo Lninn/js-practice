@@ -23,8 +23,8 @@ const Plane = function(game) {
   o.setHorizon = function(x) {
     if (x <= 0) {
       x = 0
-    } else if (x >= 800 - o.w) {
-      x = 800 - o.w
+    } else if (x >= config.w.value - o.w) {
+      x = config.w.value - o.w
     }
 
     o.x = x
@@ -33,8 +33,8 @@ const Plane = function(game) {
   o.setVertical = function(y) {
     if (y <= 0) {
       y = 0
-    } else if (y >= 1000 - o.h) {
-      y = 1000 - o.h
+    } else if (y >= config.h.value - o.h) {
+      y = config.h.value - o.h
     }
     
     o.y = y

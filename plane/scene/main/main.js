@@ -9,7 +9,7 @@ class SceneMain extends Scene {
   setup() {
     this.bg1 = Texture.new(this.game, 'bg1', 0, -1000)
     this.bg2 = Texture.new(this.game, 'bg1', 0, -3048)
-    this.bgSpeed = 3
+    this.bgSpeed = 2
 
     this.player = Player.new(this.game, this)
   }
