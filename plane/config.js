@@ -1,4 +1,8 @@
 const config = {
+  canvas_id: {
+    value: 'id-canvas',
+    display: false,
+  },
   status: {
     value: true,
     label: '游戏状态'

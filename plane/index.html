@@ -11,15 +11,14 @@
       user-select: none;
     }
 
-    .container {
-      display: flex;
-    }
-
     canvas {
       border: 1px solid #000;
     }
 
     .control-board {
+      position: fixed;
+      right: 10px;
+      top: 10px;
       padding: 10px;
     }
   </style>
@@ -43,11 +42,8 @@
   <script src="config.js"></script>
 </head>
 <body>
-  <div class="container">
-    <canvas id="id-canvas" width="500" height="800"></canvas>
-  
-    <div class="control-board"></div>
-  
+  <canvas id="id-canvas"></canvas>
+  <div class="control-board"></div>
   <!-- 入口 -->
   <script src="main.js"></script>
   <script>
@@ -86,7 +82,14 @@
 
     const render = function(sel) {
       const html = Object.keys(config)
-        .map(id => renderText(id, config[id]))
+        .map(id => {
+          if (config[id].hasOwnProperty('display')) {
+            return
+          } else {
+            return renderText(id, config[id])
+          }
+        })
+        .filter(item => item != undefined)
         .reduce((pre, next) => pre + next, '')
 
       e(sel).innerHTML = html
@@ -111,8 +114,11 @@
         const id = elem.dataset.id
         const value = elem.value
 
-        eval(`config['${id}'].value = ${value}`)
+        if ('wh'.includes(id)) {
+          setCanvasSize({id})
+        }
 
+        eval(`config['${id}'].value = ${value}`)
         elem.nextElementSibling.innerText = value
       })
     }
@@ -128,6 +134,16 @@
         })
     }
     
+    const setCanvasSize = function(size = {}) {
+      const { w = config.w.value, h = config.h.value } = size
+
+      const c = e('#' + config.canvas_id.value)
+      c.width = w
+      c.height = h
+    }
+
+    setCanvasSize()
+
     render('.control-board')
 
     bindEvents('.control-board input, .control-board button')

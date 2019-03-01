@@ -2,7 +2,7 @@ const Plane = function(game) {
   const img = game.imageByName('plane')
   const o = {
     game,
-    x: (800 - 128) / 2,
+    x: (config.w.value) / 2,
     y: 600,
     speed: config.plane_speed.value,
     bullets: [],
