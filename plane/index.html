@@ -49,8 +49,8 @@
       <div class="item">
         <label for="">
           飞机速度
-          <input type="range" data-id="plane_speed">
-          20
+          <input type="range" data-id="plane_speed" value="10">
+          <span>10</span>
         </label>
       </div>
     </div>
@@ -69,6 +69,7 @@
 
       eval(`config['${id}'] = ${value}`)
 
+      elem.nextElementSibling.innerText = value
     })
   })
   </script>
