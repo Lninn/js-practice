@@ -45,6 +45,14 @@ class SceneMain extends Scene {
       if (e.collide(this.plane)) {
         this.enemys.splice(this.enemys.indexOf(e), 1)
         this.score += 100
+        this.addElement(
+          AnimationStateless.new(
+            this.ctx,
+            'explosion1',
+            e.x,
+            e.y
+          )
+        )
       } else {
         e.update()
       }

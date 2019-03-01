@@ -8,7 +8,7 @@ class Enemy extends Spirit {
   setup() {
     this.y = -randomBetween(200, 300)
     this.x = randomBetween(0, config.w.value - this.w)
-    this.speed = randomBetween(3, 6)
+    this.speed = randomBetween(2, 4)
   }
 
   update = function() {
