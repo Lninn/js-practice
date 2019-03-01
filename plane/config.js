@@ -3,4 +3,5 @@ const config = {
   h: 1000,
   plane_speed: 10,
   bullet_speed: 10,
+  bullet_cooldown: 3,
 }

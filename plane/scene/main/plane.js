@@ -56,7 +56,7 @@ const Plane = function(game) {
 
   o.fire = function() {
     if (o.cooldown == 0) {
-      o.cooldown = 5
+      o.cooldown = config.bullet_cooldown
       const b = Bullet(o.game, o.x + o.w / 2 - 10, o.y)
       o.bullets.push(b)
     }
