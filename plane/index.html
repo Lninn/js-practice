@@ -8,6 +8,7 @@
     * {
       padding: 0;
       margin: 0;
+      user-select: none;
     }
 
     .container {
@@ -45,49 +46,61 @@
   <div class="container">
     <canvas id="id-canvas" width="800" height="1000"></canvas>
   
-    <div class="control-board">
-      <div class="item">
-        <label for="">
-          飞机速度
-          <input type="range" data-id="plane_speed" value="10">
-          <span>10</span>
-        </label>
-      </div>
-
-      <div class="item">
-        <label for="">
-          子弹移动速度
-          <input type="range" data-id="bullet_speed" value="10">
-          <span>10</span>
-        </label>
-      </div>
-
-      <div class="item">
-        <label for="">
-          子弹冷却速度
-          <input type="range" data-id="bullet_cooldown" value="3" max="10">
-          <span>3</span>
-        </label>
-      </div>
-    </div>
-  </div>
+    <div class="control-board"></div>
   
   <!-- 入口 -->
   <script src="main.js"></script>
   <script>
-  const inputs = document.querySelectorAll('.control-board input')
+  const __init_config = function(type, sel) {
+    const renderText = (id, { label, value, step = 1, max = 100 }) => {
+      // log(id)
+      const template = `
+        <div class="item">
+          <label for="">
+            ${label}
+            <input
+              type="range"
+              data-id="${id}"
+              value="${value}"
+              step="${step}"
+              max="${max}"
+            />
+            <span>${value}</span>
+          </label>
+        </div>
+      `
+      return template
+    }
 
-  inputs.forEach(input => {
-    input.addEventListener('input', function(e) {
-      const elem = e.target
-      const id = elem.dataset.id
-      const value = elem.value
+    const render = function(sel) {
+      const html = Object.keys(config)
+        .map(id => renderText(id, config[id]))
+        .reduce((pre, next) => pre + next, '')
 
-      eval(`config['${id}'] = ${value}`)
+      e(sel).innerHTML = html
+    }
 
-      elem.nextElementSibling.innerText = value
-    })
-  })
+    const bindEvents = (type, sels) => {
+      document.querySelectorAll(sels)
+        .forEach(elem => {
+          elem.addEventListener(type, e => {
+            const elem = e.target
+            const id = elem.dataset.id
+            const value = elem.value
+
+            eval(`config['${id}'].value = ${value}`)
+
+            elem.nextElementSibling.innerText = value
+          })
+        })
+    }
+    
+    render('.control-board')
+
+    bindEvents('input', '.control-board input')
+  }
+
+  __init_config()
   </script>
 </body>
 </html>

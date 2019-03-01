@@ -2,7 +2,7 @@ const Bullet = function(game, x, y) {
   const img = game.imageByName('bullet1')
   const o = {
     game,
-    speed: config.bullet_speed,
+    speed: config.bullet_speed.value,
     x,
     y,
   }
@@ -16,7 +16,7 @@ const Bullet = function(game, x, y) {
   }
 
   o.update = function() {
-    o.speed = config.bullet_speed
+    o.speed = config.bullet_speed.value
     o.y -= o.speed
   }
 
