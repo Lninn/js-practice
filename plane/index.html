@@ -10,8 +10,16 @@
       margin: 0;
     }
 
+    .container {
+      display: flex;
+    }
+
     canvas {
       border: 1px solid #000;
+    }
+
+    .control-board {
+      padding: 10px;
     }
   </style>
 
@@ -30,11 +38,39 @@
   <!-- 开始和结束场景 -->
   <script src="scene/end/end.js"></script>
   <script src="scene/title/title.js"></script>
+  <!-- 配置文件 -->
+  <script src="config.js"></script>
 </head>
 <body>
-  <canvas id="id-canvas" width="800" height="1000"></canvas>
-
+  <div class="container">
+    <canvas id="id-canvas" width="800" height="1000"></canvas>
+  
+    <div class="control-board">
+      <div class="item">
+        <label for="">
+          飞机速度
+          <input type="range" data-id="plane_speed">
+          20
+        </label>
+      </div>
+    </div>
+  </div>
+  
   <!-- 入口 -->
   <script src="main.js"></script>
+  <script>
+  const inputs = document.querySelectorAll('.control-board input')
+
+  inputs.forEach(input => {
+    input.addEventListener('input', function(e) {
+      const elem = e.target
+      const id = elem.dataset.id
+      const value = elem.value
+
+      eval(`config['${id}'] = ${value}`)
+
+    })
+  })
+  </script>
 </body>
 </html>

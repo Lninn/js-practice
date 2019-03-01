@@ -4,7 +4,7 @@ const Plane = function(game) {
     game,
     x: (800 - 128) / 2,
     y: 600,
-    speed: 15,
+    speed: config.plane_speed,
     bullets: [],
     cooldown: 0,
   }
@@ -64,6 +64,7 @@ const Plane = function(game) {
 
   o.update = function() {
     // animation.update()
+    o.speed = config.plane_speed
 
     if (o.cooldown > 0) {
       o.cooldown -= 1
