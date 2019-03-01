@@ -19,6 +19,8 @@ class Player {
     
     this.score = 0
     this.fps = 0
+
+    this.animations = []
   }
 
   init() {
@@ -42,9 +44,19 @@ class Player {
   update() {
     this.fps++
 
+    // if (this.fps % 150 == 0) {
+    //   for (let i = 0; i < 3; i++) {
+    //     this.animations.splice(i, 1)
+    //   }
+    // }
+
     this.generateEnemys()
 
     this.plane.update()
+
+    for (const animation of this.animations) {
+      animation.update()
+    }
 
     for (const e of this.enemys) {
       e.update()
@@ -52,6 +64,10 @@ class Player {
       if (e.collide(this.plane)) {
         this.enemys.splice(this.enemys.indexOf(e), 1)
         this.score += 100
+
+        this.animations.push(
+          StatelessAnimation.new(this.game, 'explosion1', e.x, e.y)
+        )
       }
     }
   }
@@ -61,6 +77,10 @@ class Player {
 
     for (const e of this.enemys) {
       e.draw()
+    }
+
+    for (const animation of this.animations) {
+      animation.draw()
     }
   }
 }

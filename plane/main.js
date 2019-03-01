@@ -74,6 +74,7 @@ const __main = function() {
     plane15: 'img/plane/plane_15.gif',
     plane16: 'img/plane/plane_16.png',
     boom1: 'img/boom_1.gif',
+    explosion1: 'img/explosion_1.png'
   }
   
   const g = Game(images)
