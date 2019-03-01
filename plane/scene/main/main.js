@@ -1,42 +1,61 @@
 class SceneMain extends Scene {
-  constructor(game) {
-    super(game)
+  constructor(ctx) {
+    super(ctx)
 
     this.setup()
     this.init()
   }
 
   setup() {
-    this.bg1 = Texture.new(this.game, 'bg1', 0, -1000)
-    this.bg2 = Texture.new(this.game, 'bg1', 0, -3048)
-    this.bgSpeed = 2
+    this.bg = Background.new(this.ctx)
+    this.plane = Plane.new(this.ctx)
+    
+    this.enemys = []
+    this.enemyOfNumMax = 10
+    this.score = 0
+    this.fps = 0
 
-    this.player = Player.new(this.game, this)
+    this.addElement(this.bg)
+    this.addElement(this.plane)
   }
 
   init() {
-    this.addElement(this.bg1)
-    this.addElement(this.bg2)
+    this.registerAction('adws', (key) =>{
+      this.plane.move(key)
+    })
+  
+    this.registerAction(' ', () => {
+      this.plane.fire()
+    })
+  }
 
-    this.addElement(this.player)
+  generateEnemys() {
+    if (this.fps % 10 == 0 && this.enemys.length < this.enemyOfNumMax) {
+      const e = Enemy.new(this.ctx)
+      this.enemys.push(e)
+    }
   }
 
   update() {
-    if (!config.status.value) {
-      return
-    }
-    
-    if (this.bg1.y >= 1000) {
-      this.bg1.y = this.bg2.y - 2048
-    }
-
-    if (this.bg2.y >= 1000) {
-      this.bg2.y = this.bg1.y - 2048
-    }
-
-    this.bg1.y += this.bgSpeed
-    this.bg2.y += this.bgSpeed
-
     super.update()
+
+    this.generateEnemys()
+
+    for (const e of this.enemys) {
+      if (e.collide(this.plane)) {
+        this.enemys.splice(this.enemys.indexOf(e), 1)
+        this.score += 100
+      } else {
+        e.update()
+      }
+    }
+  }
+
+  draw() {
+    super.draw()
+
+    for (const e of this.enemys) {
+      e.draw()
+    }
   }
 }

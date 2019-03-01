@@ -12,3 +12,10 @@
 ### Plane
 
 ![title](screenshot/screenshot5.png)
+
+todo
+
+1 ES6 重构老代码
+2 爆炸动画消失问题
+3 主场景的抽象
+4 配置文件 bug

@@ -30,4 +30,12 @@ const config = {
     label: '子弹冷却速度',
     max: 10,
   },
+  images: {
+    bg1: 'img/bg_1.png',
+    bullet1: 'img/bullet_1.png',
+    enemy1: 'img/enemy_1.png',
+    plane1: 'img/plane.png',
+    boom1: 'img/boom_1.gif',
+    explosion1: 'img/explosion_1.png'
+  }
 }

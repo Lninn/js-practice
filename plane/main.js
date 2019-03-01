@@ -46,38 +46,13 @@ const enableDebugMode = function(game, enable) {
   }
 }
 
-const App = function(game) {
-  const s = SceneMain.new(game)
+const App = function({ ctx }) {
+  const s = SceneMain.new(ctx)
   return s
 }
 
 const __main = function() {
-  const images = {
-    bg1: 'img/bg_1.png',
-    bullet1: 'img/bullet_1.png',
-    enemy1: 'img/enemy_1.png',
-    plane: 'img/plane.png',
-    plane1: 'img/plane/plane_01.gif',
-    plane2: 'img/plane/plane_02.gif',
-    plane3: 'img/plane/plane_03.gif',
-    plane4: 'img/plane/plane_04.gif',
-    plane5: 'img/plane/plane_05.gif',
-    plane6: 'img/plane/plane_06.gif',
-    plane7: 'img/plane/plane_07.gif',
-    plane8: 'img/plane/plane_08.gif',
-    plane9: 'img/plane/plane_09.gif',
-    plane10: 'img/plane/plane_10.gif',
-    plane11: 'img/plane/plane_11.gif',
-    plane12: 'img/plane/plane_12.gif',
-    plane13: 'img/plane/plane_13.gif',
-    plane14: 'img/plane/plane_14.gif',
-    plane15: 'img/plane/plane_15.gif',
-    plane16: 'img/plane/plane_16.png',
-    boom1: 'img/boom_1.gif',
-    explosion1: 'img/explosion_1.png'
-  }
-  
-  const g = Game(images)
+  const g = Game.instance()
 
   enableDebugMode(g, true)
 

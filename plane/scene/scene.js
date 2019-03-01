@@ -1,8 +1,10 @@
 class Scene {
-  constructor(game) {
-    this.game = game
+  constructor(ctx) {
+    this.ctx = ctx
 
     this.elements = []
+    // 状态按键
+    this.actions = {}
   }
 
   static new(...args) {
@@ -12,10 +14,10 @@ class Scene {
   registerAction(key, action) {
     if (key.length > 1) {
       for (const k of key) {
-        this.game.actions[k] = action
+        this.actions[k] = action
       }
     } else {
-      this.game.actions[key] = action
+      this.actions[key] = action
     }
   }
 

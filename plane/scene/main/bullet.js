@@ -1,28 +1,16 @@
-const Bullet = function(game, x, y) {
-  const img = game.imageByName('bullet1')
-  const o = {
-    game,
-    speed: config.bullet_speed.value,
-    x,
-    y,
+class Bullet extends Spirit {
+  constructor(ctx, name, x, y) {
+    super(ctx, name, x, y)
+
+    this.setup()
   }
 
-  o.image = img
-  o.w = img.width
-  o.h = img.height
-  
-  if (o.game.mouse) {
-    o.game.mouse(o)
+  setup() {
+    this.speed = config.bullet_speed.value
   }
 
-  o.update = function() {
-    o.speed = config.bullet_speed.value
-    o.y -= o.speed
+  update = function() {
+    this.speed = config.bullet_speed.value
+    this.y -= this.speed
   }
-
-  o.draw = function() {
-    o.game.ctx.drawImage(o.image, o.x, o.y)
-  }
-
-  return o
 }

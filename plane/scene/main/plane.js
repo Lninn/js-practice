@@ -1,92 +1,75 @@
-const Plane = function(game) {
-  const img = game.imageByName('plane')
-  const o = {
-    game,
-    x: (config.w.value) / 2,
-    y: 600,
-    speed: config.plane_speed.value,
-    bullets: [],
-    cooldown: 0,
+class Plane extends Spirit {
+  constructor(ctx) {
+    super(ctx, 'plane1')
+
+    this.setup()
   }
 
-  o.image = img
-  o.w = img.width
-  o.h = img.height
+  setup() {
+    this.x = (config.w.value - this.w) / 2
+    this.y = (config.h.value) - this.h
+    this.speed = config.plane_speed.value
+    this.bullets = []
+    this.cooldown = 0
+  }
 
-  // const animation = Animation.new(game, 'plane')
-  // animation.x = o.x
-  // animation.y = o.y
-
-  o.w = 100
-  o.h = 100
-
-  o.setHorizon = function(x) {
+  setHorizon(x) {
     if (x <= 0) {
       x = 0
-    } else if (x >= config.w.value - o.w) {
-      x = config.w.value - o.w
+    } else if (x >= config.w.value - this.w) {
+      x = config.w.value - this.w
     }
 
-    o.x = x
+    this.x = x
   }
 
-  o.setVertical = function(y) {
+  setVertical(y) {
     if (y <= 0) {
       y = 0
-    } else if (y >= config.h.value - o.h) {
-      y = config.h.value - o.h
+    } else if (y >= config.h.value - this.h) {
+      y = config.h.value - this.h
     }
     
-    o.y = y
+    this.y = y
   }
-
-  o.move = function(key) {
-    if (!config.status.value) {
-      return
-    }
-   
+  
+  move(key) {
     if (key == 'a') {
-      o.setHorizon(o.x -= o.speed)
+      this.setHorizon(this.x -= this.speed)
     } else if (key == 'd') {
-      o.setHorizon(o.x += o.speed)
+      this.setHorizon(this.x += this.speed)
     } else if (key == 'w') {
-      o.setVertical(o.y -= o.speed)
+      this.setVertical(this.y -= this.speed)
     } else if (key == 's') {
-      o.setVertical(o.y += o.speed)
-    }
-
-    // animation.setDir(key)
-  }
-
-  o.fire = function() {
-    if (o.cooldown == 0) {
-      o.cooldown = config.bullet_cooldown.value
-      const b = Bullet(o.game, o.x + o.w / 2 - 10, o.y)
-      o.bullets.push(b)
+      this.setVertical(this.y += this.speed)
     }
   }
 
-  o.update = function() {
-    // animation.update()
-    o.speed = config.plane_speed.value
+  fire() {
+    if (this.cooldown == 0) {
+      this.cooldown = config.bullet_cooldown.value
+      const b = Bullet.new(this.ctx, 'bullet1', this.x + this.w / 2, this.y)
+      this.bullets.push(b)
+    }
+  }
 
-    if (o.cooldown > 0) {
-      o.cooldown -= 1
+  update = function() {
+    this.speed = config.plane_speed.value
+
+    if (this.cooldown > 0) {
+      this.cooldown -= 1
     }
 
-    for (const b of o.bullets) {
+    for (const b of this.bullets) {
       b.update()
     }
   }
 
-  o.draw = function() {
-    // animation.draw()
-    o.game.drawImage(o)
+  draw() {
+    super.draw()
 
-    for (const b of o.bullets) {
+    for (const b of this.bullets) {
       b.draw()
     }
   }
-
-  return o
 }

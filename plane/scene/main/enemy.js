@@ -1,34 +1,26 @@
-const Enemy = function(game) {
-  const img = game.imageByName('enemy1')
-  const o = {
-    game,
-    bullets: [],
-    cooldown: 0,
+class Enemy extends Spirit {
+  constructor(ctx) {
+    super(ctx, 'enemy1')
+
+    this.setup()
   }
 
-  o.image = img
-  o.w = img.width
-  o.h = img.height
-
-  o.setup = function() {
-    o.y = -randomBetween(200, 400)
-    o.x = randomBetween(0, config.w.value - 100)
-    o.speed = randomBetween(3, 6)
+  setup() {
+    this.y = -randomBetween(200, 300)
+    this.x = randomBetween(0, config.w.value - this.w)
+    this.speed = randomBetween(3, 6)
   }
 
-  o.setup()
-
-  o.fire = function() {
-    if (o.cooldown == 0) {
-      o.cooldown = 4
-      const b = Bullet(o.game, o.x + o.image.width / 2 - 10, o.y)
-      o.bullets.push(b)
+  update = function() {
+    this.y += this.speed
+    if (this.y > config.h.value) {
+      this.setup()
     }
   }
 
-  o.collide = function(plane) {
+  collide(plane) {
     for (const b of plane.bullets) {
-      if (intersect(o, b)) {
+      if (intersect(this, b)) {
         plane.bullets.splice(plane.bullets.indexOf(b), 1)
         return true
       }
@@ -36,29 +28,4 @@ const Enemy = function(game) {
 
     return false
   }
-
-  o.update = function() {
-    o.y += o.speed
-    if (o.y > config.h.value + 100) {
-      o.setup()
-    }
-
-    if (o.cooldown > 0) {
-      o.cooldown -= 1
-    }
-
-    for (const b of o.bullets) {
-      b.update()
-    }
-  }
-
-  o.draw = function() {
-    o.game.drawImage(o)
-
-    for (const b of o.bullets) {
-      b.draw()
-    }
-  }
-
-  return o
 }

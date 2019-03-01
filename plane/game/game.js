@@ -1,36 +1,44 @@
-const Game = function(images) {
-  const canvas = e('#id-canvas')
-  const o = {
-    images,
-    canvas,
-    ctx: canvas.getContext('2d'),
-    actions: {},
-    keydowns: {},
-    fps: 60,
-    scene: null,
+class Game {
+  constructor() {
+    this.setup()
+    this.init()
   }
- 
-  o.init = function() {
-    window.addEventListener('keydown', event => {
-      const k = event.key
+
+  static instance() {
+    this.i = this.i || new this()
+    return this.i
+  }
+
+  setup() {
+    this.canvas = e('#' + config.canvas_id.value)
+    this.ctx = this.canvas.getContext('2d')
+
+    this.keydowns = {}
+    this.fps = 60
+    this.scene = null
+  }
+
+  init() {
+    window.addEventListener('keydown', e => {
+      const k = e.key
       this.keydowns[k] = true
     })
     
-    window.addEventListener('keyup', event => {
-      const k = event.key
+    window.addEventListener('keyup', e => {
+      const k = e.key
       this.keydowns[k] = false
     })
   }
 
-  o.runloop = function() {
+  runloop() {
     const self = this
 
     setTimeout(function() {
       // event
-      const keys = Object.keys(self.actions)
+      const keys = Object.keys(self.scene.actions)
       for (const key of keys) {
         if (self.keydowns[key]) {
-          self.actions[key](key)
+          self.scene.actions[key](key)
         }
       }
 
@@ -46,30 +54,20 @@ const Game = function(images) {
     }, 1000 / self.fps)
   }
 
-  o.imageByName = function(name) {
-    const img = o.images[name]
-
-    return img
+  replaceScene(scene) {
+    this.scene = scene
   }
 
-  o.drawImage = function({ image, x, y, w, h }) {
-    o.ctx.drawImage(image, x, y, w, h)
-  }
-
-  o.replaceScene = function(scene) {
-    o.scene = scene
-  }
-
-  o.loadImg = function(callback) {
-    loads = []
-    const names = Object.keys(o.images)
+  loadImg(callback) {
+    const loads = []
+    const names = Object.keys(config.images)
     for (const name of names) {
-      const path = o.images[name]
+      const path = config.images[name]
       const img = new Image()
       img.src = path
       img.onload = function() {
         loads.push(1)
-        o.images[name] = img
+        config.images[name] = img
         if (names.length == loads.length) {
           callback()
         }
@@ -77,13 +75,10 @@ const Game = function(images) {
     }
   }
 
-  o.__start = function(application) {
-    o.loadImg(function() {
-      o.scene = application(o)
-      o.init()
-      o.runloop()
+  __start(app) {
+    this.loadImg(() => {
+      this.scene = app(this)
+      this.runloop()
     })
   }
-
-  return o
 }
