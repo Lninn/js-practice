@@ -41,6 +41,10 @@ const Plane = function(game) {
   }
 
   o.move = function(key) {
+    if (!config.status.value) {
+      return
+    }
+   
     if (key == 'a') {
       o.setHorizon(o.x -= o.speed)
     } else if (key == 'd') {

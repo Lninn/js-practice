@@ -42,9 +42,7 @@ const Game = function(images) {
       // draw
       self.scene.draw()
 
-      setTimeout(function() {
-        self.runloop()
-      }, 1000 / self.fps)
+      self.runloop()
     }, 1000 / self.fps)
   }
 

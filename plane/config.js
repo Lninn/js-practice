@@ -1,4 +1,8 @@
 const config = {
+  status: {
+    value: false,
+    label: '游戏状态'
+  },
   w: {
     value: 800,
     label: '主界面宽度',

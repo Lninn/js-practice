@@ -35,3 +35,11 @@ const hasPoint = (r, p) => {
   
   return false
 }
+
+const isBool = function(str) {
+  return /[true|false]/.test(str)
+}
+
+const toBool = function(str) {
+  return String(str) == 'true' ? true : false
+}

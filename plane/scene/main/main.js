@@ -22,6 +22,10 @@ class SceneMain extends Scene {
   }
 
   update() {
+    if (!config.status.value) {
+      return
+    }
+    
     if (this.bg1.y >= 1000) {
       this.bg1.y = this.bg2.y - 2048
     }
