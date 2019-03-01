@@ -27,7 +27,7 @@ const Plane = function(game) {
       x = 800 - o.w
     }
 
-    // animation.x = x
+    o.x = x
   }
 
   o.setVertical = function(y) {
@@ -37,7 +37,7 @@ const Plane = function(game) {
       y = 1000 - o.h
     }
     
-    // animation.y = y
+    o.y = y
   }
 
   o.move = function(key) {
