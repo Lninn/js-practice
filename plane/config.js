@@ -1,3 +1,4 @@
 const config = {
-  plane_speed: 30,
+  plane_speed: 10,
+  bullet_speed: 10,
 }
