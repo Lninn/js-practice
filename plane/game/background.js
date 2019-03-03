@@ -1,6 +1,6 @@
 class Background extends Spirit {
-  constructor(ctx) {
-    super(ctx, 'bg1')
+  constructor() {
+    super('bg1')
 
     this.y1 = -config.h.value
     this.y2 = -(this.image.height + config.h.value)
@@ -20,8 +20,8 @@ class Background extends Spirit {
     this.y2 += this.speed
   }
 
-  draw() {
-    this.ctx.drawImage(this.image, this.x, this.y1)
-    this.ctx.drawImage(this.image, this.x, this.y2)
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x, this.y1)
+    ctx.drawImage(this.image, this.x, this.y2)
   }
 }

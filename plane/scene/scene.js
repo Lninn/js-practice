@@ -38,7 +38,7 @@ class Scene {
 
   draw() {
     for (const element of this.elements) {
-      element.draw()
+      element.draw(this.ctx)
     }
   }
 }

@@ -1,6 +1,6 @@
 class Animation extends Spirit {
-  constructor(ctx, name, x, y) {
-    super(ctx, name, x, y)
+  constructor(name, x, y) {
+    super(name, x, y)
 
     this.setup()
   }
@@ -19,12 +19,12 @@ class Animation extends Spirit {
     this.x = this.x + this.eachSize / 2
   }
 
-  draw() {
+  draw(ctx) {
     if (!this.alive) {
       return
     }
 
-    this.ctx.drawImage(
+    ctx.drawImage(
       this.image, 
       this.frame.x,
       this.frame.y,

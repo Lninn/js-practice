@@ -1,6 +1,6 @@
 class AnimationStateless extends Animation {
-  constructor(ctx, name, x, y) {
-    super(ctx, name, x, y)
+  constructor() {
+    super('explosion1')
 
     this.init()
   }

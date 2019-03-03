@@ -1,6 +1,5 @@
 class Spirit {
-  constructor(ctx, name, x = 0, y = 0) {
-    this.ctx = ctx
+  constructor(name, x = 0, y = 0) {
     this.name = name
     this.x = x
     this.y = y
@@ -14,7 +13,7 @@ class Spirit {
     return new this(...args)
   }
 
-  draw() {
-    this.ctx.drawImage(this.image, this.x, this.y)
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x, this.y)
   }
 }

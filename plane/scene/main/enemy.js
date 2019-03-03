@@ -1,7 +1,8 @@
 class Enemy extends Spirit {
-  constructor(ctx) {
-    super(ctx, 'enemy1')
+  constructor() {
+    super('enemy1')
 
+    this.soundEffect = new Audio('audio/boom.mp3')
     this.setup()
   }
 
@@ -11,7 +12,7 @@ class Enemy extends Spirit {
     this.speed = randomBetween(2, 4)
   }
 
-  update = function() {
+  update () {
     this.y += this.speed
     if (this.y > config.h.value) {
       this.setup()
@@ -21,11 +22,17 @@ class Enemy extends Spirit {
   collide(plane) {
     for (const b of plane.bullets) {
       if (intersect(this, b)) {
-        plane.bullets.splice(plane.bullets.indexOf(b), 1)
+        b.alive = false
+        // 播放音乐
+        this.play() 
         return true
       }
     }
 
     return false
+  }
+
+  play() {
+    this.soundEffect.play()
   }
 }

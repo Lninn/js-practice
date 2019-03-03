@@ -26,9 +26,9 @@ const config = {
     label: '子弹速度',
   },
   bullet_cooldown: {
-    value: 3,
+    value: 20,
     label: '子弹冷却速度',
-    max: 10,
+    max: 40,
   },
   images: {
     bg1: 'img/bg_1.png',

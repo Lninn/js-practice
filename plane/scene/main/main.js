@@ -7,13 +7,18 @@ class SceneMain extends Scene {
   }
 
   setup() {
-    this.bg = Background.new(this.ctx)
-    this.plane = Plane.new(this.ctx)
+    this.bg = Background.new()
+    this.plane = Plane.new()
     
     this.enemys = []
-    this.enemyOfNumMax = 10
+    this.enemyOfNumMax = 5
     this.score = 0
     this.fps = 0
+
+     // 播放音乐
+     const audio = new Audio('audio/bgm.mp3')
+     audio.loop = true
+     audio.play()
 
     this.addElement(this.bg)
     this.addElement(this.plane)
@@ -31,8 +36,9 @@ class SceneMain extends Scene {
 
   generateEnemys() {
     if (this.fps % 10 == 0 && this.enemys.length < this.enemyOfNumMax) {
-      const e = Enemy.new(this.ctx)
+      const e = Enemy.new()
       this.enemys.push(e)
+      this.addElement(e)
     }
   }
 
@@ -41,33 +47,18 @@ class SceneMain extends Scene {
       return
     }
 
-    super.update()
-
     this.generateEnemys()
 
     for (const e of this.enemys) {
       if (e.collide(this.plane)) {
         this.enemys.splice(this.enemys.indexOf(e), 1)
-        this.score += 100
-        this.addElement(
-          AnimationStateless.new(
-            this.ctx,
-            'explosion1',
-            e.x,
-            e.y
-          )
-        )
-      } else {
-        e.update()
+        this.removeElement(e)
+        this.score += 100   
+
+         
       }
     }
-  }
 
-  draw() {
-    super.draw()
-
-    for (const e of this.enemys) {
-      e.draw()
-    }
+    super.update()
   }
 }
