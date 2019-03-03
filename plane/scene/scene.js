@@ -21,6 +21,16 @@ class Scene {
     }
   }
 
+  addEvent(key, callback) {
+    window.addEventListener('keydown', function(e) {
+      const k = e.key
+
+      if (k == key) {
+        callback()
+      }
+    })
+  }
+
   addElement(element) {
     this.elements.push(element)
   }

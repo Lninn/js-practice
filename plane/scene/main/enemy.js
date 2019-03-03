@@ -3,6 +3,8 @@ class Enemy extends Spirit {
     super('enemy1')
 
     this.soundEffect = new Audio('audio/boom.mp3')
+    this.alive = true
+
     this.setup()
   }
 
@@ -28,7 +30,7 @@ class Enemy extends Spirit {
         return true
       }
     }
-
+   
     return false
   }
 
