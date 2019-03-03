@@ -37,6 +37,10 @@ class SceneMain extends Scene {
   }
 
   update() {
+    if (!config.status.value) {
+      return
+    }
+
     super.update()
 
     this.generateEnemys()

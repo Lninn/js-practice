@@ -34,6 +34,10 @@ class Plane extends Spirit {
   }
   
   move(key) {
+    if (!config.status.value) {
+      return
+    }
+    
     if (key == 'a') {
       this.setHorizon(this.x -= this.speed)
     } else if (key == 'd') {
