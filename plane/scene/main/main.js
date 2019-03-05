@@ -12,18 +12,36 @@ class SceneMain extends Scene {
     
     this.enemys = []
     this.enemyOfNumMax = 5
+
     this.score = 0
+    this.lives = 1000
+
     this.fps = 0
-    this.animations = []
-    this.isLose = false
+
+    this.isProssing = true
 
      // 播放音乐
-     const audio = new Audio('audio/bgm.mp3')
-     audio.loop = true
-     audio.play()
+    //  const audio = new Audio('audio/bgm.mp3')
+    //  audio.loop = true
+    //  audio.play()
 
-    this.addElement(this.bg)
-    this.addElement(this.plane)
+    const self = this
+    this.keydownEvents = {
+      'k': function() {
+        self.playOn()
+      }
+    }
+
+    window.addEventListener('keydown', function(e) {
+      const k = e.key
+
+      const keys = Object.keys(self.keydownEvents)
+      for (const key of keys) {
+        if (key == k) {
+          self.keydownEvents[k]()
+        }
+      }
+    })
   }
 
   init() {
@@ -31,10 +49,6 @@ class SceneMain extends Scene {
       this.plane.move(key)
     })
 
-    this.addEvent('k', () => {
-      this.isLose = false
-    })
-  
     this.registerAction(' ', () => {
       this.plane.fire()
     })
@@ -44,14 +58,7 @@ class SceneMain extends Scene {
     if (this.fps % 10 == 0 && this.enemys.length < this.enemyOfNumMax) {
       const e = Enemy.new()
       this.enemys.push(e)
-      this.addElement(e)
     }
-  }
-
-  playAnimation({ x, y }) {
-    const a = AnimationStateless.new(x, y)
-    this.animations.push(a)
-    this.addElement(a)
   }
 
   remove(list, target) {
@@ -59,11 +66,18 @@ class SceneMain extends Scene {
     this.removeElement(target)
   }
 
-  lose() {
-    this.isLose = true
-    this.enemys = []
-    this.animations = []
-    this.elements = []
+  reduceHealth() {
+    if (this.lives <= 0) {
+      this.isProssing = false
+      this.enemys = []
+    } else {
+      this.enemys = []
+      this.lives -= 100
+    }
+  }
+
+  playOn() {
+    this.isProssing = true
   }
 
   update() {
@@ -71,38 +85,35 @@ class SceneMain extends Scene {
       return
     }
 
-    if (this.isLose) {
-      return
-    }
+    if (this.isProssing) {
+      this.bg.update(this.ctx)
 
-    this.generateEnemys()
-
-    for (const e of this.enemys) {
-      if (e.collide(this.plane)) {
-        this.playAnimation(e)
-        this.remove('enemys', e)
-        this.score += 100
+      this.plane.update(this.ctx)
+  
+      this.generateEnemys()
+      
+      for (const e of this.enemys) {
+        if (!e.alive) {
+          this.enemys.splice(this.enemys.indexOf(e), 1)
+        } else if (e.collide(this.plane)) {
+          e.playAnimation()
+          this.score += 100
+        } else if (intersect(e, this.plane)) {
+          this.reduceHealth()
+        } else {
+          e.update()
+        }
       }
-
-      if (intersect(e, this.plane)) {
-        this.lose()
-      }
-    }
-
-    super.update()
-
-    for (const animation of this.animations) {
-      if (!animation.alive) {
-        this.remove('animations', animation)
-      }
+    } else {
+      
     }
   }
 
   draw() {
-    super.draw()
+    this.bg.draw(this.ctx)
 
-    if (this.isLose) {
-      const c = this.ctx
+    const c = this.ctx
+    if (!this.isProssing) {
 
       c.fillStyle = 'rgba(0, 0, 0, 0.2)'
       c.fillRect((config.w.value - 400) / 2, config.h.value / 2 - 100, 400, 300)
@@ -123,6 +134,32 @@ class SceneMain extends Scene {
         text,
         (config.w.value - w) / 2,
         config.h.value / 2 + 50,
+      )
+    } else {
+      this.plane.draw(this.ctx)
+  
+      for (const e of this.enemys) {
+        e.draw(this.ctx)
+      }
+
+      let text = '分数: ' + this.score      
+      let w = c.measureText(text).width
+      c.fillStyle = "#fff"
+      c.font = `20px 微软雅黑`
+      c.fillText(
+        text,
+        config.w.value - w - 30,
+        30,
+      )
+
+      text = '生命值: ' + this.lives
+      w = c.measureText(text).width
+      c.fillStyle = "#fff"
+      c.font = `20px 微软雅黑`
+      c.fillText(
+        text,
+        30,
+        30,
       )
     }
   }

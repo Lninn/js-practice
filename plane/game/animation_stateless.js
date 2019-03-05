@@ -1,16 +1,12 @@
 class AnimationStateless extends Animation {
-  constructor(x, y) {
-    super('explosion1', x, y)
+  constructor(name) {
+    super(name)
 
-    this.init()
-  }
-
-  init() {
     this.frames = []
 
     const rowCount = Math.ceil(this.image.width / this.eachSize)
     const columnCount = Math.ceil(this.image.height / this.eachSize)
-
+    
     for (let i = 0; i < rowCount; i++) {
       for (let j = 0; j < columnCount; j++) {
         this.frames.push({ x: j * this.eachSize, y: i * this.eachSize })

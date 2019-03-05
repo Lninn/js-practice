@@ -1,9 +1,13 @@
-class Enemy extends Spirit {
+class Enemy extends AnimationStateless {
   constructor() {
-    super('enemy1')
+    super('explosion1')
 
     this.soundEffect = new Audio('audio/boom.mp3')
     this.alive = true
+
+    this.staticImage = config.images['enemy1']
+    this.w = this.staticImage.width
+    this.h = this.staticImage.height
 
     this.setup()
   }
@@ -15,15 +19,19 @@ class Enemy extends Spirit {
   }
 
   update () {
-    this.y += this.speed
-    if (this.y > config.h.value) {
-      this.setup()
+    if (this.isPlaying) {
+      super.update()
+    } else {
+      this.y += this.speed
+      if (this.y > config.h.value) {
+        this.setup()
+      }
     }
   }
 
   collide(plane) {
     for (const b of plane.bullets) {
-      if (intersect(this, b)) {
+      if (intersect(this, b) && ! this.isPlaying) {
         b.alive = false
         // 播放音乐
         this.play() 
