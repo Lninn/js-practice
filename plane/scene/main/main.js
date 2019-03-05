@@ -9,26 +9,23 @@ class SceneMain extends Scene {
   setup() {
     this.bg = Background.new()
     this.plane = Plane.new()
-    
-    this.enemys = []
-    this.enemyOfNumMax = 5
-
-    this.score = 0
-    this.lives = 1000
+    this.enemys = EnemyList.new(this)
 
     this.fps = 0
 
-    this.isProssing = true
+    this.reset()
 
      // 播放音乐
     //  const audio = new Audio('audio/bgm.mp3')
     //  audio.loop = true
     //  audio.play()
+  }
 
+  init() {
     const self = this
     this.keydownEvents = {
       'k': function() {
-        self.playOn()
+        self.reset()
       }
     }
 
@@ -42,9 +39,7 @@ class SceneMain extends Scene {
         }
       }
     })
-  }
 
-  init() {
     this.registerAction('adws', (key) =>{
       this.plane.move(key)
     })
@@ -54,29 +49,9 @@ class SceneMain extends Scene {
     })
   }
 
-  generateEnemys() {
-    if (this.fps % 10 == 0 && this.enemys.length < this.enemyOfNumMax) {
-      const e = Enemy.new()
-      this.enemys.push(e)
-    }
-  }
-
-  remove(list, target) {
-    this[list].splice(this[list].indexOf(target), 1)
-    this.removeElement(target)
-  }
-
-  reduceHealth() {
-    if (this.lives <= 0) {
-      this.isProssing = false
-      this.enemys = []
-    } else {
-      this.enemys = []
-      this.lives -= 100
-    }
-  }
-
-  playOn() {
+  reset() {
+    this.score = 0
+    this.lives = 1000
     this.isProssing = true
   }
 
@@ -85,28 +60,15 @@ class SceneMain extends Scene {
       return
     }
 
-    if (this.isProssing) {
-      this.bg.update(this.ctx)
+    this.fps++
 
-      this.plane.update(this.ctx)
+    if (this.isProssing) {
+      this.bg.update()
+
+      this.plane.update()
   
-      this.generateEnemys()
-      
-      for (const e of this.enemys) {
-        if (!e.alive) {
-          this.enemys.splice(this.enemys.indexOf(e), 1)
-        } else if (e.collide(this.plane)) {
-          e.playAnimation()
-          this.score += 100
-        } else if (intersect(e, this.plane)) {
-          this.reduceHealth()
-        } else {
-          e.update()
-        }
-      }
-    } else {
-      
-    }
+      this.enemys.update()
+    } 
   }
 
   draw() {
@@ -138,9 +100,7 @@ class SceneMain extends Scene {
     } else {
       this.plane.draw(this.ctx)
   
-      for (const e of this.enemys) {
-        e.draw(this.ctx)
-      }
+      this.enemys.draw()
 
       let text = '分数: ' + this.score      
       let w = c.measureText(text).width

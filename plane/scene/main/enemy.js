@@ -1,14 +1,11 @@
 class Enemy extends AnimationStateless {
   constructor() {
-    super('explosion1')
+    super('enemy1')
 
     this.soundEffect = new Audio('audio/boom.mp3')
     this.alive = true
 
-    this.staticImage = config.images['enemy1']
-    this.w = this.staticImage.width
-    this.h = this.staticImage.height
-
+    this.animationName = 'explosion1'
     this.setup()
   }
 
@@ -44,5 +41,54 @@ class Enemy extends AnimationStateless {
 
   play() {
     this.soundEffect.play()
+  }
+}
+
+class EnemyList{
+  constructor(scene) {
+    this.scene = scene
+
+    this.enemyOfNumMax = 5
+    this.list = []
+  }
+
+  static new(...args) {
+    return new this(...args)
+  }
+
+  generate() {
+    if (this.scene.fps % 10 == 0 && this.list.length < this.enemyOfNumMax) {
+      const e = Enemy.new()
+      this.list.push(e)
+    }
+  }
+
+  update() {
+    this.generate()
+
+    for (const e of this.list) {
+      if (!e.alive) {
+        this.list.splice(this.list.indexOf(e), 1)
+      } else if (e.collide(this.scene.plane)) {
+        e.playAnimation()
+        this.scene.score += 100
+      } else if (intersect(e, this.scene.plane)) {
+        if (this.scene.lives <= 100) {
+          this.scene.isProssing = false
+        } else {
+          this.scene.lives -= 100
+        }
+        
+        this.list = []
+      } else {
+        e.update()
+      }
+    }
+  }
+
+  draw() {
+    for (const e of this.list) {
+      e.draw(this.scene.ctx)
+    }
   }
 }

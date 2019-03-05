@@ -1,11 +1,15 @@
 class AnimationStateless extends Animation {
   constructor(name) {
     super(name)
+  }
+
+  initAnimation() {
+    this.animationImage = config.images[this.animationName]
 
     this.frames = []
 
-    const rowCount = Math.ceil(this.image.width / this.eachSize)
-    const columnCount = Math.ceil(this.image.height / this.eachSize)
+    const rowCount = Math.ceil(this.animationImage.width / this.eachSize)
+    const columnCount = Math.ceil(this.animationImage.height / this.eachSize)
     
     for (let i = 0; i < rowCount; i++) {
       for (let j = 0; j < columnCount; j++) {

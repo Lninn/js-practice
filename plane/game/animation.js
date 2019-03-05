@@ -1,6 +1,6 @@
 class Animation extends Spirit {
-  constructor(name, x, y) {
-    super(name, x, y)
+  constructor(name) {
+    super(name)
 
     this.frames = null
     this.index = 0
@@ -11,14 +11,18 @@ class Animation extends Spirit {
     this.lives = 60
     this.alive = true
 
-    // 更改动画的位置
-    this.x = this.x + this.eachSize / 2
-
     // 是否播放动画
     this.isPlaying = false
+
+    this.animationImage = null
   }
 
   playAnimation() {
+    this.initAnimation()
+
+    // 更改动画的位置
+    this.x = this.x + this.eachSize / 2
+
     this.isPlaying = true
   }
 
@@ -29,7 +33,7 @@ class Animation extends Spirit {
 
     if (this.isPlaying) {
       ctx.drawImage(
-        this.image, 
+        this.animationImage, 
         this.frame.x,
         this.frame.y,
         this.eachSize,
@@ -41,7 +45,7 @@ class Animation extends Spirit {
       )
     } else {
       ctx.drawImage(
-        this.staticImage,
+        this.image,
         this.x,
         this.y      
       )
