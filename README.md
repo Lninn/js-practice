@@ -13,7 +13,4 @@
 
 ![title](screenshot/screenshot5.png)
 
-todo
-
-1 爆炸动画消失问题
-2 配置文件 bug
+### Fly-bird
