@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>puzzle</title>
     <style>
-    canvas {
+      canvas {
         display: block;
         margin: 0 auto;
         outline: 1px solid #ddd;
-    }
-    
-    #debug {
+      }
+
+      #debug {
         outline: 1px solid #ddd;
-    }
-    .code-block {
+      }
+      .code-block {
         display: inline-block;
         width: 240px;
-    }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <canvas id="container" width="300" height="300"></canvas>
 
     <div id="debug"></div>
 
+    <script src="./utils.js"></script>
     <script src="./main.js"></script>
-</body>
+  </body>
 </html>
