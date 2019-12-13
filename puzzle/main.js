@@ -1,18 +1,24 @@
-let __DEV__ = false
+let __DEV__ = true
 
 const debugEl = e("#debug")
-const printSource = function(list) {
-  __DEV__ && log("debug ", list)
-
+const printSource = function(blocks) {
+  const list = [...blocks].map(s => s.raw)
   const r = canvas.getBoundingClientRect()
-  list.unshift(r)
 
-  let html = ""
-  for (let i = 0, len = list.length; i < len; i++) {
+  let html = `
+    <div class="canvas-data">
+        <pre>
+            ${JSON.stringify(r, null, 5)}
+        </pre>
+    </div>
+  `
+
+  for (const b of blocks) {
+    const [x, y] = b.raw.slice(4)
     const t = `
     <div class="code-block">
         <pre>
-            ${JSON.stringify(list[i], null, 4)}
+            ${JSON.stringify({ idx: b.index, x, y }, null, 5)}
         </pre>
     </div>
         `
@@ -81,6 +87,8 @@ class Puzzle {
 
       if (x >= start && x <= start + width) {
         if (y >= end && y <= end + height) {
+          this.blocks.delete(b)
+          this.blocks.add(b)
           return b
         }
       }
@@ -90,27 +98,83 @@ class Puzzle {
   }
 
   draw() {
+    __DEV__ && printSource(this.blocks)
+
     for (const { raw } of this.blocks) {
       this.ctx.drawImage(img, ...raw)
     }
   }
 }
 
+/**
+ * Block Class
+ */
 class Block {
   constructor(rawData) {
     this.raw = rawData
 
-    const blockData = rawData.slice(4)
-    this.blockData = blockData
-
-    const [start, end, width, height] = blockData
+    const [start, end, width, height] = rawData.slice(4)
     this.start = start
     this.end = end
     this.width = width
     this.height = height
+
+    // 保存旧的位置数据
+    this.lastStart = start
+    this.lastEnd = end
+
+    this.setup()
   }
 
-  static isSameBlock(b1, b2) {}
+  setup() {
+    this.index = `b${Block.numOfItem}`
+    Block.numOfItem += 1
+  }
+
+  changePostion(downP, moveP) {
+    const { x, y } = moveP
+    this.start = x - downP.x
+    this.end = y - downP.y
+
+    this.updateRaw([this.start, this.end])
+  }
+
+  recovery() {
+    this.start = this.lastStart
+    this.end = this.lastEnd
+
+    this.updateRaw([this.lastStart, this.lastEnd])
+  }
+
+  /**
+   *
+   * @param {新数据，数组} updatedData
+   * @param {数据类型 位置 position、大小 size} type
+   */
+  updateRaw(updatedData = [], type = "position") {
+    switch (type) {
+      case "size":
+        debug("updateRaw size")
+        break
+      case "position":
+        this.raw.splice(4, 2, ...updatedData)
+        break
+
+      default:
+        debug(`updateRaw unknow type ${type}`)
+        break
+    }
+  }
+
+  getRect() {
+    return [this.start, this.end, this.width, this.height]
+  }
+
+  static numOfItem = 1
+
+  static isSameBlock(b1, b2) {
+    return !!b2 && sumOfList(b1.getRect()) === sumOfList(b2.getRect())
+  }
 }
 
 const __main = function() {
@@ -150,14 +214,18 @@ const __main = function() {
     }
   }
 
-  printSource([...source])
-
   const puzzle = Puzzle.getInstance(ctx, source)
 
+  printSource(puzzle.blocks)
+
   const borderColor = "#2f54eb"
-  const fillColor = "#2f54eb"
+  const fillColor = "#ea4335"
   ctx.fillStyle = fillColor
+  ctx.lineWidth = 3
   ctx.strokeStyle = borderColor
+
+  ctx.shadowColor = "#ea4335"
+  ctx.shadowBlur = 5
 
   puzzle.draw()
 
@@ -172,41 +240,62 @@ const __main = function() {
   }
 
   let hasDrag = false
+  let currentBlock = null
+
+  const mouseDownP = { x: 0, y: 0 }
   const handleCanvasMouseDown = function(e) {
-    hasDrag = true
-  }
-  const handleCanvasMouseUp = function(e) {
-    hasDrag = false
-  }
-
-  let lastBlock
-  const sum = function(t = []) {
-    if (!t.length) {
-      return 0
-    }
-    return t.reduce(function(a, b) {
-      return a + b
-    }, 0)
-  }
-  const isSameBlock = function(b1 = {}, b2 = {}) {
-    return !!b2 && sum(b1.blockData) === sum(b2.blockData)
-  }
-  const handleCanvasMouseMove = function(e) {
     const { offsetX: x, offsetY: y } = e
-
-    if (!hasDrag) {
-      return
-    }
 
     const b = puzzle.getBlock({
       x,
       y,
     })
-    if (b && !isSameBlock(b, lastBlock)) {
-      lastBlock = b
+
+    // __DEV__ && debug({ x, y, b })
+
+    if (b) {
+      currentBlock = b
+      hasDrag = true
+
+      mouseDownP.x = x - b.start
+      mouseDownP.y = y - b.end
+    }
+  }
+
+  const handleCanvasMouseUp = function(e) {
+    if (hasDrag) {
+      hasDrag = false
+    }
+
+    if (currentBlock) {
+      currentBlock.recovery()
 
       ctx.clearRect(0, 0, mainWidth, mainHeight)
-      ctx.drawImage(img, ...b.raw)
+      puzzle.draw()
+    }
+  }
+
+  let lastBlock
+  const mouseMoveP = { x: 0, y: 0 }
+  const handleCanvasMouseMove = function(e) {
+    const { offsetX: x, offsetY: y } = e
+
+    mouseMoveP.x = x
+    mouseMoveP.y = y
+
+    if (!hasDrag) {
+      return
+    }
+
+    if (currentBlock && hasDrag) {
+      currentBlock.changePostion(mouseDownP, mouseMoveP)
+
+      ctx.clearRect(0, 0, mainWidth, mainHeight)
+      puzzle.draw()
+
+      ctx.strokeRect(...currentBlock.getRect())
+    } else if (currentBlock) {
+      currentBlock = null
     }
   }
 

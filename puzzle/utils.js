@@ -1,4 +1,9 @@
 const log = console.log.bind(console)
+
+const debug = function(...args) {
+  log("DEBUG# ", ...args)
+}
+
 const e = sel => document.querySelector(sel)
 
 const sumOfList = function(list = []) {
@@ -7,11 +12,11 @@ const sumOfList = function(list = []) {
     return 0
   }
 
-  if (!arr.length) {
+  if (!list.length) {
     return 0
   }
 
-  return arr.reduce(function(a, b) {
+  return list.reduce(function(a, b) {
     return a + b
   }, 0)
 }
