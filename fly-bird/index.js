@@ -14,11 +14,9 @@ const __main = function() {
   const ground = Ground(App)
 
   const pipes = []
-  const numOfPipes = 3
+  const numOfPipes = 5
   for (var i = 0; i < numOfPipes; i++) {
     const p = new Pipe(App)
-    // 改变 pipe 的 x 坐标
-    // p.x = p.x + i * 400
     pipes.push(p)
   }
   // log('pipes ', pipes)
@@ -32,7 +30,7 @@ const __main = function() {
 
   App.update = function() {
     bird.update()
-    
+
     if (App.end) {
       return
     }
