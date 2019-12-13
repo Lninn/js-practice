@@ -97,83 +97,35 @@ class Puzzle {
     return null
   }
 
+  /**
+   * 获取和 b 最近的 block
+   *
+   * @param {当前移动的 block} b
+   */
+  getCloseBlock(b) {
+    let distance = Number.MAX_SAFE_INTEGER
+    let currentBlock
+    for (const item of this.blocks) {
+      if (item.index === b.index) {
+        continue
+      }
+      const d = getDistanceBetween2B(b, item)
+      if (d <= distance) {
+        distance = d
+        currentBlock = item
+      }
+    }
+    log(distance)
+
+    return currentBlock
+  }
+
   draw() {
     __DEV__ && printSource(this.blocks)
 
     for (const { raw } of this.blocks) {
       this.ctx.drawImage(img, ...raw)
     }
-  }
-}
-
-/**
- * Block Class
- */
-class Block {
-  constructor(rawData) {
-    this.raw = rawData
-
-    const [start, end, width, height] = rawData.slice(4)
-    this.start = start
-    this.end = end
-    this.width = width
-    this.height = height
-
-    // 保存旧的位置数据
-    this.lastStart = start
-    this.lastEnd = end
-
-    this.setup()
-  }
-
-  setup() {
-    this.index = `b${Block.numOfItem}`
-    Block.numOfItem += 1
-  }
-
-  changePostion(downP, moveP) {
-    const { x, y } = moveP
-    this.start = x - downP.x
-    this.end = y - downP.y
-
-    this.updateRaw([this.start, this.end])
-  }
-
-  recovery() {
-    this.start = this.lastStart
-    this.end = this.lastEnd
-
-    this.updateRaw([this.lastStart, this.lastEnd])
-  }
-
-  /**
-   *
-   * @param {新数据，数组} updatedData
-   * @param {数据类型 位置 position、大小 size} type
-   */
-  updateRaw(updatedData = [], type = "position") {
-    switch (type) {
-      case "size":
-        debug("updateRaw size")
-        break
-      case "position":
-        this.raw.splice(4, 2, ...updatedData)
-        break
-
-      default:
-        debug(`updateRaw unknow type ${type}`)
-        break
-    }
-  }
-
-  getRect() {
-    return [this.start, this.end, this.width, this.height]
-  }
-
-  static numOfItem = 1
-
-  static isSameBlock(b1, b2) {
-    return !!b2 && sumOfList(b1.getRect()) === sumOfList(b2.getRect())
   }
 }
 
@@ -290,10 +242,13 @@ const __main = function() {
     if (currentBlock && hasDrag) {
       currentBlock.changePostion(mouseDownP, mouseMoveP)
 
+      const closeBlock = puzzle.getCloseBlock(currentBlock)
+
       ctx.clearRect(0, 0, mainWidth, mainHeight)
       puzzle.draw()
 
       ctx.strokeRect(...currentBlock.getRect())
+      ctx.strokeRect(...closeBlock.getRect())
     } else if (currentBlock) {
       currentBlock = null
     }
