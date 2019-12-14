@@ -3,6 +3,8 @@
  */
 class Block {
   constructor(rawData) {
+    __DEV__ && debug("Block constructor")
+
     this.raw = rawData
 
     const [start, end, width, height] = rawData.slice(4)

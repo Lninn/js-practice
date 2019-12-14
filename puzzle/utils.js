@@ -48,3 +48,31 @@ const getDistanceBetween2B = function(b1, b2) {
 
   return calcDistanceBetween2P(p1, p2)
 }
+
+const printSource = function(canvas, blocks) {
+  const debugEl = e("#debug")
+  const list = [...blocks].map(s => s.raw)
+  const r = canvas.getBoundingClientRect()
+
+  let html = `
+    <div class="canvas-data">
+        <pre>
+            ${JSON.stringify(r, null, 5)}
+        </pre>
+    </div>
+  `
+
+  for (const b of blocks) {
+    const [x, y] = b.raw.slice(4)
+    const t = `
+    <div class="code-block">
+        <pre>
+            ${JSON.stringify({ idx: b.index, x, y }, null, 5)}
+        </pre>
+    </div>
+        `
+    html += t
+  }
+
+  debugEl.innerHTML = html
+}
