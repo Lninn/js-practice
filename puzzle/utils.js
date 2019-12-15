@@ -102,16 +102,6 @@ const generatelist = function(start, end) {
   return list
 }
 
-const randomList = function(list = []) {
-  if (!list.length) {
-    return list
-  }
-
-  return list.sort(function(a, b) {
-    return Math.random() < 0.5
-  })
-}
-
 // http://stackoverflow.com/questions/962802#962890
 const shuffle = function(array) {
   var tmp,
@@ -125,4 +115,17 @@ const shuffle = function(array) {
       array[top] = tmp
     }
   return array
+}
+
+const isSortedList = function(list = []) {
+  for (let i = 0, len = list.length; i < len - 1; i++) {
+    const a = list[i]
+    const b = list[i + 1]
+
+    if (b !== a + 1) {
+      return false
+    }
+  }
+
+  return true
 }

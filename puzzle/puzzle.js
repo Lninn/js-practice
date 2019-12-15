@@ -5,6 +5,8 @@ class Puzzle {
     this.app = app
     this.source = null
 
+    this.running = true
+
     this.setup()
     this.init()
   }
@@ -177,6 +179,10 @@ class Puzzle {
   handleMouseDown(e) {
     const { x, y } = gPosOfEvt(e)
 
+    if (!this.running) {
+      return
+    }
+
     const b = this.getBlock({
       x,
       y,
@@ -189,10 +195,16 @@ class Puzzle {
       this.mouseDownP.x = x - b.start
       this.mouseDownP.y = y - b.end
     }
+
+    // __DEV__ && debug("handleMouseDown")
   }
 
   handleMouseUp(e) {
     const { currentBlock } = this
+
+    if (!this.running) {
+      return
+    }
 
     if (this.hasDrag) {
       this.hasDrag = false
@@ -210,6 +222,12 @@ class Puzzle {
 
     this.isSwap = false
     this.swapTarget = null
+
+    const indexs = [...this.blocks].map(b => b.index)
+    if (isSortedList(indexs)) {
+      this.running = false
+      this.app.nextLevel()
+    }
 
     printSource(this.blocks)
   }
@@ -239,6 +257,8 @@ class Puzzle {
     } else if (currentBlock) {
       this.currentBlock = null
     }
+
+    // __DEV__ && debug("handleMouseMove", this)
   }
 
   draw() {

@@ -2,12 +2,18 @@ class App {
   constructor() {
     __DEV__ && debug("App constructor")
 
+    this.timerOfStart = null
+    this.timerOfEnd = null
+    this.timeIntervalOfStart = 10
+    this.timeIntervalOfEnd = 3
+
     this.setup()
 
     this.canvasWidth = 300
     this.canvasHeight = 300
     this.canvasPadding = 12
 
+    this.currentImg = null
     this.resources = {
       img1: "img.jpg",
       img2: "img2.jpg",
@@ -29,6 +35,15 @@ class App {
 
     this.canvas = canvas
     this.ctx = ctx
+
+    const that = this
+    this.timerOfStart = setInterval(function() {
+      if (that.timeIntervalOfStart === 0) {
+        clearInterval(that.timerOfStart)
+        that.timerOfStart = null
+      }
+      that.timeIntervalOfStart -= 1
+    }, 1000)
   }
 
   loadResource(callback) {
@@ -59,9 +74,19 @@ class App {
     canvas.addEventListener(type, fn)
   }
 
+  init(imgName) {
+    this.updateImage(imgName)
+    this.setCanvasSize()
+  }
+
+  updateImage(name) {
+    const img = this.images[name]
+    this.currentImg = img
+  }
+
   setCanvasSize() {
     const { canvas, canvasPadding: p, images } = this
-    const { width, height } = images["img2"]
+    const { width, height } = this.currentImg
 
     const w = width + p
     const h = height + p
@@ -74,7 +99,7 @@ class App {
 
   drawBlock(data) {
     const { ctx, images } = this
-    const img = images["img2"]
+    const img = this.currentImg
 
     ctx.drawImage(img, ...data)
   }
@@ -111,5 +136,46 @@ class App {
 
   drawClose(rect) {
     this.drawRect(rect, "close")
+  }
+
+  drawNextBoard(second) {
+    const { ctx, canvasWidth, canvasHeight } = this
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+
+    const padding = 80
+    const w2 = canvasWidth - padding * 2
+    const h2 = canvasHeight - padding * 2
+
+    ctx.strokeStyle = "red"
+    ctx.lineWidth = 1
+    ctx.fillStyle = "rgba(0, 0, 0, .4)"
+    ctx.fillRect(padding, padding, w2, h2)
+
+    const text = `${second} 秒后进入下一关卡`
+    ctx.font = "30px serif"
+    ctx.fillStyle = "#fff"
+    ctx.textBaseline = "hanging"
+
+    const { width } = ctx.measureText(text)
+    const x = (canvasWidth - width) / 2
+    const y = canvasHeight / 2
+
+    ctx.fillText(text, x, y)
+  }
+
+  nextLevel() {
+    const that = this
+    this.timerOfEnd = setInterval(function() {
+      that.timeIntervalOfEnd -= 1
+      if (that.timeIntervalOfEnd === 0) {
+        clearInterval(that.timerOfEnd)
+        that.timerOfEnd = null
+      } else {
+        that.drawNextBoard(that.timeIntervalOfEnd)
+      }
+    }, 1000)
+
+    this.drawNextBoard(this.timeIntervalOfEnd)
   }
 }
