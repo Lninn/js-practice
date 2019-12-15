@@ -2,17 +2,15 @@
  * Block Class
  */
 class Block {
-  constructor(app, rawData) {
+  constructor(app, rawData, index) {
     __DEV__ && debug("Block constructor")
 
     this.app = app
 
     this.reset(rawData)
 
-    this.setup()
+    this.setup(index)
   }
-
-  static numOfItem = 1
 
   static isSameBlock(b1, b2) {
     return !!b2 && sumOfList(b1.getRect()) === sumOfList(b2.getRect())
@@ -22,12 +20,10 @@ class Block {
     this.index === block.index
   }
 
-  setup() {
+  setup(index) {
     this.nameOfPre = "BLOCK"
-    this.index = Block.numOfItem
-    this.name = `${this.nameOfPre}${this.index}`
-
-    Block.numOfItem += 1
+    this.index = index
+    this.name = `${this.nameOfPre}${index}`
   }
 
   reset(rawData) {

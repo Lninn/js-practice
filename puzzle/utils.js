@@ -89,3 +89,40 @@ const printIndex = function(blocks) {
   const t = [...blocks].map(b => b.name)
   log(t)
 }
+
+const generatelist = function(start, end) {
+  const list = []
+  if (start > end) {
+    return list
+  }
+
+  for (let i = start; i < end; i++) {
+    list.push(i)
+  }
+  return list
+}
+
+const randomList = function(list = []) {
+  if (!list.length) {
+    return list
+  }
+
+  return list.sort(function(a, b) {
+    return Math.random() < 0.5
+  })
+}
+
+// http://stackoverflow.com/questions/962802#962890
+const shuffle = function(array) {
+  var tmp,
+    current,
+    top = array.length
+  if (top)
+    while (--top) {
+      current = Math.floor(Math.random() * (top + 1))
+      tmp = array[current]
+      array[current] = array[top]
+      array[top] = tmp
+    }
+  return array
+}

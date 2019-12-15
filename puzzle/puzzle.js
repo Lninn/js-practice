@@ -25,9 +25,11 @@ class Puzzle {
     const w = canvasWidth - p
     const h = canvasHeight - p
 
-    const source = new Set()
+    const source = new Map()
     const numOfimg = 3
     let spacing = 3
+
+    let mapIndex = 1
 
     const rowUnit = Math.round(w / numOfimg)
     const colUnit = Math.round(h / numOfimg)
@@ -48,19 +50,50 @@ class Puzzle {
           colUnit,
         ]
 
-        source.add(t)
+        source.set(mapIndex, t)
+        mapIndex += 1
       }
     }
 
-    this.source = source
+    const s = this.shuffleSource(source)
+
+    this.source = s
+  }
+
+  shuffleSource(source) {
+    const s = new Map()
+    const listOfValues = Array.from(source.values())
+
+    const list = generatelist(1, 10)
+    const randomList = shuffle(list)
+
+    let counter = 0
+    while (randomList.length) {
+      // old value
+      const m = listOfValues[counter]
+
+      // random value
+      const i = randomList.pop()
+      const n = source.get(i)
+
+      const t = [...m.slice(0, 4), ...n.slice(4, 6), ...m.slice(6, 8)]
+
+      s.set(i, t)
+      counter += 1
+    }
+
+    return s
   }
 
   init() {
     const { app } = this
     this.blocks = new Set()
 
-    for (const raw of this.source) {
-      const b = new Block(app, raw)
+    const values = this.source.values()
+    const names = this.source.keys()
+
+    for (const [key, value] of this.source) {
+      const b = new Block(app, value, key)
       this.addBlock(b)
     }
 
@@ -71,7 +104,6 @@ class Puzzle {
     // event data
     this.hasDrag = false
     this.currentBlock = null
-    this.lastBlock = null
     this.mouseDownP = { x: 0, y: 0 }
     this.mouseMoveP = { x: 0, y: 0 }
 
