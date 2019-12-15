@@ -76,3 +76,8 @@ const printSource = function(canvas, blocks) {
 
   debugEl.innerHTML = html
 }
+
+const printIndex = function(blocks) {
+  const t = [...blocks].map(b => b.name)
+  log(t)
+}

@@ -10,6 +10,7 @@ class App {
 
     this.resources = {
       img1: "img.jpg",
+      img2: "img2.jpg",
     }
     this.images = {}
   }
@@ -60,7 +61,7 @@ class App {
 
   setCanvasSize() {
     const { canvas, canvasPadding: p, images } = this
-    const { width, height } = images["img1"]
+    const { width, height } = images["img2"]
 
     const w = width + p
     const h = height + p
@@ -73,8 +74,42 @@ class App {
 
   drawBlock(data) {
     const { ctx, images } = this
-    const img = images["img1"]
+    const img = images["img2"]
 
     ctx.drawImage(img, ...data)
+  }
+
+  /**
+   * draw rect
+   *
+   * @param {rect} rect
+   * @param {draw type： current 当前拖动的 block，close 最近的 block } type
+   */
+  drawRect(rect, type) {
+    const { ctx } = this
+
+    // ctx.shadowColor = "#ea4335"
+    // ctx.shadowBlur = 3
+
+    switch (type) {
+      case "current":
+        ctx.strokeStyle = "red"
+        ctx.lineWidth = 3
+        break
+      case "close":
+        ctx.strokeStyle = "blue"
+        ctx.lineWidth = 3
+        break
+    }
+
+    ctx.strokeRect(...rect)
+  }
+
+  drawCurrent(rect) {
+    this.drawRect(rect, "current")
+  }
+
+  drawClose(rect) {
+    this.drawRect(rect, "close")
   }
 }
