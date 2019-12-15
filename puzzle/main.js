@@ -7,5 +7,7 @@ app.loadResource(function() {
 
   const puzzle = Puzzle.getInstance(app)
 
+  printSource(puzzle.blocks)
+
   puzzle.draw()
 })

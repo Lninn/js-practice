@@ -18,6 +18,10 @@ class Block {
     return !!b2 && sumOfList(b1.getRect()) === sumOfList(b2.getRect())
   }
 
+  isSame(block) {
+    this.index === block.index
+  }
+
   setup() {
     this.nameOfPre = "BLOCK"
     this.index = Block.numOfItem

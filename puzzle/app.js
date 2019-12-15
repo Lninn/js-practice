@@ -94,11 +94,11 @@ class App {
     switch (type) {
       case "current":
         ctx.strokeStyle = "red"
-        ctx.lineWidth = 3
+        ctx.lineWidth = 1
         break
       case "close":
-        ctx.strokeStyle = "blue"
-        ctx.lineWidth = 3
+        ctx.strokeStyle = "#ddd"
+        ctx.lineWidth = 1
         break
     }
 

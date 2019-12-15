@@ -19,15 +19,18 @@ class Puzzle {
 
   setup() {
     const {
-      app: { canvasWidth, canvasHeight },
+      app: { canvasWidth, canvasHeight, canvasPadding: p },
     } = this
+
+    const w = canvasWidth - p
+    const h = canvasHeight - p
 
     const source = new Set()
     const numOfimg = 3
     let spacing = 3
 
-    const rowUnit = Math.round(canvasWidth / numOfimg)
-    const colUnit = Math.round(canvasHeight / numOfimg)
+    const rowUnit = Math.round(w / numOfimg)
+    const colUnit = Math.round(h / numOfimg)
     for (let col = 0; col < numOfimg; col++) {
       for (let row = 0; row < numOfimg; row++) {
         // calc space
@@ -61,6 +64,10 @@ class Puzzle {
       this.addBlock(b)
     }
 
+    // swap data
+    this.isSwap = false
+    this.swapTarget = null
+
     // event data
     this.hasDrag = false
     this.currentBlock = null
@@ -92,49 +99,40 @@ class Puzzle {
   }
 
   /**
-   * 获取和 b 最近的 block
-   *
-   * @param {当前移动的 block} b
+   * 标记和 currentBlock 最近的 block
    */
-  getCloseBlock(b) {
+  markCloseBlock() {
     let distance = Number.MAX_SAFE_INTEGER
-    let currentBlock
+    let target
+
     for (const item of this.blocks) {
-      if (item.index === b.index) {
+      if (item === this.currentBlock) {
         continue
       }
-      const d = getDistanceBetween2B(b, item)
+      const d = getDistanceBetween2B(this.currentBlock, item)
       if (d <= distance) {
         distance = d
-        currentBlock = item
+        target = item
       }
     }
 
-    this.swapData = {
-      do: distance < 50,
-      block: currentBlock,
-    }
-
-    return currentBlock
+    // 标记 swap 信息
+    this.isSwap = distance < 50
+    this.swapTarget = target
   }
 
   swap() {
-    const {
-      app,
-      currentBlock,
-      swapData: { block: closeBlock },
-    } = this
-    debug(currentBlock, closeBlock)
+    const { app, currentBlock, swapTarget, isSwap } = this
 
-    if (!closeBlock) {
+    if (!isSwap) {
       return
     }
 
-    const t = [closeBlock.lastStart, closeBlock.lastEnd]
-    const t2 = closeBlock.index
+    const t = [swapTarget.lastStart, swapTarget.lastEnd]
+    const t2 = swapTarget.index
 
-    closeBlock.swapPosition(currentBlock.lastStart, currentBlock.lastEnd)
-    closeBlock.changeIndex(currentBlock)
+    swapTarget.swapPosition(currentBlock.lastStart, currentBlock.lastEnd)
+    swapTarget.changeIndex(currentBlock)
 
     currentBlock.swapPosition(...t)
     currentBlock.changeIndex({ index: t2 })
@@ -145,7 +143,7 @@ class Puzzle {
   }
 
   handleMouseDown(e) {
-    const { offsetX: x, offsetY: y } = e
+    const { x, y } = gPosOfEvt(e)
 
     const b = this.getBlock({
       x,
@@ -168,7 +166,7 @@ class Puzzle {
       this.hasDrag = false
     }
 
-    if (this.swapData && this.swapData.do) {
+    if (this.isSwap) {
       this.swap()
     } else if (currentBlock) {
       currentBlock.recovery()
@@ -178,11 +176,14 @@ class Puzzle {
       this.draw()
     }
 
-    printIndex(this.blocks)
+    this.isSwap = false
+    this.swapTarget = null
+
+    printSource(this.blocks)
   }
 
   handleMouseMove(e) {
-    const { offsetX: x, offsetY: y } = e
+    const { x, y } = gPosOfEvt(e)
     const { currentBlock, mouseDownP, mouseMoveP } = this
 
     mouseMoveP.x = x
@@ -195,23 +196,31 @@ class Puzzle {
     if (currentBlock && this.hasDrag) {
       currentBlock.changePostion(mouseDownP, mouseMoveP)
 
-      const closeBlock = this.getCloseBlock(currentBlock)
+      this.markCloseBlock()
 
       app.ctx.clearRect(0, 0, app.canvasWidth, app.canvasHeight)
+
       this.draw()
 
+      app.drawClose(this.swapTarget.getRect())
       app.drawCurrent(currentBlock.getRect())
-      app.drawClose(closeBlock.getRect())
     } else if (currentBlock) {
       this.currentBlock = null
     }
   }
 
   draw() {
-    const { blocks } = this
+    const { blocks, currentBlock } = this
 
-    for (const block of this.blocks) {
+    for (const block of blocks) {
+      if (block === currentBlock) {
+        continue
+      }
       block.draw()
+    }
+
+    if (currentBlock) {
+      currentBlock.draw()
     }
   }
 }
