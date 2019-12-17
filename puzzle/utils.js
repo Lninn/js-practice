@@ -32,7 +32,7 @@ const getCenterPoint = function({ start, end, width, height }) {
   h = start + width
   v = end + height
 
-  return { x: h / 3, y: v / 2 }
+  return { x: h / 2, y: v / 2 }
 }
 
 const calcDistanceBetween2P = function(p1, p2) {
@@ -52,6 +52,11 @@ const getDistanceBetween2B = function(b1, b2) {
 const gPosOfEvt = function(e) {
   const { offsetX: x, offsetY: y } = e
   return { x, y }
+}
+
+const gKeyOfEvt = function(e) {
+  const { key } = e
+  return key
 }
 
 const printSource = function(blocks) {

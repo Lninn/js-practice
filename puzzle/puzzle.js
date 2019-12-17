@@ -24,17 +24,26 @@ class Puzzle {
       app: { canvasWidth, canvasHeight, canvasPadding: p },
     } = this
 
+    const { currentImg } = app
+
     const w = canvasWidth - p
     const h = canvasHeight - p
 
     const source = new Map()
-    const numOfimg = 3
-    let spacing = 3
+    const numOfimg = 2
+    this.numOfimg = numOfimg
+    let spacing = p / 2
 
     let mapIndex = 1
 
+    // canvas unit
     const rowUnit = Math.round(w / numOfimg)
     const colUnit = Math.round(h / numOfimg)
+
+    // image unit
+    const rowUnitOfImg = Math.round(currentImg.width / numOfimg)
+    const colUnitOfImg = Math.round(currentImg.height / numOfimg)
+
     for (let col = 0; col < numOfimg; col++) {
       for (let row = 0; row < numOfimg; row++) {
         // calc space
@@ -42,10 +51,10 @@ class Puzzle {
         const c = (col + 1) * spacing
 
         const t = [
-          row * rowUnit,
-          col * colUnit,
-          rowUnit,
-          colUnit,
+          row * rowUnitOfImg,
+          col * colUnitOfImg,
+          rowUnitOfImg,
+          colUnitOfImg,
           row * rowUnit + r,
           col * colUnit + c,
           rowUnit,
@@ -66,7 +75,7 @@ class Puzzle {
     const s = new Map()
     const listOfValues = Array.from(source.values())
 
-    const list = generatelist(1, 10)
+    const list = generatelist(1, this.numOfimg * this.numOfimg + 1)
     const randomList = shuffle(list)
 
     let counter = 0
@@ -89,15 +98,7 @@ class Puzzle {
 
   init() {
     const { app } = this
-    this.blocks = new Set()
-
-    const values = this.source.values()
-    const names = this.source.keys()
-
-    for (const [key, value] of this.source) {
-      const b = new Block(app, value, key)
-      this.addBlock(b)
-    }
+    this.initBlock()
 
     // swap data
     this.isSwap = false
@@ -109,13 +110,22 @@ class Puzzle {
     this.mouseDownP = { x: 0, y: 0 }
     this.mouseMoveP = { x: 0, y: 0 }
 
-    app.bindEvnet("mousedown", this.handleMouseDown.bind(this))
-    app.bindEvnet("mouseup", this.handleMouseUp.bind(this))
-    app.bindEvnet("mousemove", this.handleMouseMove.bind(this))
+    app.bindEvent("mousedown", this.handleMouseDown.bind(this))
+    app.bindEvent("mouseup", this.handleMouseUp.bind(this))
+    app.bindEvent("mousemove", this.handleMouseMove.bind(this))
+    app.bindEvent('keydown', this.handleKeyDown.bind(this))
   }
 
-  addBlock(b) {
-    this.blocks.add(b)
+  initBlock(b) {
+    this.blocks = new Set()
+
+    const values = this.source.values()
+    const names = this.source.keys()
+
+    for (const [key, value] of this.source) {
+      const b = new Block(app, value, key)
+      this.blocks.add(b)
+    }
   }
 
   getBlock({ x, y }) {
@@ -155,12 +165,8 @@ class Puzzle {
     this.swapTarget = target
   }
 
-  swap() {
+  updateOfSwap() {
     const { app, currentBlock, swapTarget, isSwap } = this
-
-    if (!isSwap) {
-      return
-    }
 
     const t = [swapTarget.lastStart, swapTarget.lastEnd]
     const t2 = swapTarget.index
@@ -170,16 +176,12 @@ class Puzzle {
 
     currentBlock.swapPosition(...t)
     currentBlock.changeIndex({ index: t2 })
-
-    app.ctx.clearRect(0, 0, app.canvasWidth, app.canvasHeight)
-
-    this.draw()
   }
 
   handleMouseDown(e) {
     const { x, y } = gPosOfEvt(e)
 
-    if (!this.running) {
+    if (!this.app.running) {
       return
     }
 
@@ -200,32 +202,29 @@ class Puzzle {
   }
 
   handleMouseUp(e) {
-    const { currentBlock } = this
-
-    if (!this.running) {
+    const { app, currentBlock } = this
+    
+    if (!app.running) {
       return
     }
-
+    
     if (this.hasDrag) {
       this.hasDrag = false
     }
 
     if (this.isSwap) {
-      this.swap()
+      this.updateOfSwap()
     } else if (currentBlock) {
       currentBlock.recovery()
-
-      app.ctx.clearRect(0, 0, app.canvasWidth, app.canvasHeight)
-
-      this.draw()
     }
+
+    this.draw()
 
     this.isSwap = false
     this.swapTarget = null
 
     const indexs = [...this.blocks].map(b => b.index)
     if (isSortedList(indexs)) {
-      this.running = false
       this.app.nextLevel()
     }
 
@@ -243,25 +242,24 @@ class Puzzle {
       return
     }
 
-    if (currentBlock && this.hasDrag) {
-      currentBlock.changePostion(mouseDownP, mouseMoveP)
-
-      this.markCloseBlock()
-
-      app.ctx.clearRect(0, 0, app.canvasWidth, app.canvasHeight)
-
+    if (currentBlock) {
+      this.updateOfMove()
       this.draw()
-
-      app.drawClose(this.swapTarget.getRect())
-      app.drawCurrent(currentBlock.getRect())
-    } else if (currentBlock) {
-      this.currentBlock = null
     }
-
-    // __DEV__ && debug("handleMouseMove", this)
   }
 
-  draw() {
+  handleKeyDown(e) {
+    log('key down')
+  }
+
+  updateOfMove() {
+    const { currentBlock, mouseDownP, mouseMoveP } = this
+    currentBlock.changePostion(mouseDownP, mouseMoveP)
+
+    this.markCloseBlock()
+  }
+
+  drawBlocks() {
     const { blocks, currentBlock } = this
 
     for (const block of blocks) {
@@ -273,6 +271,28 @@ class Puzzle {
 
     if (currentBlock) {
       currentBlock.draw()
+    }
+  }
+
+  draw() {
+    const {
+      app,
+      currentBlock,
+      swapTarget,
+      mouseDownP,
+      mouseMoveP,
+    } = this
+
+    app.clearRect()
+
+    this.drawBlocks()
+
+    if (swapTarget) {
+      app.drawClose(swapTarget.getRect())
+    }
+
+    if (currentBlock) {
+      app.drawCurrent(currentBlock.getRect())
     }
   }
 }
