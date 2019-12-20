@@ -1,6 +1,6 @@
 const config = {
-  sel: '#canvas',
   __DEV__: true,
+  sel: '#canvas',
   canvasWidth: 600,
   canvasHeight: 400,
   canvasPadding: 12,
@@ -9,4 +9,5 @@ const config = {
     img2: "img/img2.jpg",
   },
   defaultName: 'img1',
+  numOfimg: 3,
 }

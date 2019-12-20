@@ -81,6 +81,10 @@ class App {
     canvas.addEventListener(type, fn)
   }
 
+  isRun() {
+    return this.running
+  }
+
   /**
    * draw rect
    *
@@ -118,11 +122,13 @@ class App {
   drawNextBoard(second) {
     const { ctx, canvasWidth, canvasHeight } = this
 
-    this.clearRect()
+    this.puzzle.draw()
 
     const padding = 80
     const w2 = canvasWidth - padding * 2
     const h2 = canvasHeight - padding * 2
+
+    ctx.shadowBlur = 0
 
     ctx.strokeStyle = "red"
     ctx.lineWidth = 1
@@ -141,7 +147,45 @@ class App {
     ctx.fillText(text, x, y)
   }
 
-  nextLevel() {}
+  startNew() {
+    log('换一图片继续')
+
+    this.clearRect()
+
+    const name = 'img2'
+    this.updateImage(name)
+
+    this.puzzle.setup()
+    this.puzzle.init()
+    this.puzzle.draw()
+    
+    this.running = true
+  }
+
+  nextLevel() {
+    this.running = false
+
+    let second = 3
+    let timer
+    let that = this
+    const run = function() {
+      timer = setTimeout(function() {
+        second -= 1
+
+        if (second === -1) {
+          clearTimeout(timer)
+          that.startNew()
+          return
+        }
+
+        that.drawNextBoard(second)
+        run()
+      }, 1000)
+    }
+
+    run()
+    this.drawNextBoard(second)
+  }
 
   clearRect() {
     const { ctx, canvasWidth: w, canvasHeight: h, canvasPadding: p } = this
