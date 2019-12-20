@@ -1,26 +1,8 @@
 class App {
   constructor() {
-    __DEV__ && debug("App constructor")
-
-    this.timerOfStart = null
-    this.timerOfEnd = null
-    this.timeIntervalOfStart = 10
-    this.timeIntervalOfEnd = 3
+    config.__DEV__ && debug("App constructor")
 
     this.setup()
-
-    this.canvasWidth = 400
-    this.canvasHeight = 300
-    this.canvasPadding = 12
-
-    this.currentImg = null
-    this.resources = {
-      img1: "img.jpg",
-      img2: "img2.jpg",
-    }
-    this.images = {}
-
-    this.running = true
   }
 
   static getInstance(...args) {
@@ -32,23 +14,46 @@ class App {
   }
 
   setup() {
-    const canvas = e("#container")
+    const sel = config.sel || '#canvas'
+    const canvas = e(sel)
     const ctx = canvas.getContext("2d")
 
     this.canvas = canvas
     this.ctx = ctx
 
-    const that = this
-    this.timerOfStart = setInterval(function() {
-      if (that.timeIntervalOfStart === 0) {
-        clearInterval(that.timerOfStart)
-        that.timerOfStart = null
-      }
-      that.timeIntervalOfStart -= 1
-    }, 1000)
+    this.canvasWidth = config.canvasWidth || 600
+    this.canvasHeight = config.canvasHeight || 400
+    this.canvasPadding = config.canvasPadding || 12
+
+    this.resources = config.paths || {}
+    this.images = {}
+    this.currentImg = null
+
+    this.running = true
   }
 
-  loadResource(callback) {
+  init() {
+    const name = config.defaultName
+
+    this.updateImage(name)
+    this.setCanvasSize()
+  }
+
+  updateImage(name) {
+    const img = this.images[name]
+    this.currentImg = img
+  }
+
+  setCanvasSize() {
+    const { canvas, canvasPadding: p, images } = this
+
+    const w = this.canvasWidth + p
+    const h = this.canvasHeight + p
+    canvas.setAttribute("width", w)
+    canvas.setAttribute("height", h)
+  }
+
+  loadResource(run) {
     const { resources, images } = this
     const names = Object.keys(resources)
 
@@ -64,7 +69,7 @@ class App {
         num += 1
 
         if (num === names.length) {
-          callback()
+          run()
         }
       }
     }
@@ -76,40 +81,6 @@ class App {
     canvas.addEventListener(type, fn)
   }
 
-  init(imgName) {
-    this.imgName = imgName
-
-    this.updateImage(imgName)
-    this.setCanvasSize()
-  }
-
-  updateImage(name) {
-    this.imgName = name
-
-    const img = this.images[name]
-    this.currentImg = img
-  }
-
-  setCanvasSize() {
-    const { canvas, canvasPadding: p, images } = this
-    // const { width, height } = this.currentImg
-
-    const w = this.canvasWidth + p
-    const h = this.canvasHeight + p
-    canvas.setAttribute("width", w)
-    canvas.setAttribute("height", h)
-
-    // this.canvasWidth = w
-    // this.canvasHeight = h
-  }
-
-  drawBlock(data) {
-    const { ctx, images } = this
-    const img = this.currentImg
-
-    ctx.drawImage(img, ...data)
-  }
-
   /**
    * draw rect
    *
@@ -119,17 +90,17 @@ class App {
   drawRect(rect, type) {
     const { ctx } = this
 
-    // ctx.shadowColor = "#ea4335"
-    // ctx.shadowBlur = 3
-
     switch (type) {
       case "current":
-        ctx.strokeStyle = "red"
-        ctx.lineWidth = 1
+        ctx.shadowColor = "#ea4335"
+        ctx.shadowBlur = 3
+        ctx.strokeStyle = "#4285f4"
+        ctx.lineWidth = 2
         break
       case "close":
-        ctx.strokeStyle = "#ddd"
-        ctx.lineWidth = 1
+        ctx.shadowBlur = 0
+        ctx.strokeStyle = "#f9ab00"
+        ctx.lineWidth = 2
         break
     }
 
@@ -170,58 +141,13 @@ class App {
     ctx.fillText(text, x, y)
   }
 
-  nextLevel() {
-    const { ctx, canvasWidth, canvasHeight } = this
-
-    this.running = false
-    if (this.imgName === 'img2') {
-      this.clearRect()
-
-      const padding = 80
-      const w2 = canvasWidth - padding * 2
-      const h2 = canvasHeight - padding * 2
-
-      ctx.strokeStyle = "red"
-      ctx.lineWidth = 1
-      ctx.fillStyle = "rgba(0, 0, 0, .4)"
-      ctx.fillRect(padding, padding, w2, h2)
-
-      const text = '游戏结束'
-      ctx.font = "30px serif"
-      ctx.fillStyle = "#fff"
-      ctx.textBaseline = "hanging"
-
-      const { width } = ctx.measureText(text)
-      const x = (canvasWidth - width) / 2
-      const y = canvasHeight / 2
-
-      ctx.fillText(text, x, y)
-      return
-    }
-
-    const that = this
-    this.timerOfEnd = setInterval(function() {
-      that.timeIntervalOfEnd -= 1
-      if (that.timeIntervalOfEnd === 0) {
-        clearInterval(that.timerOfEnd)
-        that.timerOfEnd = null
-        
-        that.timeIntervalOfEnd = 3
-        that.running = true
-        that.updateImage('img2')
-        that.puzzle.setup()
-        that.puzzle.initBlock()
-        that.puzzle.draw()
-      } else {
-        that.drawNextBoard(that.timeIntervalOfEnd)
-      }
-    }, 1000)
-
-    this.drawNextBoard(this.timeIntervalOfEnd)
-  }
+  nextLevel() {}
 
   clearRect() {
     const { ctx, canvasWidth: w, canvasHeight: h, canvasPadding: p } = this
     ctx.clearRect(0, 0, w + p, h + p)
+
+    ctx.fillStyle = 'rgba(0, 0, 0, .1)'
+    ctx.fillRect(0, 0, w + p, h + p)
   }
 }

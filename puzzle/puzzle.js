@@ -1,6 +1,6 @@
 class Puzzle {
   constructor(app) {
-    __DEV__ && debug("Puzzle constructor")
+    config.__DEV__ && debug("Puzzle constructor")
 
     this.app = app
     this.source = null
@@ -30,7 +30,7 @@ class Puzzle {
     const h = canvasHeight - p
 
     const source = new Map()
-    const numOfimg = 2
+    const numOfimg = 3
     this.numOfimg = numOfimg
     let spacing = p / 2
 
@@ -67,7 +67,6 @@ class Puzzle {
     }
 
     const s = this.shuffleSource(source)
-
     this.source = s
   }
 
@@ -161,7 +160,7 @@ class Puzzle {
     }
 
     // 标记 swap 信息
-    this.isSwap = distance < 50
+    this.isSwap = distance < 45
     this.swapTarget = target
   }
 
@@ -216,6 +215,9 @@ class Puzzle {
       this.updateOfSwap()
     } else if (currentBlock) {
       currentBlock.recovery()
+
+      this.isSwap = false
+      this.swapTarget = null
     }
 
     this.draw()
@@ -227,8 +229,6 @@ class Puzzle {
     if (isSortedList(indexs)) {
       this.app.nextLevel()
     }
-
-    printSource(this.blocks)
   }
 
   handleMouseMove(e) {
