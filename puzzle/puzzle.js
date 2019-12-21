@@ -1,8 +1,10 @@
 class Puzzle {
   constructor(app) {
-    __DEV__ && debug("Puzzle constructor")
+    config.__DEV__ && debug("Puzzle constructor")
 
     this.app = app
+    app.puzzle = this
+
     this.source = null
 
     this.running = true
@@ -30,7 +32,7 @@ class Puzzle {
     const h = canvasHeight - p
 
     const source = new Map()
-    const numOfimg = 3
+    const numOfimg = config.numOfimg || 3
     this.numOfimg = numOfimg
     let spacing = p / 2
 
@@ -67,7 +69,6 @@ class Puzzle {
     }
 
     const s = this.shuffleSource(source)
-
     this.source = s
   }
 
@@ -104,6 +105,16 @@ class Puzzle {
     this.isSwap = false
     this.swapTarget = null
 
+    this.currentIndex = {
+      row: 0,
+      col: 0,
+    }
+    this.indexMap = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]
+
     // event data
     this.hasDrag = false
     this.currentBlock = null
@@ -113,7 +124,7 @@ class Puzzle {
     app.bindEvent("mousedown", this.handleMouseDown.bind(this))
     app.bindEvent("mouseup", this.handleMouseUp.bind(this))
     app.bindEvent("mousemove", this.handleMouseMove.bind(this))
-    app.bindEvent("keydown", this.handleKeyDown.bind(this))
+    window.addEventListener("keydown", this.handleKeyDown.bind(this))
   }
 
   initBlock(b) {
@@ -142,6 +153,16 @@ class Puzzle {
     return null
   }
 
+  getBlockByIndex(index) {
+    for (const b of this.blocks) {
+      if (b.index === index) {
+        return b
+      }
+    }
+
+    return null
+  }
+
   /**
    * 标记和 currentBlock 最近的 block
    */
@@ -161,7 +182,7 @@ class Puzzle {
     }
 
     // 标记 swap 信息
-    this.isSwap = distance < 50
+    this.isSwap = distance < 45
     this.swapTarget = target
   }
 
@@ -181,7 +202,7 @@ class Puzzle {
   handleMouseDown(e) {
     const { x, y } = gPosOfEvt(e)
 
-    if (!this.app.running) {
+    if (!this.app.isRun()) {
       return
     }
 
@@ -204,7 +225,7 @@ class Puzzle {
   handleMouseUp(e) {
     const { app, currentBlock } = this
 
-    if (!app.running) {
+    if (!app.isRun()) {
       return
     }
 
@@ -216,6 +237,9 @@ class Puzzle {
       this.updateOfSwap()
     } else if (currentBlock) {
       currentBlock.recovery()
+
+      this.isSwap = false
+      this.swapTarget = null
     }
 
     this.draw()
@@ -227,8 +251,6 @@ class Puzzle {
     if (isSortedList(indexs)) {
       this.app.nextLevel()
     }
-
-    printSource(this.blocks)
   }
 
   handleMouseMove(e) {
@@ -249,7 +271,85 @@ class Puzzle {
   }
 
   handleKeyDown(e) {
-    log("key down")
+    const { keyCode } = e
+
+    if (!app.isRun()) {
+      return
+    }
+
+    let r
+    let oldIndex = { ...this.currentIndex }
+    switch (keyCode) {
+      case 37:
+        r = this.currentIndex.row
+        if (r !== 0) {
+          r -= 1
+        }
+        this.currentIndex.row = r
+        break
+      case 38:
+        r = this.currentIndex.col
+        if (r !== 0) {
+          r -= 1
+        }
+        this.currentIndex.col = r
+        break
+      case 39:
+        r = this.currentIndex.row
+        if (r !== 2) {
+          r += 1
+        }
+        this.currentIndex.row = r
+        break
+      case 40:
+        r = this.currentIndex.col
+        if (r !== 2) {
+          r += 1
+        }
+        this.currentIndex.col = r
+        break
+    }
+
+    const oldIndexNum = this.indexMap[oldIndex.col][oldIndex.row]
+    const p = this.currentIndex
+    const index = this.indexMap[p.col][p.row]
+
+    const b1 = this.getBlockByIndex(oldIndexNum)
+    const b2 = this.getBlockByIndex(index)
+
+    const t = [b2.lastStart, b2.lastEnd]
+    const t2 = b2.index
+
+    b2.swapPosition(b1.lastStart, b1.lastEnd)
+    b2.changeIndex(b1)
+
+    b1.swapPosition(...t)
+    b1.changeIndex({ index: t2 })
+
+    this.draw()
+
+    const indexs = [...this.blocks].map(b => b.index)
+    if (isSortedList(indexs)) {
+      this.app.nextLevel()
+    }
+  }
+
+  getDirection(newIndex, oldIndex) {
+    if (newIndex.col == oldIndex.col && newIndex.row == oldIndex.row) {
+      log("没有动")
+    } else if (newIndex.col == oldIndex.col) {
+      if (newIndex.row > oldIndex.row) {
+        log("right")
+      } else {
+        log("left")
+      }
+    } else if (newIndex.row == oldIndex.row) {
+      if (newIndex.col > oldIndex.col) {
+        log("bottom")
+      } else {
+        log("top")
+      }
+    }
   }
 
   updateOfMove() {

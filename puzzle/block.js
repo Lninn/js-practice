@@ -3,7 +3,7 @@
  */
 class Block {
   constructor(app, rawData, index) {
-    __DEV__ && debug("Block constructor")
+    config.__DEV__ && debug("Block constructor")
 
     this.app = app
 
@@ -103,7 +103,9 @@ class Block {
   }
 
   draw() {
-    const { app } = this
-    app.drawBlock(this.raw)
+    const { app: { ctx, currentImg} } = this
+    
+    ctx.drawImage(currentImg, ...this.raw)
   }
+
 }

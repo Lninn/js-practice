@@ -32,7 +32,7 @@ const getCenterPoint = function({ start, end, width, height }) {
   h = start + width
   v = end + height
 
-  return { x: h / 2, y: v / 2 }
+  return { x: h / 3.5, y: v / 2 }
 }
 
 const calcDistanceBetween2P = function(p1, p2) {
@@ -57,42 +57,6 @@ const gPosOfEvt = function(e) {
 const gKeyOfEvt = function(e) {
   const { key } = e
   return key
-}
-
-const printSource = function(blocks) {
-  const debugEl = e("#debug")
-  const canvas = e("#container")
-  const list = [...blocks].map(s => s.raw)
-  const r = canvas.getBoundingClientRect()
-
-  // let html = `
-  //   <div class="canvas-data">
-  //       <pre>
-  //           ${JSON.stringify(r, null, 5)}
-  //       </pre>
-  //   </div>
-  // `
-
-  let html = ""
-
-  for (const b of blocks) {
-    const [x, y, w, h] = b.raw.slice(4)
-    const t = `
-    <div class="code-block">
-        <pre>
-            ${JSON.stringify({ idx: b.name, x, y, w, h }, null, 2)}
-        </pre>
-    </div>
-        `
-    html += t
-  }
-
-  debugEl.innerHTML = html
-}
-
-const printIndex = function(blocks) {
-  const t = [...blocks].map(b => b.name)
-  log(t)
 }
 
 const generatelist = function(start, end) {
