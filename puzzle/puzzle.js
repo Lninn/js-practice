@@ -30,7 +30,7 @@ class Puzzle {
     const h = canvasHeight - p
 
     const source = new Map()
-    const numOfimg = 2
+    const numOfimg = 3
     this.numOfimg = numOfimg
     let spacing = p / 2
 
@@ -113,7 +113,7 @@ class Puzzle {
     app.bindEvent("mousedown", this.handleMouseDown.bind(this))
     app.bindEvent("mouseup", this.handleMouseUp.bind(this))
     app.bindEvent("mousemove", this.handleMouseMove.bind(this))
-    app.bindEvent('keydown', this.handleKeyDown.bind(this))
+    app.bindEvent("keydown", this.handleKeyDown.bind(this))
   }
 
   initBlock(b) {
@@ -203,11 +203,11 @@ class Puzzle {
 
   handleMouseUp(e) {
     const { app, currentBlock } = this
-    
+
     if (!app.running) {
       return
     }
-    
+
     if (this.hasDrag) {
       this.hasDrag = false
     }
@@ -249,7 +249,7 @@ class Puzzle {
   }
 
   handleKeyDown(e) {
-    log('key down')
+    log("key down")
   }
 
   updateOfMove() {
@@ -275,13 +275,7 @@ class Puzzle {
   }
 
   draw() {
-    const {
-      app,
-      currentBlock,
-      swapTarget,
-      mouseDownP,
-      mouseMoveP,
-    } = this
+    const { app, currentBlock, swapTarget, mouseDownP, mouseMoveP } = this
 
     app.clearRect()
 
