@@ -7,26 +7,12 @@ class Block {
 
     this.app = app
 
-    this.reset(rawData)
-
-    this.setup(index)
+    this.setup(rawData, index)
   }
 
-  static isSameBlock(b1, b2) {
-    return !!b2 && sumOfList(b1.getRect()) === sumOfList(b2.getRect())
-  }
-
-  isSame(block) {
-    this.index === block.index
-  }
-
-  setup(index) {
-    this.nameOfPre = "BLOCK"
+  setup(rawData, index) {
     this.index = index
-    this.name = `${this.nameOfPre}${index}`
-  }
 
-  reset(rawData) {
     this.raw = rawData
 
     const [start, end, width, height] = rawData.slice(4)
@@ -40,32 +26,28 @@ class Block {
     this.lastEnd = end
   }
 
-  changeIndex({ index }) {
-    this.index = index
-    this.name = `${this.nameOfPre}${index}`
+  swapBlock(updatedBlock) {
+    const { lastStart: xOfb1, lastEnd: yOfb1, index: iOfb1 } = updatedBlock
+    const { lastStart: xOfb2, lastEnd: yOfb2, index: iOfb2 } = this
+
+    this.start = xOfb1
+    this.end = yOfb1
+    this.lastStart = xOfb1
+    this.lastEnd = yOfb1
+
+    this.updateRaw([xOfb1, yOfb1])
+
+    updatedBlock.start = xOfb2
+    updatedBlock.end = yOfb2
+    updatedBlock.lastStart = xOfb2
+    updatedBlock.lastEnd = yOfb2
+
+    updatedBlock.updateRaw([xOfb2, yOfb2])
+
+    this.index = iOfb1
+    updatedBlock.index = iOfb2
   }
 
-  /**
-   * 交换的时候
-   * @param {*} x
-   * @param {*} y
-   */
-  swapPosition(x, y) {
-    this.start = x
-    this.end = y
-
-    this.lastStart = x
-    this.lastEnd = y
-
-    this.updateRaw([x, y])
-  }
-
-  /**
-   * 移动的时候
-   *
-   * @param {mouse down position} downP
-   * @param {mouse move position} moveP
-   */
   changePostion(downP, moveP) {
     const { x, y } = moveP
     this.start = x - downP.x
@@ -103,9 +85,21 @@ class Block {
   }
 
   draw() {
-    const { app: { ctx, currentImg} } = this
-    
+    const {
+      app: { ctx, currentImg },
+    } = this
+
     ctx.drawImage(currentImg, ...this.raw)
   }
-
 }
+
+// class BlockList {
+//   constructor(source) {
+//     this.blocks = new Set()
+//     this.source = source
+
+//     this.setup()
+//   }
+
+//   setup() {}
+// }

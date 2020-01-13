@@ -4,7 +4,7 @@ const Ground = function(app) {
     y: 0,
     width: 24,
     height: 120,
-    speed: -2,
+    speed: -5,
   }
 
   o.numOfgrounds = app.width / o.width + 1
@@ -18,10 +18,10 @@ const Ground = function(app) {
   }
 
   o.draw = function() {
-    const { numOfgrounds, y, width, height, speed, x, } = o
+    const { numOfgrounds, y, width, height, speed, x } = o
     for (let i = 0; i < numOfgrounds; i++) {
       const _x = i * width + x
-      app.ctx.drawImage(app.textures['ground'], _x, y, width, height)
+      app.ctx.drawImage(app.textures["ground"], _x, y, width, height)
     }
   }
 

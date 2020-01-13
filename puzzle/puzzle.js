@@ -186,19 +186,6 @@ class Puzzle {
     this.swapTarget = target
   }
 
-  updateOfSwap() {
-    const { app, currentBlock, swapTarget, isSwap } = this
-
-    const t = [swapTarget.lastStart, swapTarget.lastEnd]
-    const t2 = swapTarget.index
-
-    swapTarget.swapPosition(currentBlock.lastStart, currentBlock.lastEnd)
-    swapTarget.changeIndex(currentBlock)
-
-    currentBlock.swapPosition(...t)
-    currentBlock.changeIndex({ index: t2 })
-  }
-
   handleMouseDown(e) {
     const { x, y } = gPosOfEvt(e)
 
@@ -223,7 +210,7 @@ class Puzzle {
   }
 
   handleMouseUp(e) {
-    const { app, currentBlock } = this
+    const { app, currentBlock, swapTarget } = this
 
     if (!app.isRun()) {
       return
@@ -234,7 +221,7 @@ class Puzzle {
     }
 
     if (this.isSwap) {
-      this.updateOfSwap()
+      currentBlock.swapBlock(swapTarget)
     } else if (currentBlock) {
       currentBlock.recovery()
 
@@ -317,14 +304,7 @@ class Puzzle {
     const b1 = this.getBlockByIndex(oldIndexNum)
     const b2 = this.getBlockByIndex(index)
 
-    const t = [b2.lastStart, b2.lastEnd]
-    const t2 = b2.index
-
-    b2.swapPosition(b1.lastStart, b1.lastEnd)
-    b2.changeIndex(b1)
-
-    b1.swapPosition(...t)
-    b1.changeIndex({ index: t2 })
+    b2.swapBlock(b1)
 
     this.draw()
 
