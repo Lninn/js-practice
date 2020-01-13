@@ -1,11 +1,11 @@
 const Application = function({ paths }) {
-  const canvas = e('#id-canvas')
-  const ctx = canvas.getContext('2d')
+  const canvas = e("#id-canvas")
+  const ctx = canvas.getContext("2d")
 
   const { width, height } = canvas
 
-  log('width ', width)
-  log('height ', height)
+  log("width ", width)
+  log("height ", height)
 
   const o = {
     // App
@@ -22,12 +22,12 @@ const Application = function({ paths }) {
     events: {},
   }
 
-  window.addEventListener('keydown', function(e) {
+  window.addEventListener("keydown", function(e) {
     const k = e.key
     o.keydowns[k] = true
   })
 
-  window.addEventListener('keyup', function(e) {
+  window.addEventListener("keyup", function(e) {
     const k = e.key
     o.keydowns[k] = false
   })
@@ -37,7 +37,7 @@ const Application = function({ paths }) {
   }
 
   o.run = function() {
-    const { ctx, width, height, textures, update, draw, events, keydowns, } = o
+    const { ctx, width, height, textures, update, draw, events, keydowns } = o
 
     // events
     const keys = Object.keys(events)
@@ -47,7 +47,7 @@ const Application = function({ paths }) {
 
     ctx.clearRect(0, 0, width, height)
 
-    ctx.drawImage(textures['bg'], 0, 0, width, height)
+    ctx.drawImage(textures["bg"], 0, 0, width, height)
 
     update()
 
@@ -69,7 +69,7 @@ const Application = function({ paths }) {
         o.textures[name] = img
         loaded += 1
         if (loaded == names.length) {
-          log('imgs loaded ', o.textures)
+          log("imgs loaded ", o.textures)
           o.requestId = requestAnimationFrame(o.run)
         }
       }
@@ -88,7 +88,7 @@ const Application = function({ paths }) {
       // log('count ', count)
       count -= 1
       if (count < 0) {
-        log('Done!')
+        log("Done!")
         cancelAnimationFrame(o.requestId)
       }
     }

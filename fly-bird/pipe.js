@@ -1,46 +1,43 @@
-let score = 0
-const Pipe = function(app) {
-  this.app = app
-  this.x = 0
-  this.y = 0
-  this.speed = -2
-  this.width = 100
-  this.height = 0
+class Pipe {
+  constructor(app) {
+    this.app = app
 
-  this.reset()
-}
+    this.width = 100
+    this.height = this.randomHeight()
+    this.speed = -2
+    this.x = 200
+    this.y = 0
+    this.betweenDistance = 300
+  }
 
-Pipe.prototype = {
-  reset () {
-    const { app, width, } = this
+  randomHeight() {
+    const min = 80
+    const max = 200
+    const n1 = randomInt(min, max)
+    const n2 = randomInt(min, max)
+    return n1 + n2
+  }
 
-    this.height = randomInt(200, 300)
-    this.x = app.width
-  },
-  draw () {
-    const { app, x, y, width, height, } = this
-    //
-    // app.ctx.translate(0, height)
-    //
-    // app.ctx.scale(1, -1)
-    //
-    app.ctx.drawImage(app.textures['pipe'], x, y, width, height)
-    //
-    // app.ctx.setTransform(1, 0, 0, 1, 0, 0)
-    // //
-    // app.ctx.translate(0, app.height - 120 - height2)
-    //
-    // app.ctx.drawImage(app.textures['pipe'], x, y, 100, height2)
-    //
-    // app.ctx.setTransform(1, 0, 0, 1, 0, 0)
-  },
-  update (bird) {
-    const { app, } = this
+  draw() {
+    const { ctx, textures } = this.app
+    const { x, y, width, height } = this
 
-    this.x += this.speed
+    const h1 = this.height
+    const h2 = this.app.height - h1 - this.betweenDistance
+    ctx.drawImage(textures["pipe"], x, y, width, h1)
 
-    if (this.x <= 0) {
-      this.reset()
+    ctx.save()
+    ctx.transform(1, 0, 0, -1, 0, this.app.height)
+    ctx.drawImage(textures["pipe"], x, y, width, h2)
+    ctx.restore()
+  }
+
+  update() {
+    if (this.x <= -100) {
+      this.height = this.randomHeight()
+      this.x = this.app.width + 100
+    } else {
+      this.x += this.speed
     }
-  },
+  }
 }

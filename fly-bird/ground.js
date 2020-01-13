@@ -4,7 +4,7 @@ const Ground = function(app) {
     y: 0,
     width: 24,
     height: 120,
-    speed: -5,
+    speed: -2,
   }
 
   o.numOfgrounds = app.width / o.width + 1
