@@ -3,7 +3,7 @@ class Ground {
     this.app = app
     this.x = 0
     this.y = 0
-    this.speed = -5
+    this.speed = -3
     this.width = 24
     this.height = 120
 
@@ -19,14 +19,7 @@ class Ground {
   }
 
   draw() {
-    const {
-      numOfgrounds,
-      x,
-      y,
-      width,
-      height,
-      app
-    } = this
+    const { numOfgrounds, x, y, width, height, app } = this
 
     const img = app.getImgByName("ground")
     for (let i = 0; i < numOfgrounds; i++) {

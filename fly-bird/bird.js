@@ -9,11 +9,11 @@ class Bird {
 
     // 重力
     this.gy = 9.8
-    this.gyFactor = 0.025
+    this.gyFactor = 0.015
 
     // 加速度
     this.vy = 0
-    this.jumpOffset = -7.5
+    this.jumpOffset = -5.5
     this.degrees = 0
 
     // animation
@@ -23,7 +23,7 @@ class Bird {
     this.numOfFrameTimes = 10
   }
 
-  update = function () {
+  update = function() {
     if (this.frameCount <= 0) {
       this.currentFraIdx = (this.currentFraIdx + 1) % this.frames.length
       this.frameCount = this.numOfFrameTimes
@@ -33,12 +33,11 @@ class Bird {
     this.y += this.vy
     this.vy += this.gy * this.gyFactor
 
-    // 控制转动角度的时间
-    if (this.vy > 4.5 && this.degrees < 90) {
+    if (this.vy > 1.5 && this.degrees < 90) {
       this.degrees += 3
     }
 
-    const h = app.height - 120 - this.height
+    const h = this.app.height - 120 - this.height
     if (this.y > h) {
       this.y = h
     }
@@ -55,9 +54,19 @@ class Bird {
 
     // 以角色的中心旋转
     app.ctx.translate(x + w2, y + h2)
-    app.ctx.rotate(this.degrees * Math.PI / 180)
+    app.ctx.rotate((this.degrees * Math.PI) / 180)
     app.ctx.translate(-w2, -h2)
-    app.ctx.drawImage(app.textures['bird'], _w, 0, width, height, 0, 0, width, height)
+    app.ctx.drawImage(
+      app.textures["bird"],
+      _w,
+      0,
+      width,
+      height,
+      0,
+      0,
+      width,
+      height,
+    )
     app.ctx.restore()
   }
 

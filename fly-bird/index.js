@@ -8,24 +8,30 @@ const __main = function() {
 
   const app = new Application(paths)
   log(app)
-  // const bird = new Bird(app)
+
+  const bird = new Bird(app)
 
   const ground = new Ground(app)
 
   const pipes = new PipeList(app)
 
-//   app.registerAction("j", function() {
-//     bird.jump()
-//   })
+  window.addEventListener("keydown", e => {
+    const key = e.key
+    if (key == "j") {
+      bird.jump()
+    }
+  })
 
   app.update = function() {
     ground.update()
     pipes.update()
+    bird.update()
   }
 
   app.draw = function() {
-    pipes.draw()
     ground.draw()
+    pipes.draw()
+    bird.draw()
   }
 
   app.start()
