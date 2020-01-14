@@ -4,8 +4,8 @@ class Pipe {
 
     this.width = 100
     this.height = this.randomHeight()
-    this.speed = -2
-    this.x = 200
+    this.speed = -5
+    this.x = 0
     this.y = 0
     this.betweenDistance = 300
   }
@@ -33,11 +33,45 @@ class Pipe {
   }
 
   update() {
-    if (this.x <= -100) {
+    if (this.x <= -this.width) {
       this.height = this.randomHeight()
-      this.x = this.app.width + 100
+      this.x = 3 * 450
     } else {
       this.x += this.speed
+    }
+  }
+}
+
+class PipeList {
+  constructor(app) {
+    this.app = app
+    this.initialPosition = this.app.width
+    this.numOfPipes = 4
+    this.betweenOfPipe = 450
+
+    this.setup()
+  }
+
+  setup() {
+    this.pipes = []
+
+    for (let i = 1; i < this.numOfPipes; i++) {
+      const pipe = new Pipe(this.app)
+      pipe.x = i * this.betweenOfPipe + this.initialPosition
+
+      this.pipes.push(pipe)
+    }
+  }
+
+  update() {
+    for (const pipe of this.pipes) {
+      pipe.update()
+    }
+  }
+
+  draw() {
+    for (const pipe of this.pipes) {
+      pipe.draw()
     }
   }
 }

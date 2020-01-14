@@ -6,53 +6,29 @@ const __main = function() {
     ground: "./img/ground.png",
   }
 
-  const App = Application({ paths })
-  log(App)
+  const app = new Application(paths)
+  log(app)
+  // const bird = new Bird(app)
 
-  const bird = Bird(App)
+  const ground = new Ground(app)
 
-  const ground = Ground(App)
+  const pipes = new PipeList(app)
 
-  const pipe = new Pipe(App)
-  // const pipes = []
-  // const numOfPipes = 5
-  // for (var i = 0; i < numOfPipes; i++) {
-  //   const p = new Pipe(App)
-  //   pipes.push(p)
-  // }
-  // log('pipes ', pipes)
+//   app.registerAction("j", function() {
+//     bird.jump()
+//   })
 
-  App.registerAction(" ", function() {
-    bird.jump()
-  })
-  // window.addEventListener('click', function() {
-  //   bird.jump()
-  // })
-
-  App.update = function() {
-    pipe.update()
-    // bird.update()
-    // if (App.end) {
-    //   return
-    // }
-    // ground.update()
-    // pipes.forEach(p => {
-    //   p.update(bird)
-    // })
+  app.update = function() {
+    ground.update()
+    pipes.update()
   }
 
-  App.draw = function() {
-    pipe.draw()
-    // bird.draw()
-    // ground.draw()
-    // App.ctx.font = '60px serif'
-    // App.ctx.strokeStyle = 'white'
-    // App.ctx.strokeText(score, App.width / 2, 120)
+  app.draw = function() {
+    pipes.draw()
+    ground.draw()
   }
 
-  App.start()
-
-  // log('main end')
+  app.start()
 }
 
 __main()

@@ -1,29 +1,37 @@
-const Ground = function(app) {
-  const o = {
-    x: 0,
-    y: 0,
-    width: 24,
-    height: 120,
-    speed: -2,
+class Ground {
+  constructor(app) {
+    this.app = app
+    this.x = 0
+    this.y = 0
+    this.speed = -5
+    this.width = 24
+    this.height = 120
+
+    this.numOfgrounds = app.width / this.width + 1
+    this.y = app.height - this.height
   }
 
-  o.numOfgrounds = app.width / o.width + 1
-  o.y = app.height - o.height
-
-  o.update = function() {
-    o.x += o.speed
-    if (o.x < -o.width) {
-      o.x = 0
+  update() {
+    this.x += this.speed
+    if (this.x < -this.width) {
+      this.x = 0
     }
   }
 
-  o.draw = function() {
-    const { numOfgrounds, y, width, height, speed, x } = o
+  draw() {
+    const {
+      numOfgrounds,
+      x,
+      y,
+      width,
+      height,
+      app
+    } = this
+
+    const img = app.getImgByName("ground")
     for (let i = 0; i < numOfgrounds; i++) {
       const _x = i * width + x
-      app.ctx.drawImage(app.textures["ground"], _x, y, width, height)
+      app.drawImage(img, _x, y, width, height)
     }
   }
-
-  return o
 }
