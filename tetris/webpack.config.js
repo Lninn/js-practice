@@ -4,6 +4,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = {
+  mode: "development",
+  devtool: "inline-source-map",
   entry: "./index.js",
   output: {
     filename: "[name].[contenthash].js",
