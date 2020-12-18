@@ -17,9 +17,9 @@ function initialize() {
   context.strokeStyle = CONSTENT.STROKE;
   context.fillStyle = CONSTENT.FILL;
   context.lineWidth = CONSTENT.LINE_WIDTH;
-}
 
-initialize();
+  document.addEventListener("keydown", onKeyDown);
+}
 
 const shapePool = [
   new SShape({
@@ -115,7 +115,7 @@ function start() {
 }
 
 export function main() {
-  document.addEventListener("keydown", onKeyDown);
+  initialize();
 
   setInterval(function () {
     if (paused) {
@@ -138,11 +138,6 @@ export function main() {
   }
 }
 
-UTILS.log(config);
-
-function reset() {
-  paused = false;
-  currentShape.y = 0;
-}
-
 main();
+
+UTILS.log(config);
