@@ -94,7 +94,7 @@ function run() {
 
   context.clearRect(0, 0, 300, 450);
 
-  // drawBoard();
+  drawBoard();
 
   if (isEnd(currentShape)) {
     // paused = true;
