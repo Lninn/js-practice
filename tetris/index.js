@@ -2,16 +2,8 @@ import IShape from "./shapes/IShape";
 import OShape from "./shapes/OShape";
 import SShape from "./shapes/SShape";
 import ZShape from "./shapes/ZShape";
-import { CONSTENT } from "./constant";
+import { CONSTENT, KEY_CODES } from "./constant";
 import { UTILS } from "./utils";
-
-const KEY_CODES = {
-  SPACE: 32,
-  TOP: 38,
-  BOTTOM: 40,
-  LEFT: 37,
-  RIGHT: 39,
-};
 
 const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
