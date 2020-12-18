@@ -7,6 +7,7 @@ import { UTILS } from "./utils";
 
 import config from "./config";
 
+
 const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
 
