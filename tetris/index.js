@@ -5,19 +5,21 @@ import ZShape from "./shapes/ZShape";
 import { CONSTENT, KEY_CODES } from "./constant";
 import { UTILS } from "./utils";
 
+import config from "./config";
+
 const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
 
-canvas.width = 320;
-canvas.height = 482;
+function initialize() {
+  canvas.width = config.canvasWidth;
+  canvas.height = config.canvasHeight;
 
-context.scale(2, 2);
+  context.strokeStyle = CONSTENT.STROKE;
+  context.fillStyle = CONSTENT.FILL;
+  context.lineWidth = CONSTENT.LINE_WIDTH;
+}
 
-context.strokeStyle = CONSTENT.STROKE;
-context.fillStyle = CONSTENT.FILL;
-context.lineWidth = CONSTENT.LINE_WIDTH;
-
-// shapes i l j o z s t
+initialize();
 
 const shapePool = [
   new SShape({
@@ -59,24 +61,22 @@ function onKeyDown(e) {
   }
 }
 
-// Box width
-var bw = 300;
-// Box height
-var bh = 450;
-// Padding
-var p = 0;
-
 function drawBoard() {
-  for (var x = 0; x <= 300; x += CONSTENT.SIDE_LENGTH) {
-    context.moveTo(0.5 + x + p, p);
-    context.lineTo(0.5 + x + p, bh + p);
+  let i = 0;
+
+  // draw vertical line
+  for (; i <= config.canvasWidth; i += CONSTENT.SIDE_LENGTH) {
+    context.moveTo(0.5 + i, 0);
+    context.lineTo(0.5 + i, config.canvasHeight);
   }
 
-  for (var x = 0; x <= 450; x += CONSTENT.SIDE_LENGTH) {
-    context.moveTo(p, 0.5 + x + p);
-    context.lineTo(bw + p, 0.5 + x + p);
+  // draw horizontal line
+  for (i = 0; i <= config.canvasHeight; i += CONSTENT.SIDE_LENGTH) {
+    context.moveTo(0, 0.5 + i);
+    context.lineTo(config.canvasWidth, 0.5 + i);
   }
-  context.strokeStyle = "black";
+
+  context.strokeStyle = CONSTENT.BOARD_STROKE_COLOR;
   context.stroke();
 }
 
@@ -138,7 +138,7 @@ export function main() {
   }
 }
 
-// UTILS.log(canvas);
+UTILS.log(config);
 
 function reset() {
   paused = false;
