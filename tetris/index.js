@@ -7,8 +7,10 @@ import LShape from "./shapes/LShape";
 import JShape from "./shapes/JShape";
 import { CONSTENT, KEY_CODES } from "./constant";
 import { UTILS } from "./utils";
+import "./index.css";
 
-import { tools } from "./tool";
+// vue template
+import "./tool/vue-template";
 
 import config from "./config";
 
@@ -120,8 +122,13 @@ export function main() {
   }
 }
 
-main();
+// main();
 
 // UTILS.log(config);
 
 // tools();
+
+// const btn = document.createElement("button");
+// btn.appendChild(document.createTextNode("Toggle"));
+// btn.onclick = function () {};
+// document.body.append(btn);

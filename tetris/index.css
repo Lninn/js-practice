@@ -1,0 +1,49 @@
+.tool-container {
+  font-size: 20px;
+  color: #fff;
+
+  max-width: 300px;
+}
+
+.tool-container .header {
+  margin-bottom: 15px;
+}
+
+.tool-container .footer {
+  margin-top: 15px;
+}
+
+.tool-container select {
+  font-size: 20px;
+  width: 60px;
+}
+
+.tool-container button {
+  font-size: 20px;
+}
+
+.brick-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  gap: 10px;
+}
+
+.brick-item {
+  width: 50px;
+  border-radius: 5px;
+  height: 50px;
+  background: rgb(121, 119, 119);
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.brick-item:hover {
+  border: 1px solid #f2f2f2;
+}
+
+.brick-item.active {
+  background: rgb(16, 158, 214);
+}

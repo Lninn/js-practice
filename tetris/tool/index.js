@@ -1,10 +1,16 @@
-import { UTILS } from "./utils";
-const container = document.createElement("div");
+import { UTILS } from "../utils";
 
 function onRangeChange(e) {
   const target = e.target;
   UTILS.log(target.value);
 }
+
+const alphabets = "I J L O S T Z".split(" ");
+
+const data = alphabets.reduce((a, k) => {
+  a[k] = [];
+  return a;
+}, {});
 
 const table = [];
 
@@ -28,11 +34,6 @@ range.value = 3;
 range.max = 15;
 range.step = 1;
 range.oninput = onRangeChange;
-
-container.style.width = 200 + "px";
-container.style.gap = "5px";
-container.style.display = "flex";
-container.style.flexWrap = "wrap";
 
 const config = {
   cellSize: 30,
@@ -72,11 +73,30 @@ function onBlockClick(i, j, e) {
   el.dataset.visted = c;
 }
 
+function applyStyle(container, style) {
+  for (const key in style) {
+    container.style[key] = style[key];
+  }
+}
+
 function tools() {
-  let row = 0,
-    column = 0;
+  const div = document.createElement("div");
+  div.style.position = "absolute";
+  div.style.top = "20px";
+  div.style.display = "flex";
+  div.style.flexWrap = "wrap";
+  div.style.gap = "20px";
+
+  const container = document.createElement("div");
+  container.style.width = 200 + "px";
+  container.style.gap = "5px";
+  container.style.display = "flex";
+  container.style.flexWrap = "wrap";
 
   const t = document.createDocumentFragment();
+
+  let row = 0,
+    column = 0;
 
   for (; row < config.height; row++) {
     table[row] = [];
@@ -91,7 +111,14 @@ function tools() {
   container.appendChild(range);
   container.appendChild(saveBtn);
 
-  document.body.appendChild(container);
+  div.appendChild(container);
+
+  for (const k of alphabets) {
+  }
+
+  document.body.appendChild(div);
 }
+
+// UTILS.log(alphabets);
 
 export { tools };
