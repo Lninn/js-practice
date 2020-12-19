@@ -1,5 +1,19 @@
 import { UTILS } from "./utils";
 
+const LocalStorgeIdentity = "Hello";
+
+Vue.createApp({
+  template: `<div>
+    <button>Add</button>
+  {{ list }}
+  </div>`,
+  data() {
+    return {
+      list: "no Data",
+    };
+  },
+}).mount("#tool");
+
 function onRangeChange(e) {
   const target = e.target;
   UTILS.log(target.value);
@@ -119,6 +133,6 @@ function tools() {
   document.body.appendChild(div);
 }
 
-UTILS.log(alphabets);
+// UTILS.log(alphabets);
 
 export { tools };
