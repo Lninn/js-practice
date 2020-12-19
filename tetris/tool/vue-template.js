@@ -1,7 +1,5 @@
 import { UTILS } from "../utils";
 
-const LocalStorgeIdentity = "Hello";
-
 function initBrickData() {
   const data = [],
     length = 5;
@@ -46,7 +44,7 @@ Vue.createApp({
   <div class="tool-container">
     <div class="header">
       <span>Brick alphabet：</span>
-      <select v-model="alphabet">
+      <select :value="alphabet" @input="alphabetChange">
         <option v-for="(value, name, index) in alphabets">
           {{ value }}
         </option>
@@ -69,11 +67,38 @@ Vue.createApp({
     };
   },
   methods: {
+    alphabetChange(e) {
+      const i = e.target.value;
+      this.alphabet = i;
+    },
     dataUpdate(row, col, value) {
       this.dataSource[row][col] = !value;
     },
     onSave() {
-      UTILS.log(this.dataSource, this.alphabet);
+      const KEY = "tetris";
+
+      let i;
+      i = localStorage.getItem(KEY);
+      UTILS.log(i);
+
+      if (i === null) {
+        i = {
+          [this.alphabet]: this.dataSource,
+        };
+      } else {
+        try {
+          i = JSON.parse(i);
+        } catch (error) {
+          i = {};
+        }
+
+        i = {
+          ...i,
+          [this.alphabet]: this.dataSource,
+        };
+      }
+
+      localStorage.setItem(KEY, JSON.stringify(i));
     },
   },
 }).mount("#tool");
