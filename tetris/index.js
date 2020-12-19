@@ -120,8 +120,8 @@ export function main() {
   }
 }
 
-main();
+// main();
 
 // UTILS.log(config);
 
-// tools();
+tools();
