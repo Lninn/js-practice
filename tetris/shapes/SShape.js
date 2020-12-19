@@ -29,11 +29,14 @@ class SShape extends Shape {
     } else {
       return this.height + CONSTENT.SIDE_LENGTH;
     }
-    return;
   }
 
   changeShape() {
     this.isTruned = !this.isTruned;
+
+    const t = this.width;
+    this.width = this.height;
+    this.height = t;
   }
 
   render(ctx) {
@@ -43,37 +46,26 @@ class SShape extends Shape {
       column = 0;
     let c = CONSTENT.SIDE_LENGTH;
 
-    if (isTruned) {
-      for (; column < height; column += c) {
-        for (row = 0; row < width; row += c) {
-          if (this.check(row, column)) {
+    for (; column < height; column += c) {
+      for (row = 0; row < width; row += c) {
+        if (!isTruned) {
+          // normal
+          if ((column === 0 && row === 0) || (column === c && row === 2 * c)) {
             continue;
           }
-
-          ctx.beginPath();
-
-          ctx.rect(x + row, y + column, c, c);
-
-          ctx.stroke();
-          ctx.fill();
+        } else {
+          // truned
+          if ((column === 0 && row === c) || (column === c * 2 && row === 0)) {
+            continue;
+          }
         }
-      }
-    } else {
-      for (; column < height + c; column += c) {
-        for (row = 0; row < width - c; row += c) {
-          if (row === 0 && column === 0) {
-            continue;
-          }
-          if (column === c * 2 && row === c) {
-            continue;
-          }
-          ctx.beginPath();
 
-          ctx.rect(x + row, y + column, c, c);
+        ctx.beginPath();
 
-          ctx.stroke();
-          ctx.fill();
-        }
+        ctx.rect(x + row, y + column, c, c);
+
+        ctx.stroke();
+        ctx.fill();
       }
     }
   }

@@ -8,6 +8,8 @@ class OShape extends Shape {
       width: CONSTENT.SIDE_LENGTH * 2,
       height: CONSTENT.SIDE_LENGTH * 2,
     });
+
+    this.done = false;
   }
 
   getHeight() {
