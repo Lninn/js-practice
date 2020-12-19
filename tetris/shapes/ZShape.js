@@ -12,17 +12,6 @@ class ZShape extends Shape {
     this.isTruned = false;
   }
 
-  check(i, j) {
-    let c = CONSTENT.SIDE_LENGTH;
-    const { isTruned } = this;
-
-    if (isTruned) {
-      return (j === 0 && i === 2 * c) || (j === c && i === 0);
-    } else {
-      return (j === 0 && i === 0) || (j === c && i === 2 * c);
-    }
-  }
-
   getHeight() {
     if (this.isTruned) {
       return this.height;
@@ -34,6 +23,10 @@ class ZShape extends Shape {
 
   changeShape() {
     this.isTruned = !this.isTruned;
+
+    const t = this.width;
+    this.width = this.height;
+    this.height = t;
   }
 
   render(ctx) {
@@ -43,37 +36,26 @@ class ZShape extends Shape {
       column = 0;
     let c = CONSTENT.SIDE_LENGTH;
 
-    if (isTruned) {
-      for (; column < height; column += c) {
-        for (row = 0; row < width; row += c) {
-          if (this.check(row, column)) {
+    for (; column < height; column += c) {
+      for (row = 0; row < width; row += c) {
+        if (!isTruned) {
+          // normal
+          if ((column === 0 && row === c * 2) || (column === c && row === 0)) {
             continue;
           }
-
-          ctx.beginPath();
-
-          ctx.rect(x + row, y + column, c, c);
-
-          ctx.stroke();
-          ctx.fill();
+        } else {
+          // truned
+          if ((column === 0 && row === 0) || (column === c * 2 && row === c)) {
+            continue;
+          }
         }
-      }
-    } else {
-      for (; column < height + c; column += c) {
-        for (row = 0; row < width - c; row += c) {
-          if (row === 0 && column === 0) {
-            continue;
-          }
-          if (column === c * 2 && row === c) {
-            continue;
-          }
-          ctx.beginPath();
 
-          ctx.rect(x + row, y + column, c, c);
+        ctx.beginPath();
 
-          ctx.stroke();
-          ctx.fill();
-        }
+        ctx.rect(x + row, y + column, c, c);
+
+        ctx.stroke();
+        ctx.fill();
       }
     }
   }

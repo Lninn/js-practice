@@ -2,11 +2,15 @@ import IShape from "./shapes/IShape";
 import OShape from "./shapes/OShape";
 import SShape from "./shapes/SShape";
 import ZShape from "./shapes/ZShape";
+import TShape from "./shapes/TShape";
+import LShape from "./shapes/LShape";
+import JShape from "./shapes/JShape";
 import { CONSTENT, KEY_CODES } from "./constant";
 import { UTILS } from "./utils";
 
-import config from "./config";
+import { tools } from "./tool";
 
+import config from "./config";
 
 const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
@@ -23,31 +27,17 @@ function initialize() {
 }
 
 const shapePool = [
-  new SShape({
-    x: 60,
-    y: 0,
+  new TShape({
+    x: 30,
+    y: 30,
   }),
-  // new ZShape({
-  //   x: 60,
-  //   y: 0
-  // }),
-  // new IShape({
-  //   x: 90,
-  //   y: 0
-  // })
 ];
 
 let currentIndex = 0;
 let currentShape = shapePool[currentIndex];
 
-let paused = false;
-
 function onKeyDown(e) {
   const keyCode = e.keyCode;
-
-  if (paused) {
-    return;
-  }
 
   if (keyCode === KEY_CODES.SPACE) {
     currentShape.changeShape && currentShape.changeShape();
@@ -60,6 +50,8 @@ function onKeyDown(e) {
   if (keyCode === KEY_CODES.RIGHT) {
     currentShape.moveRight();
   }
+
+  // UTILS.log(currentShape);
 }
 
 function drawBoard() {
@@ -81,28 +73,20 @@ function drawBoard() {
   context.stroke();
 }
 
-function isEnd(shape) {
-  const { y } = shape;
-  const h = shape.getHeight();
+function isEnd() {
+  const { y } = currentShape;
+  const h = currentShape.getHeight();
 
-  return y + h >= 240;
+  return y + h > config.canvasHeight - CONSTENT.SIDE_LENGTH;
 }
 
 function run() {
-  if (paused) {
-    return;
-  }
-
-  context.clearRect(0, 0, 300, 450);
+  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
 
   drawBoard();
 
-  if (isEnd(currentShape)) {
-    // paused = true;
-    // console.log("end");
-    //     currentIndex = (currentIndex + 1) % shapePool.length;
-    //     currentShape.y = 0;
-    //     currentShape = shapePool[currentIndex];
+  if (isEnd()) {
+    currentShape.done = true;
   }
 
   currentShape.render(context);
@@ -118,18 +102,15 @@ function start() {
 export function main() {
   initialize();
 
+  // test
+  // drawBoard();
+  // currentShape.render(context);
+
   setInterval(function () {
-    if (paused) {
-      return;
+    if (!currentShape.done) {
+      currentShape.update();
     }
-
-    if (isEnd(currentShape)) {
-      paused = true;
-      return;
-    }
-
-    currentShape.update();
-  }, 300);
+  }, 1000);
 
   try {
     start();
@@ -141,4 +122,6 @@ export function main() {
 
 main();
 
-UTILS.log(config);
+// UTILS.log(config);
+
+// tools();

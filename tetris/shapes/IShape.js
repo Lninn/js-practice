@@ -9,38 +9,27 @@ class IShape extends Shape {
       height: CONSTENT.SIDE_LENGTH * 1,
     });
 
-    this.isHorizontal = true;
+    this.shapeStatus = 0;
   }
 
   changeShape() {
-    this.isHorizontal = !this.isHorizontal;
+    this.shapeStatus = (this.shapeStatus + 1) % 4;
   }
 
   getHeight() {
-    if (this.isHorizontal) {
-      return this.height;
-    } else {
-      return this.width;
-    }
+    return this.height;
   }
 
   render(ctx) {
-    let { x, y, width, height, isHorizontal } = this;
-
-    if (!this.isHorizontal && y > 200) {
-      y = 200;
-    }
+    let { x, y, width, height } = this;
 
     let i = 0;
     let c = CONSTENT.SIDE_LENGTH;
+
     for (; i < width; i += c) {
       ctx.beginPath();
 
-      if (isHorizontal) {
-        ctx.rect(x + i, y, c, c);
-      } else {
-        ctx.rect(x, y + i, c, c);
-      }
+      ctx.rect(x + i, y, c, c);
 
       ctx.stroke();
       ctx.fill();
