@@ -2,14 +2,44 @@ import { UTILS } from "./utils";
 
 const LocalStorgeIdentity = "Hello";
 
-Vue.createApp({
-  template: `<div>
-    <button>Add</button>
-  {{ list }}
-  </div>`,
+const Block = Vue.defineComponent({
+  template: `
+    <div class="brick-list">
+      <template v-for="row in rows">
+        <template v-for="column in columns">
+          <div class="brick-item"></div>
+        </template>
+      </template>
+    </div>
+  `,
   data() {
     return {
-      list: "no Data",
+      rows: [0, 0, 0, 0, 0],
+      columns: [0, 0, 0, 0, 0],
+    };
+  },
+});
+
+console.log(Block);
+
+Vue.createApp({
+  template: `<div class="tool-container">
+    <select v-model="alphabet">
+      <option v-for="(value, name, index) in alphabets">
+        {{ value }}
+      </option>
+    </select>
+    <Block />
+    <button>Add</button>
+    {{alphabet}}
+  </div>`,
+  components: {
+    Block,
+  },
+  data() {
+    return {
+      alphabets: "I J L O S T Z".split(" "),
+      alphabet: "I",
     };
   },
 }).mount("#tool");

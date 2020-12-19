@@ -7,6 +7,7 @@ import LShape from "./shapes/LShape";
 import JShape from "./shapes/JShape";
 import { CONSTENT, KEY_CODES } from "./constant";
 import { UTILS } from "./utils";
+import "./index.css";
 
 import { tools } from "./tool";
 
