@@ -1,5 +1,6 @@
 import Shape from "./shape";
 import { CONSTENT } from "../constant";
+import config from "../config";
 import { UTILS } from "../utils";
 
 function isBrick(v) {
@@ -123,11 +124,27 @@ class IShape extends Shape {
   }
 
   moveLeft() {
-    if (this.x <= 0) {
+    const interval = this.shapeSpace[3];
+
+    if (this.x + interval * CONSTENT.SIDE_LENGTH <= 0) {
       return;
     }
 
     this.x -= CONSTENT.SIDE_LENGTH;
+  }
+
+  moveRight() {
+    const interval = this.shapeSpace[1];
+
+    if (
+      this.x +
+        this.width +
+        CONSTENT.SIDE_LENGTH -
+        interval * CONSTENT.SIDE_LENGTH <
+      config.canvasWidth
+    ) {
+      this.x += CONSTENT.SIDE_LENGTH;
+    }
   }
 
   changeShape() {

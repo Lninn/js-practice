@@ -42,6 +42,7 @@ let currentShape = shapePool[currentIndex];
 
 function onKeyDown(e) {
   const keyCode = e.keyCode;
+  // UTILS.log(keyCode);
 
   if (keyCode === KEY_CODES.SPACE) {
     currentShape.changeShape && currentShape.changeShape();
@@ -55,7 +56,7 @@ function onKeyDown(e) {
     currentShape.moveRight();
   }
 
-  // UTILS.log(currentShape.shapeSpace);
+  // UTILS.log(currentShape);
 }
 
 function drawBoard() {
@@ -112,7 +113,7 @@ export function main() {
 
   setInterval(function () {
     if (!currentShape.done) {
-      // currentShape.update();
+      currentShape.update();
     }
   }, 1000);
 
