@@ -20,6 +20,14 @@ function initBrick() {
   return data;
 }
 
+function toString(s) {
+  return s
+    .map((i) => {
+      return i.join("");
+    })
+    .join("\n");
+}
+
 const BrickList = Vue.defineComponent({
   props: ["dataSource", "update"],
   template: `
@@ -84,8 +92,9 @@ Vue.createApp({
   },
   methods: {
     initialize() {
-      const defaultAlphabet = "I";
+      const status = "0 1 2 3".split(" ");
       const alphabets = "I J L O S T Z".split(" ");
+      const defaultAlphabet = alphabets[0];
 
       let dataSource;
       let result = {
@@ -136,6 +145,7 @@ Vue.createApp({
     },
     onSave() {
       this.dataSource[this.alphabet] = this.currentDataSource;
+      UTILS.log(toString(this.currentDataSource));
 
       localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
     },
