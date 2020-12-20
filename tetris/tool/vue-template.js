@@ -1,5 +1,8 @@
 import { UTILS } from "../utils";
 
+const falseValue = 0;
+const trueValue = 1;
+
 function initBrick() {
   const data = [],
     length = 5;
@@ -10,7 +13,7 @@ function initBrick() {
   for (; i < length; i++) {
     data[i] = [];
     for (j = 0; j < length; j++) {
-      data[i][j] = false;
+      data[i][j] = falseValue;
     }
   }
 
@@ -25,7 +28,7 @@ const BrickList = Vue.defineComponent({
         <template v-for="(item, col) in list">
           <div
             class="brick-item"
-            :class="{ active: item }"
+            :class="{ active: item === 1 }"
             @click="onBrickItemClick(row, col, item)"
           ></div>
         </template>
@@ -128,7 +131,8 @@ Vue.createApp({
       this.alphabet = i;
     },
     dataUpdate(row, col, value) {
-      this.currentDataSource[row][col] = !value;
+      const nextValue = value === falseValue ? trueValue : falseValue;
+      this.currentDataSource[row][col] = nextValue;
     },
     onSave() {
       this.dataSource[this.alphabet] = this.currentDataSource;
