@@ -1,4 +1,5 @@
 import { UTILS } from "../utils";
+import { BrickContainer } from "./brick-container";
 
 UTILS.$("canvas").style.display = "none";
 
@@ -34,32 +35,30 @@ function toString(s) {
     .join("\n");
 }
 
-const BrickList = Vue.defineComponent({
-  props: ["dataSource", "update", "statusIndex"],
-  data() {
-    return {
-      colors: COLORS,
-    };
-  },
-  template: `
-    <div class="brick-list">
-      <template v-for="(list, row) in dataSource">
-        <template v-for="(item, col) in list">
-          <div
-            class="brick-item"
-            :style="{ backgroundColor: item === 1 ? '#9aa0a6': colors[statusIndex] }"
-            @click="onBrickItemClick(row, col, item)"
-          ></div>
-        </template>
-      </template>
-    </div>
-  `,
-  methods: {
-    onBrickItemClick(row, col, value) {
-      this.$emit("update", row, col, value, this.statusIndex);
-    },
-  },
-});
+function saveData(data) {
+  let url = location.host
+  url = url.replace(/8080/g, '3000')
+
+  fetch(`https://${url}/data`, {
+    // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS/Errors/CORSNotSupportingCredentials
+    credentials: 'omit',
+    method: 'post',
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }),
+    body: JSON.stringify(data)
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.success) {
+      UTILS.log('保存成功');
+    } else {
+      UTILS.log('保存失败');
+    }
+  }).catch(function(err) {
+    UTILS.log('API saveData',err);
+  });
+}
 
 Vue.createApp({
   template: `
@@ -73,13 +72,11 @@ Vue.createApp({
       </select>
     </div>
     <div class="body">
-      <template v-for="(status, index) in statusList" :key="status">
-        <BrickList
-          :statusIndex="index"
-          :dataSource="currentDataSource[status]"
-          @update="dataUpdate"
-        />
-      </template>
+      <brick-container
+        :statusList="statusList"
+        :dataSource="currentDataSource"
+        @click="dataUpdate"
+      />
     </div>
     <div class="footer">
       <button @click="onSave">保存</button>
@@ -87,7 +84,7 @@ Vue.createApp({
   </div>
 `,
   components: {
-    BrickList,
+    BrickContainer,
   },
   data() {
     const ret = this.initialize();
@@ -161,14 +158,14 @@ Vue.createApp({
       this.alphabet = i;
     },
     dataUpdate(row, col, value, statusIndex) {
+      // UTILS.log("dataUpdate", row, col, value, statusIndex);
       const nextValue = value === falseValue ? trueValue : falseValue;
       this.currentDataSource[statusIndex][row][col] = nextValue;
     },
     onSave() {
       this.dataSource[this.alphabet] = this.currentDataSource;
-      // UTILS.log(toString(this.currentDataSource));
-
-      localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
+      saveData({ data: this.dataSource });
+      // localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
     },
   },
 }).mount("#tool");
