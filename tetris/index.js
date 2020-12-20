@@ -10,7 +10,7 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-import "./tool/vue-template";
+// import "./tool/vue-template";
 
 import config from "./config";
 
@@ -29,11 +29,13 @@ function initialize() {
 }
 
 const shapePool = [
-  new TShape({
+  new IShape({
     x: 30,
     y: 30,
   }),
 ];
+
+UTILS.log("shapePool ", shapePool);
 
 let currentIndex = 0;
 let currentShape = shapePool[currentIndex];
@@ -53,7 +55,7 @@ function onKeyDown(e) {
     currentShape.moveRight();
   }
 
-  // UTILS.log(currentShape);
+  // UTILS.log(currentShape.shapeSpace);
 }
 
 function drawBoard() {
@@ -110,7 +112,7 @@ export function main() {
 
   setInterval(function () {
     if (!currentShape.done) {
-      currentShape.update();
+      // currentShape.update();
     }
   }, 1000);
 
@@ -122,7 +124,7 @@ export function main() {
   }
 }
 
-// main();
+main();
 
 // UTILS.log(config);
 

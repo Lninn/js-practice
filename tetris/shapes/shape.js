@@ -13,6 +13,10 @@ class Shape {
   static getHeight(shape) {}
 
   moveLeft() {
+    if (this.x <= 0) {
+      return;
+    }
+
     this.x -= CONSTENT.SIDE_LENGTH;
   }
 
