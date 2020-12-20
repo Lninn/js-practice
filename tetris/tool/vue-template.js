@@ -1,7 +1,14 @@
 import { UTILS } from "../utils";
+import { BrickContainer } from "./brick-container";
+
+UTILS.$("canvas").style.display = "none";
 
 const falseValue = 0;
 const trueValue = 1;
+
+const COLORS = ["#F4B400", "#34A853", "#4285F4", "#EA4335"];
+
+const DATA_KEY = "tetris";
 
 function initBrick() {
   const data = [],
@@ -28,30 +35,6 @@ function toString(s) {
     .join("\n");
 }
 
-const BrickList = Vue.defineComponent({
-  props: ["dataSource", "update"],
-  template: `
-    <div class="brick-list">
-      <template v-for="(list, row) in dataSource">
-        <template v-for="(item, col) in list">
-          <div
-            class="brick-item"
-            :class="{ active: item === 1 }"
-            @click="onBrickItemClick(row, col, item)"
-          ></div>
-        </template>
-      </template>
-    </div>
-  `,
-  methods: {
-    onBrickItemClick(row, col, value) {
-      this.$emit("update", row, col, value);
-    },
-  },
-});
-
-const DATA_KEY = "tetris";
-
 Vue.createApp({
   template: `
   <div class="tool-container">
@@ -63,14 +46,20 @@ Vue.createApp({
         </option>
       </select>
     </div>
-    <BrickList :dataSource="currentDataSource" @update="dataUpdate" />
+    <div class="body">
+      <brick-container
+        :statusList="statusList"
+        :dataSource="currentDataSource"
+        @click="dataUpdate"
+      />
+    </div>
     <div class="footer">
       <button @click="onSave">保存</button>
     </div>
   </div>
 `,
   components: {
-    BrickList,
+    BrickContainer,
   },
   data() {
     const ret = this.initialize();
@@ -92,12 +81,13 @@ Vue.createApp({
   },
   methods: {
     initialize() {
-      const status = "0 1 2 3".split(" ");
+      const statusList = "0 1 2 3".split(" ");
       const alphabets = "I J L O S T Z".split(" ");
       const defaultAlphabet = alphabets[0];
 
       let dataSource;
       let result = {
+        statusList,
         alphabets,
         alphabet: defaultAlphabet,
         dataSource: {},
@@ -107,7 +97,10 @@ Vue.createApp({
       i = localStorage.getItem(DATA_KEY);
       if (i === null) {
         result.dataSource = alphabets.reduce(function (accu, nextKey) {
-          accu[nextKey] = initBrick();
+          accu[nextKey] = statusList.reduce(function (accu, nextStatus) {
+            accu[nextStatus] = initBrick();
+            return accu;
+          }, {});
 
           return accu;
         }, {});
@@ -139,14 +132,13 @@ Vue.createApp({
       const i = e.target.value;
       this.alphabet = i;
     },
-    dataUpdate(row, col, value) {
+    dataUpdate(row, col, value, statusIndex) {
+      // UTILS.log("dataUpdate", row, col, value, statusIndex);
       const nextValue = value === falseValue ? trueValue : falseValue;
-      this.currentDataSource[row][col] = nextValue;
+      this.currentDataSource[statusIndex][row][col] = nextValue;
     },
     onSave() {
       this.dataSource[this.alphabet] = this.currentDataSource;
-      UTILS.log(toString(this.currentDataSource));
-
       localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
     },
   },

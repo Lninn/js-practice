@@ -10,7 +10,7 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-// import "./tool/vue-template";
+import "./tool/vue-template";
 
 import config from "./config";
 

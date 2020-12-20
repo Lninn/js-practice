@@ -1,12 +1,19 @@
 .tool-container {
   font-size: 20px;
   color: #fff;
-
-  max-width: 300px;
 }
 
 .tool-container .header {
   margin-bottom: 15px;
+}
+
+.tool-container .body {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  max-width: 700px;
 }
 
 .tool-container .footer {
@@ -27,6 +34,8 @@
   flex-wrap: wrap;
   flex-direction: row;
 
+  max-width: 290px;
+
   gap: 10px;
 }
 
@@ -42,8 +51,4 @@
 
 .brick-item:hover {
   border: 1px solid #f2f2f2;
-}
-
-.brick-item.active {
-  background: rgb(16, 158, 214);
 }
