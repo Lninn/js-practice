@@ -1,6 +1,9 @@
 import { UTILS } from "../utils";
 
-function initBrickData() {
+const falseValue = 0;
+const trueValue = 1;
+
+function initBrick() {
   const data = [],
     length = 5;
 
@@ -10,11 +13,19 @@ function initBrickData() {
   for (; i < length; i++) {
     data[i] = [];
     for (j = 0; j < length; j++) {
-      data[i][j] = false;
+      data[i][j] = falseValue;
     }
   }
 
   return data;
+}
+
+function toString(s) {
+  return s
+    .map((i) => {
+      return i.join("");
+    })
+    .join("\n");
 }
 
 const BrickList = Vue.defineComponent({
@@ -25,7 +36,7 @@ const BrickList = Vue.defineComponent({
         <template v-for="(item, col) in list">
           <div
             class="brick-item"
-            :class="{ active: item }"
+            :class="{ active: item === 1 }"
             @click="onBrickItemClick(row, col, item)"
           ></div>
         </template>
@@ -39,6 +50,8 @@ const BrickList = Vue.defineComponent({
   },
 });
 
+const DATA_KEY = "tetris";
+
 Vue.createApp({
   template: `
   <div class="tool-container">
@@ -50,7 +63,7 @@ Vue.createApp({
         </option>
       </select>
     </div>
-    <BrickList :dataSource="dataSource" @update="dataUpdate" />
+    <BrickList :dataSource="currentDataSource" @update="dataUpdate" />
     <div class="footer">
       <button @click="onSave">保存</button>
     </div>
@@ -60,45 +73,81 @@ Vue.createApp({
     BrickList,
   },
   data() {
+    const ret = this.initialize();
+    UTILS.log(ret);
+
     return {
-      alphabets: "I J L O S T Z".split(" "),
-      alphabet: "I",
-      dataSource: initBrickData(),
+      ...ret,
     };
   },
+  computed: {
+    currentDataSource: {
+      get() {
+        return this.dataSource[this.alphabet];
+      },
+      set(newValue) {
+        this.dataSource = newValue;
+      },
+    },
+  },
   methods: {
+    initialize() {
+      const status = "0 1 2 3".split(" ");
+      const alphabets = "I J L O S T Z".split(" ");
+      const defaultAlphabet = alphabets[0];
+
+      let dataSource;
+      let result = {
+        alphabets,
+        alphabet: defaultAlphabet,
+        dataSource: {},
+      };
+
+      let i;
+      i = localStorage.getItem(DATA_KEY);
+      if (i === null) {
+        result.dataSource = alphabets.reduce(function (accu, nextKey) {
+          accu[nextKey] = initBrick();
+
+          return accu;
+        }, {});
+
+        return result;
+      }
+
+      try {
+        i = JSON.parse(i);
+
+        dataSource = alphabets.reduce(function (accu, nextKey) {
+          if (i.hasOwnProperty(nextKey)) {
+            accu[nextKey] = i[nextKey];
+          } else {
+            accu[nextKey] = [];
+          }
+
+          return accu;
+        }, {});
+      } catch (error) {
+        i = {};
+      }
+
+      result.dataSource = dataSource;
+
+      return result;
+    },
     alphabetChange(e) {
       const i = e.target.value;
       this.alphabet = i;
     },
     dataUpdate(row, col, value) {
-      this.dataSource[row][col] = !value;
+      const nextValue = value === falseValue ? trueValue : falseValue;
+      this.currentDataSource[row][col] = nextValue;
     },
     onSave() {
-      const KEY = "tetris";
+      this.dataSource[this.alphabet] = this.currentDataSource;
+      UTILS.log(toString(this.currentDataSource));
 
-      let i;
-      i = localStorage.getItem(KEY);
-      UTILS.log(i);
-
-      if (i === null) {
-        i = {
-          [this.alphabet]: this.dataSource,
-        };
-      } else {
-        try {
-          i = JSON.parse(i);
-        } catch (error) {
-          i = {};
-        }
-
-        i = {
-          ...i,
-          [this.alphabet]: this.dataSource,
-        };
-      }
-
-      localStorage.setItem(KEY, JSON.stringify(i));
+      localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
     },
   },
 }).mount("#tool");

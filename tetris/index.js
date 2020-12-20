@@ -10,7 +10,7 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-import "./tool/vue-template";
+// import "./tool/vue-template";
 
 import config from "./config";
 
@@ -29,17 +29,20 @@ function initialize() {
 }
 
 const shapePool = [
-  new TShape({
+  new IShape({
     x: 30,
     y: 30,
   }),
 ];
+
+UTILS.log("shapePool ", shapePool);
 
 let currentIndex = 0;
 let currentShape = shapePool[currentIndex];
 
 function onKeyDown(e) {
   const keyCode = e.keyCode;
+  // UTILS.log(keyCode);
 
   if (keyCode === KEY_CODES.SPACE) {
     currentShape.changeShape && currentShape.changeShape();
@@ -122,7 +125,7 @@ export function main() {
   }
 }
 
-// main();
+main();
 
 // UTILS.log(config);
 
