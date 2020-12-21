@@ -35,6 +35,30 @@ function toString(s) {
     .join("\n");
 }
 
+function saveData(data) {
+  let url = location.host
+  url = url.replace(/8080/g, '3000')
+
+  fetch(`https://${url}/data`, {
+    // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS/Errors/CORSNotSupportingCredentials
+    credentials: 'omit',
+    method: 'post',
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    }),
+    body: JSON.stringify(data)
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.success) {
+      UTILS.log('保存成功');
+    } else {
+      UTILS.log('保存失败');
+    }
+  }).catch(function(err) {
+    UTILS.log('API saveData',err);
+  });
+}
 Vue.createApp({
   template: `
   <div class="tool-container">
@@ -139,7 +163,8 @@ Vue.createApp({
     },
     onSave() {
       this.dataSource[this.alphabet] = this.currentDataSource;
-      localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
+      saveData({ data: this.dataSource });
+      // localStorage.setItem(DATA_KEY, JSON.stringify(this.dataSource));
     },
   },
 }).mount("#tool");
