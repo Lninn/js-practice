@@ -1,4 +1,4 @@
-import IShape from "./shapes/IShape";
+import Shape from "./shapes/IShape";
 import OShape from "./shapes/OShape";
 import SShape from "./shapes/SShape";
 import ZShape from "./shapes/ZShape";
@@ -18,8 +18,8 @@ const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
 
 function initialize() {
-  canvas.style.width = config.canvasWidth + 'px';
-  canvas.style.height = config.canvasHeight + 'px';
+  canvas.style.width = config.canvasWidth + "px";
+  canvas.style.height = config.canvasHeight + "px";
 
   canvas.width = config.canvasWidth;
   canvas.height = config.canvasHeight;
@@ -31,12 +31,7 @@ function initialize() {
   document.addEventListener("keydown", onKeyDown);
 }
 
-const shapePool = [
-  new IShape({
-    x: 30,
-    y: 30,
-  }),
-];
+const shapePool = [new Shape("I")];
 
 UTILS.log("shapePool ", shapePool);
 
@@ -111,7 +106,7 @@ export function main() {
   initialize();
 
   setInterval(function () {
-    currentShape.update()
+    currentShape.update();
   }, 200);
 
   try {

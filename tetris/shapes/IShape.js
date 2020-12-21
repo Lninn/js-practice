@@ -1,4 +1,3 @@
-import Shape from "./shape";
 import { CONSTENT } from "../constant";
 import config from "../config";
 import { UTILS } from "../utils";
@@ -71,13 +70,12 @@ function getShapeSpace(shape) {
   return start(0);
 }
 
-class IShape extends Shape {
-  constructor(options) {
-    super({
-      ...options,
-      width: CONSTENT.SIDE_LENGTH * 4,
-      height: CONSTENT.SIDE_LENGTH * 1,
-    });
+class Shape {
+  constructor(identity) {
+    this.identity = identity;
+
+    this.x = 60;
+    this.y = 0;
 
     this.isLive = true;
 
@@ -86,7 +84,7 @@ class IShape extends Shape {
     this.width = 5 * CONSTENT.SIDE_LENGTH;
     this.height = 5 * CONSTENT.SIDE_LENGTH;
 
-    this.shape = config.SHAPES["T"][this.shapeStatus];
+    this.shape = config.SHAPES[this.identity][this.shapeStatus];
 
     this.shapeSpace = getShapeSpace(this.shape);
   }
@@ -118,7 +116,10 @@ class IShape extends Shape {
   update() {
     const { y, height } = this;
     const interval = this.shapeSpace[2];
-    if (y + height - interval * CONSTENT.SIDE_LENGTH >= config.canvasHeight - CONSTENT.SIDE_LENGTH) {
+    if (
+      y + height - interval * CONSTENT.SIDE_LENGTH >=
+      config.canvasHeight - CONSTENT.SIDE_LENGTH
+    ) {
       this.isLive = false;
       return;
     }
@@ -129,7 +130,7 @@ class IShape extends Shape {
   changeShape() {
     this.shapeStatus = (this.shapeStatus + 1) % 4;
 
-    this.shape = config.SHAPES["T"][this.shapeStatus];
+    this.shape = config.SHAPES[this.identity][this.shapeStatus];
     this.shapeSpace = getShapeSpace(this.shape);
   }
 
@@ -181,4 +182,4 @@ class IShape extends Shape {
   }
 }
 
-export default IShape;
+export default Shape;
