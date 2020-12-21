@@ -79,6 +79,8 @@ class IShape extends Shape {
       height: CONSTENT.SIDE_LENGTH * 1,
     });
 
+    this.isLive = true;
+
     this.shapeStatus = 0;
 
     this.width = 5 * CONSTENT.SIDE_LENGTH;
@@ -111,6 +113,17 @@ class IShape extends Shape {
     ) {
       this.x += CONSTENT.SIDE_LENGTH;
     }
+  }
+
+  update() {
+    const { y, height } = this;
+    const interval = this.shapeSpace[2];
+    if (y + height - interval * CONSTENT.SIDE_LENGTH >= config.canvasHeight - CONSTENT.SIDE_LENGTH) {
+      this.isLive = false;
+      return;
+    }
+
+    this.y += CONSTENT.SIDE_LENGTH;
   }
 
   changeShape() {

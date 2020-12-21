@@ -47,6 +47,10 @@ function onKeyDown(e) {
   const keyCode = e.keyCode;
   // UTILS.log(keyCode);
 
+  if (!currentShape.isLive) {
+    return;
+  }
+
   if (keyCode === KEY_CODES.SPACE) {
     currentShape.changeShape && currentShape.changeShape();
   }
@@ -93,10 +97,6 @@ function run() {
 
   drawBoard();
 
-  if (isEnd()) {
-    currentShape.done = true;
-  }
-
   currentShape.render(context);
 }
 
@@ -110,15 +110,9 @@ function start() {
 export function main() {
   initialize();
 
-  // test
-  // drawBoard();
-  // currentShape.render(context);
-
   setInterval(function () {
-    if (!currentShape.done) {
-      // currentShape.update();
-    }
-  }, 1000);
+    currentShape.update()
+  }, 200);
 
   try {
     start();
@@ -129,12 +123,3 @@ export function main() {
 }
 
 main();
-
-// UTILS.log(config);
-
-// tools();
-
-// const btn = document.createElement("button");
-// btn.appendChild(document.createTextNode("Toggle"));
-// btn.onclick = function () {};
-// document.body.append(btn);
