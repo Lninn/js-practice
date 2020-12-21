@@ -4,42 +4,8 @@ import config from "../config";
 import { UTILS } from "../utils";
 
 function isBrick(v) {
-  return v === "1";
+  return v === 1;
 }
-
-let i = `
-00000
-00100
-11100
-00000
-00000
-S
-00100
-00100
-00110
-00000
-00000
-S
-00000
-00000
-00111
-00100
-00000
-S
-00000
-00000
-01100
-00100
-00100
-`;
-
-i = i.split("S").reduce((a, n, i) => {
-  a[i] = n
-    .split("\n")
-    .filter((x) => x)
-    .map((x) => x.split(""));
-  return a;
-}, {});
 
 let createNumbers = (length, dir = true) =>
   Array.from({ length }).map((_, i) => {
@@ -84,7 +50,7 @@ function getShapeSpace(shape) {
       for (const col of cols) {
         [i, j] = getIndex(status, row, col);
 
-        if (shape[i][j] === "1") {
+        if (shape[i][j] === 1) {
           pass = false;
           break;
         }
@@ -118,7 +84,7 @@ class IShape extends Shape {
     this.width = 5 * CONSTENT.SIDE_LENGTH;
     this.height = 5 * CONSTENT.SIDE_LENGTH;
 
-    this.shape = i[this.shapeStatus];
+    this.shape = config.SHAPES["T"][this.shapeStatus];
 
     this.shapeSpace = getShapeSpace(this.shape);
   }
@@ -150,7 +116,7 @@ class IShape extends Shape {
   changeShape() {
     this.shapeStatus = (this.shapeStatus + 1) % 4;
 
-    this.shape = i[this.shapeStatus];
+    this.shape = config.SHAPES["T"][this.shapeStatus];
     this.shapeSpace = getShapeSpace(this.shape);
   }
 

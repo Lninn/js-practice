@@ -10,7 +10,7 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-import "./tool/vue-template";
+// import "./tool/vue-template";
 
 import config from "./config";
 
@@ -113,7 +113,7 @@ export function main() {
 
   setInterval(function () {
     if (!currentShape.done) {
-      currentShape.update();
+      // currentShape.update();
     }
   }, 1000);
 
