@@ -10,7 +10,7 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-// import "./tool/vue-template";
+import "./tool/vue-template";
 
 import config from "./config";
 
@@ -18,6 +18,9 @@ const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
 
 function initialize() {
+  canvas.style.width = config.canvasWidth + 'px';
+  canvas.style.height = config.canvasHeight + 'px';
+
   canvas.width = config.canvasWidth;
   canvas.height = config.canvasHeight;
 

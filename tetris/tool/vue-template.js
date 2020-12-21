@@ -2,10 +2,6 @@ import { UTILS } from "../utils";
 import { BrickContainer } from "./brick-container";
 import jsonData from '../data.json';
 
-// UTILS.log(jsonData);
-
-UTILS.$("canvas").style.display = "none";
-
 const falseValue = 0;
 const trueValue = 1;
 
@@ -73,15 +69,15 @@ Vue.createApp({
         </option>
       </select>
     </div>
+    <div class="footer">
+      <button @click="onSave">保存</button>
+    </div>
     <div class="body">
       <brick-container
         :statusList="statusList"
         :dataSource="currentDataSource"
         @click="dataUpdate"
       />
-    </div>
-    <div class="footer">
-      <button @click="onSave">保存</button>
     </div>
   </div>
 `,
