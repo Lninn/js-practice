@@ -1,6 +1,7 @@
 import { UTILS } from "../utils";
 import { BrickContainer } from "./brick-container";
-import jsonData from '../data.json';
+import jsonData from "../data.json";
+import config from "../config";
 
 const falseValue = 0;
 const trueValue = 1;
@@ -35,28 +36,38 @@ function toString(s) {
 }
 
 function saveData(data) {
-  let url = location.host
-  url = url.replace(/8080/g, '3000')
+  let { host } = location;
 
-  fetch(`https://${url}/data`, {
+  let url = "";
+  host = host.replace(/8080/g, "3000");
+  if (/localhost/g.test(host)) {
+    url = `http://${host}`;
+  } else {
+    url = `https://${host}`;
+  }
+
+  fetch(`${url}/data`, {
     // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS/Errors/CORSNotSupportingCredentials
-    credentials: 'omit',
-    method: 'post',
+    credentials: "omit",
+    method: "post",
     headers: new Headers({
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     }),
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    if (data.success) {
-      UTILS.log('保存成功');
-    } else {
-      UTILS.log('保存失败');
-    }
-  }).catch(function(err) {
-    UTILS.log('API saveData',err);
-  });
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (data) {
+      if (data.success) {
+        UTILS.log("保存成功");
+      } else {
+        UTILS.log("保存失败");
+      }
+    })
+    .catch(function (err) {
+      UTILS.log("API saveData", err);
+    });
 }
 Vue.createApp({
   template: `
@@ -107,9 +118,7 @@ Vue.createApp({
       const defaultIndex = 0;
       const alphabets = Object.keys(data);
       const defaultAlphabet = alphabets[defaultIndex];
-      const statusList = Object.keys(
-        data[defaultAlphabet]
-      );
+      const statusList = Object.keys(data[defaultAlphabet]);
 
       return {
         statusList,
