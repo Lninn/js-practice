@@ -1,5 +1,8 @@
 import { UTILS } from "../utils";
 import { BrickContainer } from "./brick-container";
+import jsonData from '../data.json';
+
+// UTILS.log(jsonData);
 
 UTILS.$("canvas").style.display = "none";
 
@@ -86,7 +89,7 @@ Vue.createApp({
     BrickContainer,
   },
   data() {
-    const ret = this.initialize();
+    const ret = this.initializeWithJSON(jsonData);
     UTILS.log(ret);
 
     return {
@@ -104,6 +107,21 @@ Vue.createApp({
     },
   },
   methods: {
+    initializeWithJSON(data) {
+      const defaultIndex = 0;
+      const alphabets = Object.keys(data);
+      const defaultAlphabet = alphabets[defaultIndex];
+      const statusList = Object.keys(
+        data[defaultAlphabet]
+      );
+
+      return {
+        statusList,
+        alphabets,
+        alphabet: defaultAlphabet,
+        dataSource: data,
+      };
+    },
     initialize() {
       const statusList = "0 1 2 3".split(" ");
       const alphabets = "I J L O S T Z".split(" ");
