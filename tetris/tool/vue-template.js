@@ -59,7 +59,6 @@ function saveData(data) {
     UTILS.log('API saveData',err);
   });
 }
-
 Vue.createApp({
   template: `
   <div class="tool-container">
