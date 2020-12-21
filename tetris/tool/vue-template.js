@@ -1,7 +1,6 @@
 import { UTILS } from "../utils";
 import { BrickContainer } from "./brick-container";
-
-UTILS.$("canvas").style.display = "none";
+import jsonData from '../data.json';
 
 const falseValue = 0;
 const trueValue = 1;
@@ -70,6 +69,9 @@ Vue.createApp({
         </option>
       </select>
     </div>
+    <div class="footer">
+      <button @click="onSave">保存</button>
+    </div>
     <div class="body">
       <brick-container
         :statusList="statusList"
@@ -77,16 +79,13 @@ Vue.createApp({
         @click="dataUpdate"
       />
     </div>
-    <div class="footer">
-      <button @click="onSave">保存</button>
-    </div>
   </div>
 `,
   components: {
     BrickContainer,
   },
   data() {
-    const ret = this.initialize();
+    const ret = this.initializeWithJSON(jsonData);
     UTILS.log(ret);
 
     return {
@@ -104,6 +103,21 @@ Vue.createApp({
     },
   },
   methods: {
+    initializeWithJSON(data) {
+      const defaultIndex = 0;
+      const alphabets = Object.keys(data);
+      const defaultAlphabet = alphabets[defaultIndex];
+      const statusList = Object.keys(
+        data[defaultAlphabet]
+      );
+
+      return {
+        statusList,
+        alphabets,
+        alphabet: defaultAlphabet,
+        dataSource: data,
+      };
+    },
     initialize() {
       const statusList = "0 1 2 3".split(" ");
       const alphabets = "I J L O S T Z".split(" ");
