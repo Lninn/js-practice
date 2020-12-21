@@ -31,16 +31,17 @@ function initialize() {
   document.addEventListener("keydown", onKeyDown);
 }
 
-const shapePool = [new Shape("I")];
+const alphabets = "I J L O S T Z".split(" ");
 
-UTILS.log("shapePool ", shapePool);
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 let currentIndex = 0;
-let currentShape = shapePool[currentIndex];
+let currentShape = new Shape(alphabets[getRandomInt(alphabets.length)]);
 
 function onKeyDown(e) {
   const keyCode = e.keyCode;
-  // UTILS.log(keyCode);
 
   if (!currentShape.isLive) {
     return;
