@@ -3,8 +3,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const webpack = require("webpack");
 
-const [schema, host] = process.env.GITPOD_WORKSPACE_URL.split('://')
-const publicUrl = `8080-${host}`
+let schema, host, publicUrl;
+const gitpod_url = process.env.GITPOD_WORKSPACE_URL;
+if (gitpod_url) {
+  [schema, host] = process.env.GITPOD_WORKSPACE_URL.split("://");
+  publicUrl = `8080-${host}`;
+}
 
 module.exports = {
   mode: "development",
@@ -23,7 +27,7 @@ module.exports = {
     // https://github.com/gitpod-io/gitpod/issues/26
     // https://github.com/gitpod-io/gitpod/issues/628
     disableHostCheck: true,
-    contentBase: "./dist"
+    contentBase: "./dist",
   },
   optimization: {
     moduleIds: "deterministic",
