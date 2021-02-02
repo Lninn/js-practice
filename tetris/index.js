@@ -10,12 +10,63 @@ import { UTILS } from "./utils";
 import "./index.css";
 
 // vue template
-import "./tool/vue-template";
+// import "./tool/vue-template";
 
 import config from "./config";
 
 const canvas = UTILS.$("#canvas");
 const context = canvas.getContext("2d");
+
+const tool = UTILS.$('#tool')
+
+const elements = [[1], [1], [1, 1]]
+const interval = 30
+
+const orinigalPoint = {
+  x: interval * 3,
+  y: interval * 3,
+}
+
+const indexPoints = []
+elements.forEach((outerElement, outerIndex) => {
+  outerElement.forEach((innerElement, innerIndex) => {
+    indexPoints.push({ x: innerIndex, y: outerIndex })
+  })
+})
+
+console.log('[indexPoints] ', indexPoints)
+
+const graphPoints = indexPoints.map(point => {
+  const x = orinigalPoint.x + interval * point.x
+  const y = orinigalPoint.y + interval * point.y
+
+  return { x, y }
+})
+
+function draw() {
+  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight)
+
+  drawBoard()
+
+  graphPoints.forEach(point => {
+    context.beginPath();
+    context.rect(point.x, point.y, interval, interval);
+    context.stroke();
+    context.fill();
+    context.closePath();
+  })
+}
+
+function changeShape() {
+  draw()
+}
+
+console.log('[graphPoints] ', graphPoints)
+
+
+function logToHtml(content) {
+  tool.innerHTML += content
+}
 
 function initialize() {
   canvas.style.width = config.canvasWidth + "px";
@@ -38,7 +89,7 @@ function getRandomInt(max) {
 }
 
 let currentIndex = 0;
-let currentShape = new Shape(alphabets[getRandomInt(alphabets.length)]);
+let currentShape = new Shape(alphabets[1]);
 
 function onKeyDown(e) {
   const keyCode = e.keyCode;
@@ -48,7 +99,7 @@ function onKeyDown(e) {
   }
 
   if (keyCode === KEY_CODES.SPACE) {
-    currentShape.changeShape && currentShape.changeShape();
+    return changeShape()
   }
 
   if (keyCode === KEY_CODES.LEFT) {
@@ -81,19 +132,18 @@ function drawBoard() {
   context.stroke();
 }
 
-function isEnd() {
-  const { y } = currentShape;
-  const h = currentShape.getHeight();
-
-  return y + h > config.canvasHeight - CONSTENT.SIDE_LENGTH;
-}
-
 function run() {
-  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight);
+  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight)
 
-  drawBoard();
+  drawBoard()
 
-  currentShape.render(context);
+  graphPoints.forEach(point => {
+    context.beginPath();
+    context.rect(point.x, point.y, interval, interval);
+    context.stroke();
+    context.fill();
+    context.closePath();
+  })
 }
 
 let req;
@@ -106,12 +156,10 @@ function start() {
 export function main() {
   initialize();
 
-  setInterval(function () {
-    currentShape.update();
-  }, 200);
+  draw();
 
   try {
-    start();
+    // start();
   } catch (e) {
     cancelAnimationFrame(req);
     console.error("RUNTIME ", e);

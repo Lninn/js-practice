@@ -2,7 +2,7 @@ import { UTILS } from "./utils";
 import shapesData from "./data.json";
 
 export default {
-  canvasWidth: 300 + 1,
-  canvasHeight: 450 + 1,
+  canvasWidth: 600 + 1,
+  canvasHeight: 600 + 1,
   SHAPES: shapesData,
 };

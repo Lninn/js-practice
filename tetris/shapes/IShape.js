@@ -74,7 +74,7 @@ class Shape {
   constructor(identity) {
     this.identity = identity;
 
-    this.x = 60;
+    this.x = 0;
     this.y = 0;
 
     this.isLive = true;
@@ -159,14 +159,14 @@ class Shape {
       }
     }
 
-    ctx.save();
+    // ctx.save();
 
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-    ctx.rect(x, y, C * 5, C * 5);
-    ctx.stroke();
+    // ctx.strokeStyle = "red";
+    // ctx.beginPath();
+    // ctx.rect(x, y, C * 5, C * 5);
+    // ctx.stroke();
 
-    ctx.restore();
+    // ctx.restore();
 
     // let i = 0;
     // let c = CONSTENT.SIDE_LENGTH;
