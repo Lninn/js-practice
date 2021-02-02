@@ -1,67 +1,29 @@
-import { CONSTENT, KEY_CODES } from './constant'
+import { CONSTENT, KEY_CODES_ALPHABET, SHAPE_META, CONFIG } from './constant'
 import { UTILS, getRandomInt, swap } from './utils'
-import config from './config'
 import './index.css'
 
 const canvas = UTILS.$('#canvas')
 const context = canvas.getContext('2d')
 
-const shapeMeta = [
-  // I
-  [[1, 1, 1, 1]],
-  // O
-  [
-    [1, 1],
-    [1, 1],
-  ],
-  // T
-  [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  // L
-  [
-    [1, 0],
-    [1, 0],
-    [1, 1],
-  ],
-  // J
-  [
-    [0, 1],
-    [0, 1],
-    [1, 1],
-  ],
-  // Z
-  [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  // S
-  [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-]
-
-let lastShape = shapeMeta[0]
-
 const interval = 30
-
+const currentBlock = {
+  shape: SHAPE_META[0],
+}
 const orinigalPoint = {
   x: interval * 3,
   y: interval * 3,
 }
 
-let graphPoints = getGraphPoints(lastShape)
+let graphPoints = getGraphPoints(currentBlock.shape)
 
 function changeShape() {
-  lastShape = swap(lastShape)
-  graphPoints = getGraphPoints(lastShape)
+  currentBlock.shape = swap(currentBlock.shape)
+  graphPoints = getGraphPoints(currentBlock.shape)
   draw()
 }
 
 function draw() {
-  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight)
+  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
   drawBoard()
 
@@ -93,11 +55,11 @@ function getGraphPoints(elements = [], origin = orinigalPoint) {
 }
 
 function initialize() {
-  canvas.style.width = config.canvasWidth + 'px'
-  canvas.style.height = config.canvasHeight + 'px'
+  canvas.style.width = CONFIG.canvasWidth + 'px'
+  canvas.style.height = CONFIG.canvasHeight + 'px'
 
-  canvas.width = config.canvasWidth
-  canvas.height = config.canvasHeight
+  canvas.width = CONFIG.canvasWidth
+  canvas.height = CONFIG.canvasHeight
 
   context.strokeStyle = CONSTENT.STROKE
   context.fillStyle = CONSTENT.FILL
@@ -109,7 +71,7 @@ function initialize() {
 function onKeyDown(e) {
   const keyCode = e.keyCode
 
-  if (keyCode === KEY_CODES.SPACE) {
+  if (keyCode === KEY_CODES_ALPHABET.SPACE) {
     return changeShape()
   }
 }
@@ -118,15 +80,15 @@ function drawBoard() {
   let i = 0
 
   // draw vertical line
-  for (; i <= config.canvasWidth; i += CONSTENT.SIDE_LENGTH) {
+  for (; i <= CONFIG.canvasWidth; i += CONSTENT.SIDE_LENGTH) {
     context.moveTo(0.5 + i, 0)
-    context.lineTo(0.5 + i, config.canvasHeight)
+    context.lineTo(0.5 + i, CONFIG.canvasHeight)
   }
 
   // draw horizontal line
-  for (i = 0; i <= config.canvasHeight; i += CONSTENT.SIDE_LENGTH) {
+  for (i = 0; i <= CONFIG.canvasHeight; i += CONSTENT.SIDE_LENGTH) {
     context.moveTo(0, 0.5 + i)
-    context.lineTo(config.canvasWidth, 0.5 + i)
+    context.lineTo(CONFIG.canvasWidth, 0.5 + i)
   }
 
   context.strokeStyle = CONSTENT.BOARD_STROKE_COLOR
@@ -138,15 +100,15 @@ initialize()
 draw()
 
 setInterval(() => {
-  const height = lastShape.length
+  const height = currentBlock.shape.length
 
-  if (orinigalPoint.y + height + interval >= config.canvasWidth) {
+  if (orinigalPoint.y + height + interval >= CONFIG.canvasWidth) {
     orinigalPoint.y = 0
-    lastShape = shapeMeta[getRandomInt(shapeMeta.length)]
+    currentBlock.shape = SHAPE_META[getRandomInt(SHAPE_META.length)]
   }
 
   orinigalPoint.y = orinigalPoint.y + interval
 
-  graphPoints = getGraphPoints(lastShape)
+  graphPoints = getGraphPoints(currentBlock.shape)
   draw()
 }, 1000)
