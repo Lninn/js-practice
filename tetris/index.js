@@ -19,7 +19,37 @@ const context = canvas.getContext("2d");
 
 const tool = UTILS.$('#tool')
 
-const elements = [[1], [1], [1, 1]]
+const tShape = {
+  "1": [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  "2": [
+    [1, 0],
+    [1, 1],
+    [1, 0],
+  ],
+  "3": [
+    [1, 1, 1],
+    [0, 1, 0],
+  ],
+  "4": [
+    [0, 1],
+    [1, 1],
+    [0, 1],
+  ],
+}
+
+// let lastShape = [
+//   [0, 1, 0],
+//   [1, 1, 1],
+// ]
+
+let lastShape = [
+  [1, 1, 0],
+  [0, 1, 1],
+]
+
 const interval = 30
 
 const orinigalPoint = {
@@ -27,21 +57,30 @@ const orinigalPoint = {
   y: interval * 3,
 }
 
-const indexPoints = []
-elements.forEach((outerElement, outerIndex) => {
-  outerElement.forEach((innerElement, innerIndex) => {
-    indexPoints.push({ x: innerIndex, y: outerIndex })
-  })
-})
+let graphPoints = getGraphPoints(lastShape)
 
-console.log('[indexPoints] ', indexPoints)
+function changeShape() {
+  lastShape = swap(lastShape)
+  graphPoints = getGraphPoints(lastShape)
+  draw()
+}
 
-const graphPoints = indexPoints.map(point => {
-  const x = orinigalPoint.x + interval * point.x
-  const y = orinigalPoint.y + interval * point.y
+function swap(elements = []) {
+  const numOfRow = elements.length
+  const numOfColumn = elements[0].length
 
-  return { x, y }
-})
+  const newElements = []
+  for (let i = 0; i < numOfColumn; i++) {
+    newElements[i] = []
+    for (let j = numOfRow - 1; j >= 0; j--) {
+      newElements[i].push(
+        elements[j][i]
+      )
+    }
+  }
+
+  return newElements
+}
 
 function draw() {
   context.clearRect(0, 0, config.canvasWidth, config.canvasHeight)
@@ -57,11 +96,23 @@ function draw() {
   })
 }
 
-function changeShape() {
-  draw()
-}
+function getGraphPoints(elements = [], origin = orinigalPoint) {
+  // console.log('[getGraphPoints] ', elements)
+  const indexPoints = []
 
-console.log('[graphPoints] ', graphPoints)
+  elements.forEach((outerElement, outerIndex) => {
+    outerElement.forEach((innerElement, innerIndex) => {
+      innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
+    })
+  })
+
+  return indexPoints.map(point => {
+    const x = origin.x + interval * point.x
+    const y = origin.y + interval * point.y
+
+    return { x, y }
+  })
+}
 
 
 function logToHtml(content) {
