@@ -1,49 +1,49 @@
-import Shape from './shapes/IShape'
-
 import { CONSTENT, KEY_CODES } from './constant'
-import { UTILS } from './utils'
-import './index.css'
-
-// vue template
-// import "./tool/vue-template";
-
+import { UTILS, getRandomInt, swap } from './utils'
 import config from './config'
+import './index.css'
 
 const canvas = UTILS.$('#canvas')
 const context = canvas.getContext('2d')
 
-const tool = UTILS.$('#tool')
-
-const tShape = {
-  1: [
+const shapeMeta = [
+  // I
+  [[1, 1, 1, 1]],
+  // O
+  [
+    [1, 1],
+    [1, 1],
+  ],
+  // T
+  [
     [0, 1, 0],
     [1, 1, 1],
   ],
-  2: [
+  // L
+  [
+    [1, 0],
     [1, 0],
     [1, 1],
-    [1, 0],
   ],
-  3: [
-    [1, 1, 1],
-    [0, 1, 0],
-  ],
-  4: [
+  // J
+  [
+    [0, 1],
     [0, 1],
     [1, 1],
-    [0, 1],
   ],
-}
-
-// let lastShape = [
-//   [0, 1, 0],
-//   [1, 1, 1],
-// ]
-
-let lastShape = [
-  [1, 1, 0],
-  [0, 1, 1],
+  // Z
+  [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+  // S
+  [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
 ]
+
+let lastShape = shapeMeta[0]
 
 const interval = 30
 
@@ -58,21 +58,6 @@ function changeShape() {
   lastShape = swap(lastShape)
   graphPoints = getGraphPoints(lastShape)
   draw()
-}
-
-function swap(elements = []) {
-  const numOfRow = elements.length
-  const numOfColumn = elements[0].length
-
-  const newElements = []
-  for (let i = 0; i < numOfColumn; i++) {
-    newElements[i] = []
-    for (let j = numOfRow - 1; j >= 0; j--) {
-      newElements[i].push(elements[j][i])
-    }
-  }
-
-  return newElements
 }
 
 function draw() {
@@ -107,10 +92,6 @@ function getGraphPoints(elements = [], origin = orinigalPoint) {
   })
 }
 
-function logToHtml(content) {
-  tool.innerHTML += content
-}
-
 function initialize() {
   canvas.style.width = config.canvasWidth + 'px'
   canvas.style.height = config.canvasHeight + 'px'
@@ -125,35 +106,12 @@ function initialize() {
   document.addEventListener('keydown', onKeyDown)
 }
 
-const alphabets = 'I J L O S T Z'.split(' ')
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max))
-}
-
-let currentIndex = 0
-let currentShape = new Shape(alphabets[1])
-
 function onKeyDown(e) {
   const keyCode = e.keyCode
-
-  if (!currentShape.isLive) {
-    return
-  }
 
   if (keyCode === KEY_CODES.SPACE) {
     return changeShape()
   }
-
-  if (keyCode === KEY_CODES.LEFT) {
-    currentShape.moveLeft()
-  }
-
-  if (keyCode === KEY_CODES.RIGHT) {
-    currentShape.moveRight()
-  }
-
-  // UTILS.log(currentShape);
 }
 
 function drawBoard() {
@@ -175,38 +133,20 @@ function drawBoard() {
   context.stroke()
 }
 
-function run() {
-  context.clearRect(0, 0, config.canvasWidth, config.canvasHeight)
+initialize()
 
-  drawBoard()
+draw()
 
-  graphPoints.forEach((point) => {
-    context.beginPath()
-    context.rect(point.x, point.y, interval, interval)
-    context.stroke()
-    context.fill()
-    context.closePath()
-  })
-}
+setInterval(() => {
+  const height = lastShape.length
 
-let req
-
-function start() {
-  req = requestAnimationFrame(start)
-  run()
-}
-
-export function main() {
-  initialize()
-
-  draw()
-
-  try {
-    // start();
-  } catch (e) {
-    cancelAnimationFrame(req)
-    console.error('RUNTIME ', e)
+  if (orinigalPoint.y + height + interval >= config.canvasWidth) {
+    orinigalPoint.y = 0
+    lastShape = shapeMeta[getRandomInt(shapeMeta.length)]
   }
-}
 
-main()
+  orinigalPoint.y = orinigalPoint.y + interval
+
+  graphPoints = getGraphPoints(lastShape)
+  draw()
+}, 1000)
