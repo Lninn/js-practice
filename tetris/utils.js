@@ -15,7 +15,7 @@ export function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max))
 }
 
-export function swap(elements = []) {
+export function transpose(elements = []) {
   const numOfRow = elements.length
   const numOfColumn = elements[0].length
 
@@ -28,4 +28,17 @@ export function swap(elements = []) {
   }
 
   return newElements
+}
+
+export function get2DimMark(numOfRow, numOfCol) {
+  const ret = []
+
+  for (let i = 0; i < numOfRow; i++) {
+    ret[i] = []
+    for (let j = 0; j < numOfCol; j++) {
+      ret[i][j] = 0
+    }
+  }
+
+  return ret
 }

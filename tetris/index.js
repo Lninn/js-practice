@@ -1,23 +1,30 @@
-import { CONSTENT, KEY_CODES_ALPHABET, SHAPE_META, CONFIG } from './constant'
-import { UTILS, getRandomInt, swap } from './utils'
+import {
+  CONSTENT,
+  KEY_CODES_ALPHABET,
+  SHAPE_META,
+  CONFIG,
+  INTERVAL,
+} from './constant'
+import { UTILS, getRandomInt, transpose, get2DimMark } from './utils'
 import './index.css'
 
 const canvas = UTILS.$('#canvas')
 const context = canvas.getContext('2d')
 
-const interval = 30
+console.log(get2DimMark(CONFIG.canvasRows, CONFIG.canvasColumns))
+
 const currentBlock = {
   shape: SHAPE_META[0],
 }
 const orinigalPoint = {
-  x: interval * 3,
-  y: interval * 3,
+  x: INTERVAL * 3,
+  y: INTERVAL * 3,
 }
 
 let graphPoints = getGraphPoints(currentBlock.shape)
 
 function changeShape() {
-  currentBlock.shape = swap(currentBlock.shape)
+  currentBlock.shape = transpose(currentBlock.shape)
   graphPoints = getGraphPoints(currentBlock.shape)
   draw()
 }
@@ -29,7 +36,7 @@ function draw() {
 
   graphPoints.forEach((point) => {
     context.beginPath()
-    context.rect(point.x, point.y, interval, interval)
+    context.rect(point.x, point.y, INTERVAL, INTERVAL)
     context.stroke()
     context.fill()
     context.closePath()
@@ -47,8 +54,8 @@ function getGraphPoints(elements = [], origin = orinigalPoint) {
   })
 
   return indexPoints.map((point) => {
-    const x = origin.x + interval * point.x
-    const y = origin.y + interval * point.y
+    const x = origin.x + INTERVAL * point.x
+    const y = origin.y + INTERVAL * point.y
 
     return { x, y }
   })
@@ -102,12 +109,12 @@ draw()
 setInterval(() => {
   const height = currentBlock.shape.length
 
-  if (orinigalPoint.y + height + interval >= CONFIG.canvasWidth) {
+  if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasWidth) {
     orinigalPoint.y = 0
     currentBlock.shape = SHAPE_META[getRandomInt(SHAPE_META.length)]
   }
 
-  orinigalPoint.y = orinigalPoint.y + interval
+  orinigalPoint.y = orinigalPoint.y + INTERVAL
 
   graphPoints = getGraphPoints(currentBlock.shape)
   draw()

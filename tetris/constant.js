@@ -7,8 +7,12 @@ export const CONSTENT = {
   STEP: 5,
 }
 
+export const INTERVAL = 30
+
 export const CONFIG = {
-  canvasWidth: 600 + 1,
+  canvasRows: 420 / 30,
+  canvasColumns: 600 / 30,
+  canvasWidth: 420 + 1,
   canvasHeight: 600 + 1,
 }
 
