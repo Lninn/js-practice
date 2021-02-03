@@ -10,6 +10,7 @@ import './index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
+let timer = null
 
 const orinigalPoint = {
   x: INTERVAL * 4,
@@ -49,37 +50,43 @@ function draw() {
 }
 
 function update() {
-  setInterval(() => {
-    const { shapeMeta, graphPoints } = currentBlock
-    const height = shapeMeta.length
-
-    if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasHeight) {
-      orinigalPoint.y = 0
-      currentBlock.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
+  timer = setInterval(() => {
+    if (check()) {
+      currentBlock.reset()
     }
 
-    orinigalPoint.y = orinigalPoint.y + INTERVAL
-    currentBlock.graphPoints = getGraphPoints(currentBlock.shapeMeta, orinigalPoint)
+    currentBlock.update()
+
     draw()
   }, 1000)
+}
+
+function check() {
+   const { shapeMeta, graphPoints } = currentBlock
+   const height = shapeMeta.length
+
+   return currentBlock.y + height + INTERVAL >= CONFIG.canvasHeight
 }
 
 function createBlock() {
   const o = {}
 
-  o.reset = function(options = {}) {
-    if (options.shapeIndex) {
-      o.shapeMeta= SHAPE_META[options.shapeIndex]
-    } else {
-      o.shapeMeta= SHAPE_META[0]
-    }
+  o.reset = function() {
+    o.y = orinigalPoint.y || 0
+    o.x = orinigalPoint.x || 0
 
-    o.graphPoints = getGraphPoints(o.shapeMeta, orinigalPoint)
+    o.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
+    o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
 
   o.transpose = function() {
     o.shapeMeta = transpose(o.shapeMeta)
-    o.graphPoints = getGraphPoints(o.shapeMeta, orinigalPoint)
+    o.graphPoints = getGraphPoints(o.shapeMeta, o)
+  }
+
+  o.update = function() {
+    o.y = o.y + INTERVAL
+    o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
 
   o.draw = function(context) {
@@ -124,4 +131,3 @@ function drawBoard() {
   context.strokeStyle = CONSTENT.BOARD_STROKE_COLOR
   context.stroke()
 }
-
