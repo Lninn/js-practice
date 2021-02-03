@@ -16,6 +16,54 @@ const orinigalPoint = {
   y: INTERVAL * 0,
 }
 
+const currentBlock = createBlock()
+
+__mian()
+
+function __mian() {
+  initialize()
+  draw()
+  update()
+}
+
+function initialize() {
+  canvas.style.width = CONFIG.canvasWidth + 'px'
+  canvas.style.height = CONFIG.canvasHeight + 'px'
+
+  canvas.width = CONFIG.canvasWidth
+  canvas.height = CONFIG.canvasHeight
+
+  context.strokeStyle = CONSTENT.STROKE
+  context.fillStyle = CONSTENT.FILL
+  context.lineWidth = CONSTENT.LINE_WIDTH
+
+  document.addEventListener('keydown', onKeyDown)
+}
+
+function draw() {
+  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+
+  drawBoard()
+
+  currentBlock.draw(context)
+}
+
+function update() {
+  setInterval(() => {
+    const { shapeMeta, graphPoints } = currentBlock
+    const height = shapeMeta.length
+
+    if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasHeight) {
+      orinigalPoint.y = 0
+      currentBlock.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
+    }
+
+    orinigalPoint.y = orinigalPoint.y + INTERVAL
+    currentBlock.graphPoints = getGraphPoints(currentBlock.shapeMeta, orinigalPoint)
+    draw()
+  }, 1000)
+}
+
 function createBlock() {
   const o = {}
 
@@ -49,30 +97,6 @@ function createBlock() {
   return o
 }
 
-const currentBlock = createBlock()
-
-function draw() {
-  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
-
-  drawBoard()
-
-  currentBlock.draw(context)
-}
-
-function initialize() {
-  canvas.style.width = CONFIG.canvasWidth + 'px'
-  canvas.style.height = CONFIG.canvasHeight + 'px'
-
-  canvas.width = CONFIG.canvasWidth
-  canvas.height = CONFIG.canvasHeight
-
-  context.strokeStyle = CONSTENT.STROKE
-  context.fillStyle = CONSTENT.FILL
-  context.lineWidth = CONSTENT.LINE_WIDTH
-
-  document.addEventListener('keydown', onKeyDown)
-}
-
 function onKeyDown(e) {
   const keyCode = e.keyCode
 
@@ -80,22 +104,6 @@ function onKeyDown(e) {
     currentBlock.transpose()
     draw()
   }
-}
-
-function update() {
-  setInterval(() => {
-    const { shapeMeta, graphPoints } = currentBlock
-    const height = shapeMeta.length
-
-    if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasHeight) {
-      orinigalPoint.y = 0
-      currentBlock.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
-    }
-
-    orinigalPoint.y = orinigalPoint.y + INTERVAL
-    currentBlock.graphPoints = getGraphPoints(currentBlock.shapeMeta, orinigalPoint)
-    draw()
-  }, 1000)
 }
 
 function drawBoard() {
@@ -117,10 +125,3 @@ function drawBoard() {
   context.stroke()
 }
 
-function __mian() {
-  initialize()
-  draw()
-  update()
-}
-
-__mian()
