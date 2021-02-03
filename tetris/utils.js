@@ -1,4 +1,6 @@
-export const UTILS = {
+import { INTERVAL } from './constant'
+
+export const utils = {
   log: console.log.bind(console),
   e(s) {
     return document.querySelectorAll(s)
@@ -106,3 +108,21 @@ export const createNumbers = (length, dir = true) =>
       return length - i - 1
     }
   })
+
+export function getGraphPoints(elements = [], origin) {
+  // console.log('[getGraphPoints] ', elements)
+  const indexPoints = []
+
+  elements.forEach((outerElement, outerIndex) => {
+    outerElement.forEach((innerElement, innerIndex) => {
+      innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
+    })
+  })
+
+  return indexPoints.map((point) => {
+    const x = origin.x + INTERVAL * point.x
+    const y = origin.y + INTERVAL * point.y
+
+    return { x, y }
+  })
+}

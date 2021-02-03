@@ -5,60 +5,58 @@ import {
   CONFIG,
   INTERVAL,
 } from './constant'
-import { UTILS, getRandomInt, transpose, get2DimMark } from './utils'
+import { utils, getRandomInt, transpose, getGraphPoints } from './utils'
 import './index.css'
 
-const canvas = UTILS.$('#canvas')
+const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-console.log(get2DimMark(CONFIG.canvasRows, CONFIG.canvasColumns))
-
-const currentBlock = {
-  shape: SHAPE_META[0],
-}
 const orinigalPoint = {
-  x: INTERVAL * 3,
-  y: INTERVAL * 3,
+  x: INTERVAL * 4,
+  y: INTERVAL * 0,
 }
 
-let graphPoints = getGraphPoints(currentBlock.shape)
+function createBlock() {
+  const o = {}
 
-function changeShape() {
-  currentBlock.shape = transpose(currentBlock.shape)
-  graphPoints = getGraphPoints(currentBlock.shape)
-  draw()
+  o.reset = function(options = {}) {
+    if (options.shapeIndex) {
+      o.shapeMeta= SHAPE_META[options.shapeIndex]
+    } else {
+      o.shapeMeta= SHAPE_META[0]
+    }
+
+    o.graphPoints = getGraphPoints(o.shapeMeta, orinigalPoint)
+  }
+
+  o.transpose = function() {
+    o.shapeMeta = transpose(o.shapeMeta)
+    o.graphPoints = getGraphPoints(o.shapeMeta, orinigalPoint)
+  }
+
+  o.draw = function(context) {
+    o.graphPoints.forEach((point) => {
+      context.beginPath()
+      context.rect(point.x, point.y, INTERVAL, INTERVAL)
+      context.stroke()
+      context.fill()
+      context.closePath()
+    })
+  }
+
+  o.reset()
+
+  return o
 }
+
+const currentBlock = createBlock()
 
 function draw() {
   context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
   drawBoard()
 
-  graphPoints.forEach((point) => {
-    context.beginPath()
-    context.rect(point.x, point.y, INTERVAL, INTERVAL)
-    context.stroke()
-    context.fill()
-    context.closePath()
-  })
-}
-
-function getGraphPoints(elements = [], origin = orinigalPoint) {
-  // console.log('[getGraphPoints] ', elements)
-  const indexPoints = []
-
-  elements.forEach((outerElement, outerIndex) => {
-    outerElement.forEach((innerElement, innerIndex) => {
-      innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
-    })
-  })
-
-  return indexPoints.map((point) => {
-    const x = origin.x + INTERVAL * point.x
-    const y = origin.y + INTERVAL * point.y
-
-    return { x, y }
-  })
+  currentBlock.draw(context)
 }
 
 function initialize() {
@@ -79,8 +77,25 @@ function onKeyDown(e) {
   const keyCode = e.keyCode
 
   if (keyCode === KEY_CODES_ALPHABET.SPACE) {
-    return changeShape()
+    currentBlock.transpose()
+    draw()
   }
+}
+
+function update() {
+  setInterval(() => {
+    const { shapeMeta, graphPoints } = currentBlock
+    const height = shapeMeta.length
+
+    if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasHeight) {
+      orinigalPoint.y = 0
+      currentBlock.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
+    }
+
+    orinigalPoint.y = orinigalPoint.y + INTERVAL
+    currentBlock.graphPoints = getGraphPoints(currentBlock.shapeMeta, orinigalPoint)
+    draw()
+  }, 1000)
 }
 
 function drawBoard() {
@@ -102,20 +117,10 @@ function drawBoard() {
   context.stroke()
 }
 
-initialize()
-
-draw()
-
-setInterval(() => {
-  const height = currentBlock.shape.length
-
-  if (orinigalPoint.y + height + INTERVAL >= CONFIG.canvasWidth) {
-    orinigalPoint.y = 0
-    currentBlock.shape = SHAPE_META[getRandomInt(SHAPE_META.length)]
-  }
-
-  orinigalPoint.y = orinigalPoint.y + INTERVAL
-
-  graphPoints = getGraphPoints(currentBlock.shape)
+function __mian() {
+  initialize()
   draw()
-}, 1000)
+  update()
+}
+
+__mian()
