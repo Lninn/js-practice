@@ -1,6 +1,5 @@
 import {
   CONSTENT,
-  KEY_CODES_ALPHABET,
   SHAPE_META,
   CONFIG,
   INTERVAL,
@@ -26,9 +25,13 @@ const markMap = createMarkMap()
 __mian()
 
 function __mian() {
-  initialize()
+  setup()
+
+  document.addEventListener('keydown', onKeyDown)
+  
   draw()
   update()
+
 }
 
 function createMarkMap() {
@@ -45,7 +48,7 @@ function createMarkMap() {
   return markMap
 }
 
-function initialize() {
+function setup() {
   canvas.style.width = CONFIG.canvasWidth + 'px'
   canvas.style.height = CONFIG.canvasHeight + 'px'
 
@@ -55,12 +58,10 @@ function initialize() {
   context.strokeStyle = CONSTENT.STROKE
   context.fillStyle = CONSTENT.FILL
   context.lineWidth = CONSTENT.LINE_WIDTH
-
-  document.addEventListener('keydown', onKeyDown)
 }
 
 function draw() {
-  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+  context.clearRect(0, 0, CONFIG.canvasWidth + 1, CONFIG.canvasHeight + 1)
 
   drawBoard()
 
@@ -98,7 +99,7 @@ function update() {
     currentBlock.update()
 
     draw()
-  }, 1000)
+  }, 100)
 }
 
 function check(shapeMeta, y) {
@@ -124,7 +125,16 @@ function createBlock() {
   }
 
   o.moveLeft = function() {
-    o.x = o.x - INTERVAL
+    const { canvasWidth } = CONFIG
+    var accu = o.x - INTERVAL
+    
+    if (o.x === 0) {
+      accu = 0
+    } else if (o.x === canvasWidth - 1) {
+      accu = canvasWidth - 1
+    }
+
+    o.x = accu
   }
 
   o.moveRight = function() {
@@ -170,13 +180,13 @@ function drawBoard() {
   const h = CONFIG.canvasHeight
 
   // draw vertical line
-  for (; i <= w; i += CONSTENT.SIDE_LENGTH) {
+  for (; i <= w; i += INTERVAL) {
     context.moveTo(0.5 + i, 0)
     context.lineTo(0.5 + i, h)
   }
 
   // draw horizontal line
-  for (i = 0; i <= h; i += CONSTENT.SIDE_LENGTH) {
+  for (i = 0; i <= h; i += INTERVAL) {
     context.moveTo(0, 0.5 + i)
     context.lineTo(w, 0.5 + i)
   }

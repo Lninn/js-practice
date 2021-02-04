@@ -10,10 +10,10 @@ export const CONSTENT = {
 export const INTERVAL = 30
 
 export const CONFIG = {
-  canvasRows: 420 / 30,
-  canvasColumns: 600 / 30,
-  canvasWidth: 420 + 1,
-  canvasHeight: 600 + 1,
+  canvasRows: 420 / INTERVAL,
+  canvasColumns: 600 / INTERVAL,
+  canvasWidth: 420,
+  canvasHeight: 600,
 }
 
 export const KEY_CODES_ARROW = {
