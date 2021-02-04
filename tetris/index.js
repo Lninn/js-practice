@@ -10,6 +10,7 @@ import './index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
+let timer = null
 
 const orinigalPoint = {
   x: INTERVAL * 4,
@@ -17,6 +18,7 @@ const orinigalPoint = {
 }
 
 const currentBlock = createBlock()
+const markMap = createMarkMap()
 
 __mian()
 
@@ -24,6 +26,20 @@ function __mian() {
   initialize()
   draw()
   update()
+}
+
+function createMarkMap() {
+  const { canvasWidth, canvasHeight } = CONFIG
+
+  const markMap = {}
+  for (let i = 0; i < canvasWidth; i += INTERVAL) {
+    markMap[i] = {}
+    for (let j = 0; j < canvasHeight; j += INTERVAL) {
+      markMap[i][j] = { value: 0 }
+    }
+  }
+
+  return markMap
 }
 
 function initialize() {
@@ -45,12 +61,34 @@ function draw() {
 
   drawBoard()
 
+  Object.keys(markMap).forEach(outer => {
+    let target = markMap[outer]
+    Object.keys(target).forEach(inner => {
+      const { value } = target[inner]
+
+      if (value === 1) {
+        context.beginPath()
+        context.rect(outer, inner, INTERVAL, INTERVAL)
+        context.stroke()
+        context.fill()
+        context.closePath()
+      }
+
+    })
+  })
+
   currentBlock.draw(context)
 }
 
 function update() {
-  setInterval(() => {
-    if (check()) {
+  timer = setInterval(() => {
+    const { shapeMeta, graphPoints, y } = currentBlock
+
+    if (check(shapeMeta, y)) {
+      graphPoints.forEach(point => {
+        markMap[point.x][point.y].value = 1
+      })
+
       currentBlock.reset()
     }
 
@@ -60,11 +98,10 @@ function update() {
   }, 1000)
 }
 
-function check() {
-   const { shapeMeta } = currentBlock
-   const height = shapeMeta.length
+function check(shapeMeta, y) {
+   const height = shapeMeta.length * INTERVAL
 
-   return currentBlock.y + height + INTERVAL >= CONFIG.canvasHeight
+   return y + height + INTERVAL >= CONFIG.canvasHeight
 }
 
 function createBlock() {
@@ -114,17 +151,19 @@ function onKeyDown(e) {
 
 function drawBoard() {
   let i = 0
+  const w = CONFIG.canvasWidth
+  const h = CONFIG.canvasHeight
 
   // draw vertical line
-  for (; i <= CONFIG.canvasWidth; i += CONSTENT.SIDE_LENGTH) {
+  for (; i <= w; i += CONSTENT.SIDE_LENGTH) {
     context.moveTo(0.5 + i, 0)
-    context.lineTo(0.5 + i, CONFIG.canvasHeight)
+    context.lineTo(0.5 + i, h)
   }
 
   // draw horizontal line
-  for (i = 0; i <= CONFIG.canvasHeight; i += CONSTENT.SIDE_LENGTH) {
+  for (i = 0; i <= h; i += CONSTENT.SIDE_LENGTH) {
     context.moveTo(0, 0.5 + i)
-    context.lineTo(CONFIG.canvasWidth, 0.5 + i)
+    context.lineTo(w, 0.5 + i)
   }
 
   context.strokeStyle = CONSTENT.BOARD_STROKE_COLOR
