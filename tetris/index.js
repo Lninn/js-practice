@@ -4,6 +4,9 @@ import {
   SHAPE_META,
   CONFIG,
   INTERVAL,
+  isSpace,
+  isLeft,
+  isRight,
 } from './constant'
 import { utils, getRandomInt, transpose, getGraphPoints } from './utils'
 import './index.css'
@@ -120,6 +123,14 @@ function createBlock() {
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
 
+  o.moveLeft = function() {
+    o.x = o.x - INTERVAL
+  }
+
+  o.moveRight = function() {
+    o.x = o.x + INTERVAL
+  }
+
   o.update = function() {
     o.y = o.y + INTERVAL
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
@@ -143,9 +154,13 @@ function createBlock() {
 function onKeyDown(e) {
   const keyCode = e.keyCode
 
-  if (keyCode === KEY_CODES_ALPHABET.SPACE) {
+  if (isSpace(keyCode)) {
     currentBlock.transpose()
     draw()
+  } else if (isLeft(keyCode)) {
+    currentBlock.moveLeft()
+  } else if (isRight(keyCode)) {
+    currentBlock.moveRight()
   }
 }
 

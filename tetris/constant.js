@@ -32,6 +32,26 @@ export const KEY_CODES_ALPHABET = {
   RIGHT: 68,
 }
 
+export function isSpace(keyCode) {
+  return keyCode === KEY_CODES_ALPHABET.SPACE || keyCode === KEY_CODES_ARROW.SPACE
+}
+
+export function isTop(keyCode) {
+  return keyCode === KEY_CODES_ALPHABET.TOP || keyCode === KEY_CODES_ARROW.TOP
+}
+
+export function isBottom(keyCode) {
+  return keyCode === KEY_CODES_ALPHABET.BOTTOM || keyCode === KEY_CODES_ARROW.BOTTOM
+}
+
+export function isLeft(keyCode) {
+  return keyCode === KEY_CODES_ALPHABET.LEFT || keyCode === KEY_CODES_ARROW.LEFT
+}
+
+export function isRight(keyCode) {
+  return keyCode === KEY_CODES_ALPHABET.RIGHT || keyCode === KEY_CODES_ARROW.RIGHT
+}
+
 export const SHAPE_META = [
   // I
   [[1, 1, 1, 1]],
