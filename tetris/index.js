@@ -10,7 +10,6 @@ import './index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
-let timer = null
 
 const orinigalPoint = {
   x: INTERVAL * 4,
@@ -50,7 +49,7 @@ function draw() {
 }
 
 function update() {
-  timer = setInterval(() => {
+  setInterval(() => {
     if (check()) {
       currentBlock.reset()
     }
@@ -62,7 +61,7 @@ function update() {
 }
 
 function check() {
-   const { shapeMeta, graphPoints } = currentBlock
+   const { shapeMeta } = currentBlock
    const height = shapeMeta.length
 
    return currentBlock.y + height + INTERVAL >= CONFIG.canvasHeight
