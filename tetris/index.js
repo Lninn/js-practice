@@ -7,6 +7,7 @@ import {
   isLeft,
   isRight,
 } from './constant'
+import Block from './block'
 import { utils, getRandomInt, transpose, getGraphPoints } from './utils'
 import './index.css'
 
@@ -20,7 +21,7 @@ const orinigalPoint = {
   y: INTERVAL * 0,
 }
 
-const currentBlock = createBlock()
+const currentBlock = new Block()
 const markMap = createMarkMap()
 
 __mian()
@@ -85,10 +86,10 @@ function draw() {
 }
 
 function update() {
-  const { graphPoints, y } = currentBlock
+  const { pointList, y } = currentBlock
 
   if (check()) {
-    graphPoints.forEach(point => {
+    pointList.forEach(point => {
       markMap[point.x][point.y].value = 1
     })
 
@@ -99,7 +100,7 @@ function update() {
 }
 
 function check() {
-   return currentBlock.y + currentBlock.h >= CONFIG.canvasHeight
+   return currentBlock.y + currentBlock.height >= CONFIG.canvasHeight
 }
 
 function createMarkMap() {
@@ -114,82 +115,6 @@ function createMarkMap() {
   }
 
   return markMap
-}
-
-function createBlock() {
-  const o = {}
-
-  o.reset = function() {
-    o.y = orinigalPoint.y || 0
-    o.x = orinigalPoint.x || 0
-
-    var shape = SHAPE_META[getRandomInt(SHAPE_META.length)]
-
-    o.w = shape[0].length * INTERVAL
-    o.h = shape.length * INTERVAL
-
-    o.shapeMeta = shape
-    o.graphPoints = getGraphPoints(o.shapeMeta, o)
-  }
-
-  o.transpose = function() {
-    const { canvasWidth, canvasHeight } = CONFIG
-    
-    const shape = transpose(o.shapeMeta)
-
-    const w = shape[0].length * INTERVAL
-    const h = shape.length * INTERVAL
-
-    if (o.x + w > canvasWidth) {
-      return
-    }
-
-    if (o.y + h > canvasHeight) {
-      return
-    }
-
-    o.w = w
-    o.h = h
-    o.shapeMeta = shape
-    o.graphPoints = getGraphPoints(o.shapeMeta, o)
-  }
-
-  o.moveLeft = function() {
-    if (o.x <= 0) {
-      return
-    } 
-
-    o.x = o.x - INTERVAL
-  }
-
-  o.moveRight = function() {
-    const { canvasWidth } = CONFIG
-
-    if (o.x + o.w >= canvasWidth) {
-      return
-    }
-
-    o.x = o.x + INTERVAL
-  }
-
-  o.update = function() {
-    o.y = o.y + INTERVAL
-    o.graphPoints = getGraphPoints(o.shapeMeta, o)
-  }
-
-  o.draw = function(context) {
-    o.graphPoints.forEach((point) => {
-      context.beginPath()
-      context.rect(point.x, point.y, INTERVAL, INTERVAL)
-      context.stroke()
-      context.fill()
-      context.closePath()
-    })
-  }
-
-  o.reset()
-
-  return o
 }
 
 function onKeyDown(e) {

@@ -9,6 +9,11 @@ export const CONSTENT = {
 
 export const INTERVAL = 30
 
+export const ORIGINAL_POINT = {
+  x: INTERVAL * 4,
+  y: INTERVAL * 0,
+}
+
 export const CONFIG = {
   canvasRows: 420 / INTERVAL,
   canvasColumns: 600 / INTERVAL,
@@ -52,7 +57,7 @@ export function isRight(keyCode) {
   return keyCode === KEY_CODES_ALPHABET.RIGHT || keyCode === KEY_CODES_ARROW.RIGHT
 }
 
-export const SHAPE_META = [
+export const BLOCK_LIST = [
   // I
   [[1, 1, 1, 1]],
   // O

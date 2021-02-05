@@ -1,4 +1,4 @@
-import { INTERVAL } from './constant'
+import { INTERVAL, BLOCK_LIST } from './constant'
 
 export const utils = {
   log: console.log.bind(console),
@@ -109,20 +109,6 @@ export const createNumbers = (length, dir = true) =>
     }
   })
 
-export function getGraphPoints(elements = [], origin) {
-  // console.log('[getGraphPoints] ', elements)
-  const indexPoints = []
-
-  elements.forEach((outerElement, outerIndex) => {
-    outerElement.forEach((innerElement, innerIndex) => {
-      innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
-    })
-  })
-
-  return indexPoints.map((point) => {
-    const x = origin.x + INTERVAL * point.x
-    const y = origin.y + INTERVAL * point.y
-
-    return { x, y }
-  })
+export function getRandomBlock() {
+  return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
 }
