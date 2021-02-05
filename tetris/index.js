@@ -133,11 +133,23 @@ function createBlock() {
   }
 
   o.transpose = function() {
-    var shape = transpose(o.shapeMeta)
+    const { canvasWidth, canvasHeight } = CONFIG
+    
+    const shape = transpose(o.shapeMeta)
 
-    o.w = shape[0].length * INTERVAL
-    o.h = shape.length * INTERVAL
+    const w = shape[0].length * INTERVAL
+    const h = shape.length * INTERVAL
 
+    if (o.x + w > canvasWidth) {
+      return
+    }
+
+    if (o.y + h > canvasHeight) {
+      return
+    }
+
+    o.w = w
+    o.h = h
     o.shapeMeta = shape
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
