@@ -13,7 +13,7 @@ import './index.css'
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-let fpsInterval = 1000 / 10, now = Date.now(), then = Date.now(), elapsed
+let fpsInterval = 1000 / 5, now = performance.now(), then = performance.now(), elapsed
 
 const orinigalPoint = {
   x: INTERVAL * 4,
@@ -34,7 +34,7 @@ function __mian() {
 }
 
 function loop() {
-  now = Date.now()
+  now = performance.now()
   elapsed = now - then
 
   if (elapsed > fpsInterval) {
