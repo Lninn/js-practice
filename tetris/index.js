@@ -61,7 +61,7 @@ function setup() {
 }
 
 function draw() {
-  context.clearRect(0, 0, CONFIG.canvasWidth + 1, CONFIG.canvasHeight + 1)
+  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
   drawBoard()
 
@@ -88,7 +88,7 @@ function update() {
   timer = setInterval(() => {
     const { shapeMeta, graphPoints, y } = currentBlock
 
-    if (check(shapeMeta, y)) {
+    if (check()) {
       graphPoints.forEach(point => {
         markMap[point.x][point.y].value = 1
       })
@@ -99,13 +99,11 @@ function update() {
     currentBlock.update()
 
     draw()
-  }, 100)
+  }, 600)
 }
 
-function check(shapeMeta, y) {
-   const height = shapeMeta.length * INTERVAL
-
-   return y + height + INTERVAL >= CONFIG.canvasHeight
+function check() {
+   return currentBlock.y + currentBlock.getHeight() >= CONFIG.canvasHeight
 }
 
 function createBlock() {
@@ -124,20 +122,29 @@ function createBlock() {
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
 
-  o.moveLeft = function() {
-    const { canvasWidth } = CONFIG
-    var accu = o.x - INTERVAL
-    
-    if (o.x === 0) {
-      accu = 0
-    } else if (o.x === canvasWidth - 1) {
-      accu = canvasWidth - 1
-    }
+  o.getWidth = function() {
+    return o.shapeMeta[0].length * INTERVAL
+  }
 
-    o.x = accu
+  o.getHeight = function() {
+    return o.shapeMeta.length * INTERVAL
+  }
+
+  o.moveLeft = function() {
+    if (o.x <= 0) {
+      return
+    } 
+
+    o.x = o.x - INTERVAL
   }
 
   o.moveRight = function() {
+    const { canvasWidth } = CONFIG
+
+    if (o.x + o.getWidth() >= canvasWidth) {
+      return
+    }
+
     o.x = o.x + INTERVAL
   }
 
@@ -175,18 +182,21 @@ function onKeyDown(e) {
 }
 
 function drawBoard() {
-  let i = 0
   const w = CONFIG.canvasWidth
   const h = CONFIG.canvasHeight
+  const step = INTERVAL - 0.1
+
+  let i = 0
 
   // draw vertical line
-  for (; i <= w; i += INTERVAL) {
+  for (; i <= w; i += step) {
     context.moveTo(0.5 + i, 0)
     context.lineTo(0.5 + i, h)
   }
 
+
   // draw horizontal line
-  for (i = 0; i <= h; i += INTERVAL) {
+  for (i = 0; i <= h; i += step) {
     context.moveTo(0, 0.5 + i)
     context.lineTo(w, 0.5 + i)
   }
