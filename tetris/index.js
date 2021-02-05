@@ -103,7 +103,7 @@ function update() {
 }
 
 function check() {
-   return currentBlock.y + currentBlock.getHeight() >= CONFIG.canvasHeight
+   return currentBlock.y + currentBlock.h >= CONFIG.canvasHeight
 }
 
 function createBlock() {
@@ -113,21 +113,23 @@ function createBlock() {
     o.y = orinigalPoint.y || 0
     o.x = orinigalPoint.x || 0
 
-    o.shapeMeta = SHAPE_META[getRandomInt(SHAPE_META.length)]
+    var shape = SHAPE_META[getRandomInt(SHAPE_META.length)]
+
+    o.w = shape[0].length * INTERVAL
+    o.h = shape.length * INTERVAL
+
+    o.shapeMeta = shape
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
   }
 
   o.transpose = function() {
-    o.shapeMeta = transpose(o.shapeMeta)
+    var shape = transpose(o.shapeMeta)
+
+    o.w = shape[0].length * INTERVAL
+    o.h = shape.length * INTERVAL
+
+    o.shapeMeta = shape
     o.graphPoints = getGraphPoints(o.shapeMeta, o)
-  }
-
-  o.getWidth = function() {
-    return o.shapeMeta[0].length * INTERVAL
-  }
-
-  o.getHeight = function() {
-    return o.shapeMeta.length * INTERVAL
   }
 
   o.moveLeft = function() {
@@ -141,7 +143,7 @@ function createBlock() {
   o.moveRight = function() {
     const { canvasWidth } = CONFIG
 
-    if (o.x + o.getWidth() >= canvasWidth) {
+    if (o.x + o.w >= canvasWidth) {
       return
     }
 
