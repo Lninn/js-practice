@@ -12,7 +12,8 @@ import './index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
-let timer = null
+
+let fpsInterval = 1000 / 10, now = Date.now(), then = Date.now(), elapsed
 
 const orinigalPoint = {
   x: INTERVAL * 4,
@@ -29,23 +30,23 @@ function __mian() {
 
   document.addEventListener('keydown', onKeyDown)
   
-  draw()
-  update()
-
+  loop()
 }
 
-function createMarkMap() {
-  const { canvasWidth, canvasHeight } = CONFIG
+function loop() {
+  now = Date.now()
+  elapsed = now - then
 
-  const markMap = {}
-  for (let i = 0; i < canvasWidth; i += INTERVAL) {
-    markMap[i] = {}
-    for (let j = 0; j < canvasHeight; j += INTERVAL) {
-      markMap[i][j] = { value: 0 }
-    }
+  if (elapsed > fpsInterval) {
+    then = now - (elapsed % fpsInterval)
+
+    context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+    
+    update()
+    draw()
   }
 
-  return markMap
+  requestAnimationFrame(loop)
 }
 
 function setup() {
@@ -61,7 +62,6 @@ function setup() {
 }
 
 function draw() {
-  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
   drawBoard()
 
@@ -85,25 +85,35 @@ function draw() {
 }
 
 function update() {
-  timer = setInterval(() => {
-    const { shapeMeta, graphPoints, y } = currentBlock
+  const { graphPoints, y } = currentBlock
 
-    if (check()) {
-      graphPoints.forEach(point => {
-        markMap[point.x][point.y].value = 1
-      })
+  if (check()) {
+    graphPoints.forEach(point => {
+      markMap[point.x][point.y].value = 1
+    })
 
-      currentBlock.reset()
-    }
+    currentBlock.reset()
+  }
 
-    currentBlock.update()
-
-    draw()
-  }, 600)
+  currentBlock.update()
 }
 
 function check() {
    return currentBlock.y + currentBlock.h >= CONFIG.canvasHeight
+}
+
+function createMarkMap() {
+  const { canvasWidth, canvasHeight } = CONFIG
+
+  const markMap = {}
+  for (let i = 0; i < canvasWidth; i += INTERVAL) {
+    markMap[i] = {}
+    for (let j = 0; j < canvasHeight; j += INTERVAL) {
+      markMap[i][j] = { value: 0 }
+    }
+  }
+
+  return markMap
 }
 
 function createBlock() {
@@ -175,7 +185,6 @@ function onKeyDown(e) {
 
   if (isSpace(keyCode)) {
     currentBlock.transpose()
-    draw()
   } else if (isLeft(keyCode)) {
     currentBlock.moveLeft()
   } else if (isRight(keyCode)) {
