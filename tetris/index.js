@@ -14,15 +14,21 @@ import './index.css'
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-let fpsInterval = 1000 / 5, now = performance.now(), then = performance.now(), elapsed
+let fpsInterval = 1000 / 1,
+  now = performance.now(),
+  then = performance.now(),
+  elapsed
 
 const orinigalPoint = {
   x: INTERVAL * 4,
   y: INTERVAL * 0,
 }
+let paused = false
 
 const currentBlock = new Block()
-const markMap = createMarkMap()
+const { markMap, rows: markRows, cols: markCols } = createMarkMap()
+
+console.log(currentBlock)
 
 __mian()
 
@@ -30,7 +36,7 @@ function __mian() {
   setup()
 
   document.addEventListener('keydown', onKeyDown)
-  
+
   loop()
 }
 
@@ -42,7 +48,7 @@ function loop() {
     then = now - (elapsed % fpsInterval)
 
     context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
-    
+
     update()
     draw()
   }
@@ -63,12 +69,11 @@ function setup() {
 }
 
 function draw() {
-
   drawBoard()
 
-  Object.keys(markMap).forEach(outer => {
+  Object.keys(markMap).forEach((outer) => {
     let target = markMap[outer]
-    Object.keys(target).forEach(inner => {
+    Object.keys(target).forEach((inner) => {
       const { value } = target[inner]
 
       if (value === 1) {
@@ -78,7 +83,6 @@ function draw() {
         context.fill()
         context.closePath()
       }
-
     })
   })
 
@@ -86,10 +90,12 @@ function draw() {
 }
 
 function update() {
-  const { pointList, y } = currentBlock
+  if (paused) return
+
+  const { pointList } = currentBlock
 
   if (check()) {
-    pointList.forEach(point => {
+    pointList.forEach((point) => {
       markMap[point.x][point.y].value = 1
     })
 
@@ -100,25 +106,64 @@ function update() {
 }
 
 function check() {
-   return currentBlock.y + currentBlock.height >= CONFIG.canvasHeight
+  if (currentBlock.y + currentBlock.height >= CONFIG.canvasHeight) {
+    return true
+  }
+
+  // check current block columns
+  const columns = currentBlock.getColumns()
+
+  let minValue = 570
+
+  for (let i = 0; i < markCols.length; i++) {
+    const row = markCols[i]
+
+    const { value } = markMap[row][numOfCol]
+    if (value === 1) {
+      minValue = Math.min(minValue, value)
+    }
+  }
+
+  return false
 }
 
 function createMarkMap() {
   const { canvasWidth, canvasHeight } = CONFIG
 
   const markMap = {}
+  const rows = []
+  const cols = []
+
   for (let i = 0; i < canvasWidth; i += INTERVAL) {
     markMap[i] = {}
+    cols.push(i)
     for (let j = 0; j < canvasHeight; j += INTERVAL) {
+      rows.push(j)
       markMap[i][j] = { value: 0 }
     }
   }
 
-  return markMap
+  return { markMap, rows, cols }
+}
+
+function filterMarkMap(dataMap) {
+  Object.keys(dataMap).forEach((outer) => {
+    const target = dataMap[outer]
+    Object.keys(target).forEach((inner) => {
+      const { value } = target[inner]
+      if (value === 1) {
+        console.log({ x: outer, y: inner })
+      }
+    })
+  })
 }
 
 function onKeyDown(e) {
   const keyCode = e.keyCode
+
+  if (keyCode === 80) {
+    paused = !paused
+  }
 
   if (isSpace(keyCode)) {
     currentBlock.transpose()
@@ -141,7 +186,6 @@ function drawBoard() {
     context.moveTo(0.5 + i, 0)
     context.lineTo(0.5 + i, h)
   }
-
 
   // draw horizontal line
   for (i = 0; i <= h; i += step) {

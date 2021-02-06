@@ -29,24 +29,24 @@ export default class Block {
 
   setPointList() {
     const indexPoints = []
-  
+
     this.block.forEach((outerElement, outerIndex) => {
       outerElement.forEach((innerElement, innerIndex) => {
         innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
       })
     })
-  
+
     this.pointList = indexPoints.map((point) => {
       const x = this.x + INTERVAL * point.x
       const y = this.y + INTERVAL * point.y
-  
+
       return { x, y }
     })
   }
 
   transpose() {
     const { canvasWidth, canvasHeight } = CONFIG
-    
+
     const newBlock = transpose(this.block)
     const { width, height } = this.getSize(newBlock)
 
@@ -61,11 +61,10 @@ export default class Block {
     this.setPointList()
   }
 
-
   moveLeft() {
     if (this.x <= 0) {
       return
-    } 
+    }
 
     this.x = this.x - INTERVAL
   }
@@ -78,6 +77,20 @@ export default class Block {
     }
 
     this.x = this.x + INTERVAL
+  }
+
+  getColumns() {
+    return this.pointList.reduce(
+      (colObj, nextpoint) => {
+        if (!(nextpoint.x in colObj)) {
+          colObj[nextpoint.x] = true
+          colObj.result.push(nextpoint.x)
+        }
+
+        return colObj
+      },
+      { result: [] },
+    ).result
   }
 
   update() {
