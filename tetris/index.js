@@ -8,18 +8,14 @@ import {
   isRight,
 } from './constant'
 import Block from './block'
-import { utils, getRandomInt, transpose, getGraphPoints } from './utils'
+import { utils } from './utils'
 import './index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-let fpsInterval = 1000 / 2,
-  now = performance.now(),
-  then = performance.now(),
-  elapsed
-
 let paused = false
+let timer = null
 
 const currentBlock = new Block()
 const { markMap, rows: markRows, cols: markCols } = createMarkMap()
@@ -40,19 +36,13 @@ function __mian() {
 }
 
 function loop() {
-  now = performance.now()
-  elapsed = now - then
-
-  if (elapsed > fpsInterval) {
-    then = now - (elapsed % fpsInterval)
-
+  timer = setInterval(() => {
     context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
     update()
-    draw()
-  }
 
-  requestAnimationFrame(loop)
+    draw()
+  }, 500)
 }
 
 function setup() {
@@ -65,6 +55,12 @@ function setup() {
   context.strokeStyle = CONSTENT.STROKE
   context.fillStyle = CONSTENT.FILL
   context.lineWidth = CONSTENT.LINE_WIDTH
+}
+
+function update() {
+  if (paused) return
+
+  currentBlock.update()
 }
 
 function draw() {
@@ -86,12 +82,6 @@ function draw() {
   })
 
   currentBlock.draw(context)
-}
-
-function update() {
-  if (paused) return
-
-  currentBlock.update()
 }
 
 function createMarkMap() {
@@ -134,11 +124,19 @@ function onKeyDown(e) {
 
   if (isSpace(keyCode)) {
     currentBlock.transpose()
+    reDraw()
   } else if (isLeft(keyCode)) {
     currentBlock.moveLeft()
+    reDraw()
   } else if (isRight(keyCode)) {
     currentBlock.moveRight()
+    reDraw()
   }
+}
+
+function reDraw() {
+  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+  draw()
 }
 
 function drawBoard() {
