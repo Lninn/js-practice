@@ -14,21 +14,20 @@ import './index.css'
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-let fpsInterval = 1000 / 1,
+let fpsInterval = 1000 / 2,
   now = performance.now(),
   then = performance.now(),
   elapsed
 
-const orinigalPoint = {
-  x: INTERVAL * 4,
-  y: INTERVAL * 0,
-}
 let paused = false
 
 const currentBlock = new Block()
 const { markMap, rows: markRows, cols: markCols } = createMarkMap()
 
+export { markMap }
+
 console.log(currentBlock)
+console.log(markMap)
 
 __mian()
 
@@ -92,39 +91,7 @@ function draw() {
 function update() {
   if (paused) return
 
-  const { pointList } = currentBlock
-
-  if (check()) {
-    pointList.forEach((point) => {
-      markMap[point.x][point.y].value = 1
-    })
-
-    currentBlock.reset()
-  }
-
   currentBlock.update()
-}
-
-function check() {
-  if (currentBlock.y + currentBlock.height >= CONFIG.canvasHeight) {
-    return true
-  }
-
-  // check current block columns
-  const columns = currentBlock.getColumns()
-
-  let minValue = 570
-
-  for (let i = 0; i < markCols.length; i++) {
-    const row = markCols[i]
-
-    const { value } = markMap[row][numOfCol]
-    if (value === 1) {
-      minValue = Math.min(minValue, value)
-    }
-  }
-
-  return false
 }
 
 function createMarkMap() {

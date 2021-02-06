@@ -1,6 +1,8 @@
 import { CONFIG, ORIGINAL_POINT, INTERVAL } from './constant'
 import { transpose, getRandomBlock } from './utils'
 
+import { markMap } from './index'
+
 export default class Block {
   constructor() {
     this.reset()
@@ -25,23 +27,6 @@ export default class Block {
     const height = block.length * INTERVAL
 
     return { width, height }
-  }
-
-  setPointList() {
-    const indexPoints = []
-
-    this.block.forEach((outerElement, outerIndex) => {
-      outerElement.forEach((innerElement, innerIndex) => {
-        innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
-      })
-    })
-
-    this.pointList = indexPoints.map((point) => {
-      const x = this.x + INTERVAL * point.x
-      const y = this.y + INTERVAL * point.y
-
-      return { x, y }
-    })
   }
 
   transpose() {
@@ -80,22 +65,50 @@ export default class Block {
   }
 
   getColumns() {
-    return this.pointList.reduce(
-      (colObj, nextpoint) => {
-        if (!(nextpoint.x in colObj)) {
-          colObj[nextpoint.x] = true
-          colObj.result.push(nextpoint.x)
-        }
+    const obj = this.pointList.reduce((collect, nextpoint) => {
+      const { x } = nextpoint
+      const target = collect[x]
 
-        return colObj
-      },
-      { result: [] },
-    ).result
+      if (target === undefined) {
+        collect[x] = nextpoint
+      } else {
+        collect[x] = target.y > nextpoint.y ? target : nextpoint
+      }
+
+      return collect
+    }, {})
+
+    return Object.entries(obj).map(([_, e]) => e)
   }
 
   update() {
-    this.y = this.y + INTERVAL
-    this.setPointList()
+    if (collision(this, markMap)) {
+      this.pointList.forEach((point) => {
+        markMap[point.x][point.y].value = 1
+      })
+
+      this.reset()
+    } else {
+      this.y = this.y + INTERVAL
+      this.setPointList()
+    }
+  }
+
+  setPointList() {
+    const indexPoints = []
+
+    this.block.forEach((outerElement, outerIndex) => {
+      outerElement.forEach((innerElement, innerIndex) => {
+        innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
+      })
+    })
+
+    this.pointList = indexPoints.map((point) => {
+      const x = this.x + INTERVAL * point.x
+      const y = this.y + INTERVAL * point.y
+
+      return { x, y }
+    })
   }
 
   draw(context) {
@@ -107,4 +120,23 @@ export default class Block {
       context.closePath()
     })
   }
+}
+
+function collision(block, markData) {
+  if (block.y + block.height >= CONFIG.canvasHeight) {
+    return true
+  }
+
+  // check current block columns
+  const colPoints = block.getColumns()
+  const ret = colPoints.map((point) => {
+    // FIX
+    return markData[point.x][point.y + INTERVAL].value
+  })
+
+  if (ret.includes(1)) {
+    return true
+  }
+
+  return false
 }
