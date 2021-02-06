@@ -1,13 +1,14 @@
 import {
   CONSTENT,
-  SHAPE_META,
   CONFIG,
   INTERVAL,
   isSpace,
   isLeft,
   isRight,
+  isBottom,
 } from './constant'
 import Block from './block'
+import MarkMap from './MarkMap'
 import { utils } from './utils'
 import './index.css'
 
@@ -18,9 +19,7 @@ let paused = false
 let timer = null
 
 const currentBlock = new Block()
-const { markMap, rows: markRows, cols: markCols } = createMarkMap()
-
-export { markMap }
+const markMap = MarkMap.getInstance()
 
 console.log(currentBlock)
 console.log(markMap)
@@ -32,7 +31,8 @@ function __mian() {
 
   document.addEventListener('keydown', onKeyDown)
 
-  loop()
+  // loop()
+  draw()
 }
 
 function loop() {
@@ -40,9 +40,7 @@ function loop() {
     context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
     update()
-
-    draw()
-  }, 500)
+  }, 300)
 }
 
 function setup() {
@@ -66,53 +64,15 @@ function update() {
 function draw() {
   drawBoard()
 
-  Object.keys(markMap).forEach((outer) => {
-    let target = markMap[outer]
-    Object.keys(target).forEach((inner) => {
-      const { value } = target[inner]
-
-      if (value === 1) {
-        context.beginPath()
-        context.rect(outer, inner, INTERVAL, INTERVAL)
-        context.stroke()
-        context.fill()
-        context.closePath()
-      }
-    })
+  markMap.drawPoints.forEach((point) => {
+    context.beginPath()
+    context.rect(point.x, point.y, INTERVAL, INTERVAL)
+    context.stroke()
+    context.fill()
+    context.closePath()
   })
 
   currentBlock.draw(context)
-}
-
-function createMarkMap() {
-  const { canvasWidth, canvasHeight } = CONFIG
-
-  const markMap = {}
-  const rows = []
-  const cols = []
-
-  for (let i = 0; i < canvasWidth; i += INTERVAL) {
-    markMap[i] = {}
-    cols.push(i)
-    for (let j = 0; j < canvasHeight; j += INTERVAL) {
-      rows.push(j)
-      markMap[i][j] = { value: 0 }
-    }
-  }
-
-  return { markMap, rows, cols }
-}
-
-function filterMarkMap(dataMap) {
-  Object.keys(dataMap).forEach((outer) => {
-    const target = dataMap[outer]
-    Object.keys(target).forEach((inner) => {
-      const { value } = target[inner]
-      if (value === 1) {
-        console.log({ x: outer, y: inner })
-      }
-    })
-  })
 }
 
 function onKeyDown(e) {
@@ -124,14 +84,16 @@ function onKeyDown(e) {
 
   if (isSpace(keyCode)) {
     currentBlock.transpose()
-    reDraw()
   } else if (isLeft(keyCode)) {
     currentBlock.moveLeft()
-    reDraw()
   } else if (isRight(keyCode)) {
     currentBlock.moveRight()
-    reDraw()
+  } else if (isBottom(keyCode)) {
+    currentBlock.update()
   }
+
+  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+  draw()
 }
 
 function reDraw() {

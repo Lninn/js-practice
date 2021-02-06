@@ -38,7 +38,9 @@ export const KEY_CODES_ALPHABET = {
 }
 
 export function isSpace(keyCode) {
-  return keyCode === KEY_CODES_ALPHABET.SPACE || keyCode === KEY_CODES_ARROW.SPACE
+  return (
+    keyCode === KEY_CODES_ALPHABET.SPACE || keyCode === KEY_CODES_ARROW.SPACE
+  )
 }
 
 export function isTop(keyCode) {
@@ -46,7 +48,9 @@ export function isTop(keyCode) {
 }
 
 export function isBottom(keyCode) {
-  return keyCode === KEY_CODES_ALPHABET.BOTTOM || keyCode === KEY_CODES_ARROW.BOTTOM
+  return (
+    keyCode === KEY_CODES_ALPHABET.BOTTOM || keyCode === KEY_CODES_ARROW.BOTTOM
+  )
 }
 
 export function isLeft(keyCode) {
@@ -54,7 +58,9 @@ export function isLeft(keyCode) {
 }
 
 export function isRight(keyCode) {
-  return keyCode === KEY_CODES_ALPHABET.RIGHT || keyCode === KEY_CODES_ARROW.RIGHT
+  return (
+    keyCode === KEY_CODES_ALPHABET.RIGHT || keyCode === KEY_CODES_ARROW.RIGHT
+  )
 }
 
 export const BLOCK_LIST = [

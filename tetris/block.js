@@ -1,7 +1,9 @@
 import { CONFIG, ORIGINAL_POINT, INTERVAL } from './constant'
 import { transpose, getRandomBlock } from './utils'
 
-import { markMap } from './index'
+import MarkMap from './MarkMap'
+
+const markMap = MarkMap.getInstance()
 
 export default class Block {
   constructor() {
@@ -52,6 +54,7 @@ export default class Block {
     }
 
     this.x = this.x - INTERVAL
+    this.setPointList()
   }
 
   moveRight() {
@@ -62,6 +65,7 @@ export default class Block {
     }
 
     this.x = this.x + INTERVAL
+    this.setPointList()
   }
 
   getColumns() {
@@ -81,10 +85,44 @@ export default class Block {
     return Object.entries(obj).map(([_, e]) => e)
   }
 
+  getRowsForLeft() {
+    const obj = this.pointList.reduce((collect, nextPoint) => {
+      const { y } = nextPoint
+      const target = collect[y]
+
+      if (target === undefined) {
+        collect[y] = nextPoint
+      } else {
+        collect[y] = target.x < nextPoint.x ? target : nextPoint
+      }
+
+      return collect
+    }, {})
+
+    return Object.entries(obj).map(([_, e]) => e)
+  }
+
+  getRowsForRight() {
+    const obj = this.pointList.reduce((collect, nextPoint) => {
+      const { y } = nextPoint
+      const target = collect[y]
+
+      if (target === undefined) {
+        collect[y] = nextPoint
+      } else {
+        collect[y] = target.x > nextPoint.x ? target : nextPoint
+      }
+
+      return collect
+    }, {})
+
+    return Object.entries(obj).map(([_, e]) => e)
+  }
+
   update() {
-    if (collision(this, markMap)) {
+    if (collision(this)) {
       this.pointList.forEach((point) => {
-        markMap[point.x][point.y].value = 1
+        markMap.setValue(point, 1)
       })
 
       this.reset()
@@ -122,19 +160,24 @@ export default class Block {
   }
 }
 
-function collision(block, markData) {
+function collision(block) {
   if (block.y + block.height >= CONFIG.canvasHeight) {
     return true
   }
 
   // check current block columns
-  const colPoints = block.getColumns()
-  const ret = colPoints.map((point) => {
-    // FIX
-    return markData[point.x][point.y + INTERVAL].value
+  const colPoints = block.getColumns().map((point) => {
+    return {
+      ...point,
+      y: point.y + INTERVAL,
+    }
   })
 
-  if (ret.includes(1)) {
+  const values = colPoints.map((point) => {
+    return markMap.getValue(point)
+  })
+
+  if (values.includes(1)) {
     return true
   }
 
