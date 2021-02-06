@@ -1,11 +1,11 @@
 import {
-  CONSTENT,
   CONFIG,
   INTERVAL,
   isSpace,
   isLeft,
   isRight,
   isBottom,
+  isTop,
 } from './constant'
 import Block from './block'
 import MarkMap from './MarkMap'
@@ -21,9 +21,6 @@ let timer = null
 const currentBlock = new Block()
 const markMap = MarkMap.getInstance()
 
-console.log(currentBlock)
-console.log(markMap)
-
 __mian()
 
 function __mian() {
@@ -31,7 +28,7 @@ function __mian() {
 
   document.addEventListener('keydown', onKeyDown)
 
-  // loop()
+  loop()
   draw()
 }
 
@@ -40,7 +37,9 @@ function loop() {
     context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
     update()
-  }, 300)
+
+    draw()
+  }, 600)
 }
 
 function setup() {
@@ -50,9 +49,8 @@ function setup() {
   canvas.width = CONFIG.canvasWidth
   canvas.height = CONFIG.canvasHeight
 
-  context.strokeStyle = CONSTENT.STROKE
-  context.fillStyle = CONSTENT.FILL
-  context.lineWidth = CONSTENT.LINE_WIDTH
+  context.lineWidth = 1
+  context.fillStyle = '#FFD500'
 }
 
 function update() {
@@ -62,17 +60,22 @@ function update() {
 }
 
 function draw() {
-  drawBoard()
-
   markMap.drawPoints.forEach((point) => {
     context.beginPath()
     context.rect(point.x, point.y, INTERVAL, INTERVAL)
+
+    var strokeStyle = context.strokeStyle
+    context.strokeStyle = '#0095DD'
+    context.strokeStyle = strokeStyle
+
     context.stroke()
     context.fill()
     context.closePath()
   })
 
   currentBlock.draw(context)
+
+  drawBoard()
 }
 
 function onKeyDown(e) {
@@ -90,14 +93,12 @@ function onKeyDown(e) {
     currentBlock.moveRight()
   } else if (isBottom(keyCode)) {
     currentBlock.update()
+  } else if (isTop(keyCode)) {
+    currentBlock.moveUp()
   }
 
   context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
-  draw()
-}
 
-function reDraw() {
-  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
   draw()
 }
 
@@ -120,6 +121,9 @@ function drawBoard() {
     context.lineTo(w, 0.5 + i)
   }
 
-  context.strokeStyle = CONSTENT.BOARD_STROKE_COLOR
+  const strokeStyle = context.strokeStyle
+  context.strokeStyle = '#72CB3B'
   context.stroke()
+
+  context.strokeStyle = strokeStyle
 }

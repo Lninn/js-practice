@@ -41,6 +41,8 @@ export default class Block {
       return
     }
 
+    // TODO 边界检测
+
     this.width = width
     this.height = height
 
@@ -48,8 +50,28 @@ export default class Block {
     this.setPointList()
   }
 
+  moveUp() {
+    this.y = this.y - INTERVAL
+    this.setPointList()
+  }
+
   moveLeft() {
     if (this.x <= 0) {
+      return
+    }
+
+    const rowPoint = this.getRowsForLeft().map((point) => {
+      return {
+        ...point,
+        x: point.x - INTERVAL,
+      }
+    })
+
+    const values = rowPoint.map((point) => {
+      return markMap.getValue(point)
+    })
+
+    if (values.includes(1)) {
       return
     }
 
@@ -61,6 +83,21 @@ export default class Block {
     const { canvasWidth } = CONFIG
 
     if (this.x + this.width >= canvasWidth) {
+      return
+    }
+
+    const rowPoint = this.getRowsForRight().map((point) => {
+      return {
+        ...point,
+        x: point.x + INTERVAL,
+      }
+    })
+
+    const values = rowPoint.map((point) => {
+      return markMap.getValue(point)
+    })
+
+    if (values.includes(1)) {
       return
     }
 
@@ -153,8 +190,17 @@ export default class Block {
     this.pointList.forEach((point) => {
       context.beginPath()
       context.rect(point.x, point.y, INTERVAL, INTERVAL)
+
+      const strokeStyle = context.strokeStyle
+      const fillStyle = context.fillStyle
+      context.strokeStyle = '#0341AE'
+      context.fillStyle = '#FFD500'
+
       context.stroke()
       context.fill()
+
+      context.strokeStyle = strokeStyle
+      context.fillStyle = fillStyle
       context.closePath()
     })
   }
