@@ -1,5 +1,39 @@
 import { CONFIG, INTERVAL } from './constant'
 
+// TODO
+
+// cons
+// setup
+const state = []
+const map = {}
+const tag = 0
+
+for (let i = 0, y = 0; i < CONFIG.canvasColumns; y += INTERVAL, i++) {
+  state[i] = []
+  map[y] = {}
+  for (let j = 0, x = 0; j < CONFIG.canvasRows; x += INTERVAL, j++) {
+    state[i][j] = tag
+    map[y][x] = [j, i]
+  }
+}
+
+console.log(state)
+console.log(map)
+
+// find
+function get(point) {
+  const [x, y] = map[point.y][point.x]
+  return state[y][x]
+}
+
+// console.log(get(4, 5))
+
+// update
+function set(x, y, updatedValue) {
+  state[y][x] = updatedValue
+}
+// cons
+
 export default class CellMap {
   constructor() {
     this.pointsForDraw = []

@@ -21,7 +21,7 @@ let timer = null
 
 const currentBlock = new Block()
 const cellMap = CellMap.getInstance()
-console.log(cellMap)
+console.log(currentBlock)
 
 __mian()
 
