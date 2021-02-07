@@ -28,7 +28,7 @@ function __mian() {
 
   document.addEventListener('keydown', onKeyDown)
 
-  loop()
+  // loop()
   draw()
 }
 

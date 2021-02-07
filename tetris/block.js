@@ -42,6 +42,14 @@ export default class Block {
     }
 
     // TODO 边界检测
+    const points = this.getPointList(newBlock)
+    const values = points.map((point) => {
+      return markMap.getValue(point)
+    })
+
+    if (values.includes(1)) {
+      return
+    }
 
     this.width = width
     this.height = height
@@ -179,6 +187,23 @@ export default class Block {
     })
 
     this.pointList = indexPoints.map((point) => {
+      const x = this.x + INTERVAL * point.x
+      const y = this.y + INTERVAL * point.y
+
+      return { x, y }
+    })
+  }
+
+  getPointList(block) {
+    const indexPoints = []
+
+    block.forEach((outerElement, outerIndex) => {
+      outerElement.forEach((innerElement, innerIndex) => {
+        innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
+      })
+    })
+
+    return indexPoints.map((point) => {
       const x = this.x + INTERVAL * point.x
       const y = this.y + INTERVAL * point.y
 
