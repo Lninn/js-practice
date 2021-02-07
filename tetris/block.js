@@ -106,14 +106,36 @@ export default class Block {
   }
 
   update() {
-    if (collision(this)) {
+    if (this.collision()) {
       cellMap.set(this.points)
+
+      // TODO
+      cellMap.update()
 
       this.reset()
     } else {
       this.y = this.y + INTERVAL
       this.points = this.getPoints(this.block)
     }
+  }
+
+  collision() {
+    if (this.y + this.height >= CONFIG.canvasHeight) {
+      return true
+    }
+
+    const points = getBotomPoints(this.points).map((point) => {
+      return {
+        ...point,
+        y: point.y + INTERVAL,
+      }
+    })
+
+    if (cellMap.check(points)) {
+      return true
+    }
+
+    return false
   }
 
   getPoints(block) {
@@ -151,23 +173,4 @@ export default class Block {
       context.closePath()
     })
   }
-}
-
-function collision(block) {
-  if (block.y + block.height >= CONFIG.canvasHeight) {
-    return true
-  }
-
-  const points = getBotomPoints(block.points).map((point) => {
-    return {
-      ...point,
-      y: point.y + INTERVAL,
-    }
-  })
-
-  if (cellMap.check(points)) {
-    return true
-  }
-
-  return false
 }

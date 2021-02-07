@@ -18,16 +18,22 @@ export default class CellMap {
     const { canvasWidth, canvasHeight } = CONFIG
 
     const markMap = new Map()
+    const columns = []
 
-    for (let i = 0; i < canvasWidth; i += INTERVAL) {
-      const rowMap = new Map()
-      for (let j = 0; j < canvasHeight; j += INTERVAL) {
-        rowMap.set(j, 0)
+    for (let j = 0; j < canvasWidth; j += INTERVAL) {
+      columns.push(j)
+    }
+
+    for (let i = 0; i < canvasHeight; i += INTERVAL) {
+      const colMap = new Map()
+      for (let j = 0; j < canvasWidth; j += INTERVAL) {
+        colMap.set(j, 0)
       }
-      markMap.set(i, rowMap)
+      markMap.set(i, colMap)
     }
 
     this.markMap = markMap
+    this.columns = columns
   }
 
   check(points = []) {
@@ -39,29 +45,56 @@ export default class CellMap {
   get(points = []) {
     return points.map((point) => {
       const { x: rowKey, y: colKey } = point
-      const row = this.markMap.get(rowKey)
+      const col = this.markMap.get(colKey)
 
-      if (row === undefined) {
+      if (col === undefined) {
         throw new Error(`Key Error: ${rowKey}`)
       }
 
-      return row.get(colKey)
+      return col.get(rowKey)
     })
   }
 
   set(points = []) {
     points.forEach((point) => {
       const { x: rowKey, y: colKey } = point
-      const row = this.markMap.get(rowKey)
+      const col = this.markMap.get(colKey)
 
-      if (row === undefined) {
-        throw new Error(`Key Error: ${rowKey}`)
+      if (col === undefined) {
+        throw new Error(`Key Error: ${colKey}`)
       }
 
-      row.set(colKey, 1)
+      col.set(rowKey, 1)
     })
 
     this.pointsForDraw = this.pointsForDraw.concat(points)
+  }
+
+  update() {
+    const list = Array.from(this.markMap.entries())
+
+    const updatedRows = []
+    for (const [keyOfRow, rowMap] of list) {
+      let isPassed = false
+
+      for (const [keyOfCol, value] of Array.from(rowMap.entries())) {
+        if (value === 0) {
+          isPassed = false
+          break
+        } else {
+          isPassed = true
+        }
+      }
+
+      if (isPassed) {
+        updatedRows.push(keyOfRow)
+      }
+    }
+
+    if (updatedRows.length) {
+      // TODO
+      // points => this.columns
+    }
   }
 
   draw(context) {
