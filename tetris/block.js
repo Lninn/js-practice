@@ -109,7 +109,6 @@ export default class Block {
     if (this.collision()) {
       cellMap.set(this.points)
 
-      // TODO
       cellMap.update()
 
       this.reset()

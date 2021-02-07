@@ -55,7 +55,7 @@ export default class CellMap {
     })
   }
 
-  set(points = []) {
+  set(points = [], value = 1) {
     points.forEach((point) => {
       const { x: rowKey, y: colKey } = point
       const col = this.markMap.get(colKey)
@@ -64,14 +64,15 @@ export default class CellMap {
         throw new Error(`Key Error: ${colKey}`)
       }
 
-      col.set(rowKey, 1)
+      col.set(rowKey, value)
     })
 
     this.pointsForDraw = this.pointsForDraw.concat(points)
   }
 
   update() {
-    const list = Array.from(this.markMap.entries())
+    const { markMap, columns } = this
+    const list = Array.from(markMap.entries())
 
     const updatedRows = []
     for (const [keyOfRow, rowMap] of list) {
@@ -92,8 +93,31 @@ export default class CellMap {
     }
 
     if (updatedRows.length) {
-      // TODO
-      // points => this.columns
+      const rowOfLines = updatedRows.map((row) => {
+        return columns.map((col) => ({ x: col, y: row }))
+      })
+      rowOfLines.forEach((updatePoints) => {
+        this.set(updatePoints, 0)
+      })
+
+      let drawPoints = this.pointsForDraw
+      updatedRows.forEach((updateRow) => {
+        drawPoints = drawPoints.filter((point) => {
+          return point.y !== updateRow
+        })
+      })
+
+      updatedRows.forEach((row) => {
+        this.set(drawPoints, 0)
+        drawPoints = drawPoints.map((point) => {
+          return {
+            ...point,
+            y: point.y + INTERVAL,
+          }
+        })
+        this.set(drawPoints, 1)
+      })
+      this.pointsForDraw = drawPoints
     }
   }
 
