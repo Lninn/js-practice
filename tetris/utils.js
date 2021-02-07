@@ -95,8 +95,8 @@ export const createNumbers = (length, dir = true) =>
   })
 
 export function getRandomBlock() {
-  // return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
-  return BLOCK_LIST[0]
+  return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
+  // return BLOCK_LIST[0]
 }
 
 export const getBotomPoints = createGetPoints('x', (p1, p2) => p1.y > p2.y)

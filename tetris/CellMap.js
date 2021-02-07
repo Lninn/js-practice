@@ -17,23 +17,23 @@ export default class CellMap {
   setup() {
     const { canvasWidth, canvasHeight } = CONFIG
 
-    const markMap = new Map()
-    const columns = []
+    const stateMap = new Map()
+    const numOfXAxis = []
 
     for (let j = 0; j < canvasWidth; j += INTERVAL) {
-      columns.push(j)
+      numOfXAxis.push(j)
     }
 
     for (let i = 0; i < canvasHeight; i += INTERVAL) {
       const colMap = new Map()
-      for (let j = 0; j < canvasWidth; j += INTERVAL) {
-        colMap.set(j, 0)
+      for (let r = 0; r < canvasWidth; r += INTERVAL) {
+        colMap.set(r, 0)
       }
-      markMap.set(i, colMap)
+      stateMap.set(i, colMap)
     }
 
-    this.markMap = markMap
-    this.columns = columns
+    this.stateMap = stateMap
+    this.numOfXAxis = numOfXAxis
   }
 
   check(points = []) {
@@ -45,7 +45,7 @@ export default class CellMap {
   get(points = []) {
     return points.map((point) => {
       const { x: rowKey, y: colKey } = point
-      const col = this.markMap.get(colKey)
+      const col = this.stateMap.get(colKey)
 
       if (col === undefined) {
         throw new Error(`Key Error: ${rowKey}`)
@@ -58,7 +58,7 @@ export default class CellMap {
   set(points = [], value = 1) {
     points.forEach((point) => {
       const { x: rowKey, y: colKey } = point
-      const col = this.markMap.get(colKey)
+      const col = this.stateMap.get(colKey)
 
       if (col === undefined) {
         throw new Error(`Key Error: ${colKey}`)
@@ -71,14 +71,14 @@ export default class CellMap {
   }
 
   update() {
-    const { markMap, columns } = this
-    const list = Array.from(markMap.entries())
+    const { stateMap, numOfXAxis } = this
+    const rowOfList = Array.from(stateMap.entries())
 
-    const updatedRows = []
-    for (const [keyOfRow, rowMap] of list) {
+    const updatedYAxes = []
+    for (const [yAxis, rowOfMap] of rowOfList) {
       let isPassed = false
 
-      for (const [keyOfCol, value] of Array.from(rowMap.entries())) {
+      for (const [xAxis, value] of Array.from(rowOfMap.entries())) {
         if (value === 0) {
           isPassed = false
           break
@@ -88,36 +88,37 @@ export default class CellMap {
       }
 
       if (isPassed) {
-        updatedRows.push(keyOfRow)
+        updatedYAxes.push(yAxis)
       }
     }
 
-    if (updatedRows.length) {
-      const rowOfLines = updatedRows.map((row) => {
-        return columns.map((col) => ({ x: col, y: row }))
-      })
-      rowOfLines.forEach((updatePoints) => {
-        this.set(updatePoints, 0)
-      })
+    if (updatedYAxes.length) {
+      updatedYAxes
+        .map((y) => {
+          return numOfXAxis.map((x) => ({ x, y }))
+        })
+        .forEach((rowOfpoints) => {
+          this.set(rowOfpoints, 0)
+        })
 
-      let drawPoints = this.pointsForDraw
-      updatedRows.forEach((updateRow) => {
-        drawPoints = drawPoints.filter((point) => {
-          return point.y !== updateRow
+      let updatedPoints = this.pointsForDraw
+      updatedYAxes.forEach((y) => {
+        updatedPoints = updatedPoints.filter((point) => {
+          return point.y !== y
         })
       })
 
-      updatedRows.forEach((row) => {
-        this.set(drawPoints, 0)
-        drawPoints = drawPoints.map((point) => {
+      updatedYAxes.forEach((y) => {
+        this.set(updatedPoints, 0)
+        updatedPoints = updatedPoints.map((point) => {
           return {
             ...point,
             y: point.y + INTERVAL,
           }
         })
-        this.set(drawPoints, 1)
+        this.set(updatedPoints, 1)
       })
-      this.pointsForDraw = drawPoints
+      this.pointsForDraw = updatedPoints
     }
   }
 
