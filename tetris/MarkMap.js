@@ -41,6 +41,10 @@ export default class MarkMap {
     return row.get(colKey)
   }
 
+  getValueWithPoints(points = []) {
+    return points.map(this.getValue, this)
+  }
+
   setValue(point, value) {
     const { x: rowKey, y: colKey } = point
 

@@ -1,5 +1,11 @@
 import { CONFIG, ORIGINAL_POINT, INTERVAL } from './constant'
-import { transpose, getRandomBlock } from './utils'
+import {
+  transposeBlock,
+  getRandomBlock,
+  getBotomPoints,
+  getLeftPoints,
+  getRightPoints,
+} from './utils'
 
 import MarkMap from './MarkMap'
 
@@ -15,13 +21,13 @@ export default class Block {
     this.y = ORIGINAL_POINT.y
 
     const block = getRandomBlock()
-
+    const points = this.getPoints(block)
     const { width, height } = this.getSize(block)
+
     this.width = width
     this.height = height
-
     this.block = block
-    this.setPointList()
+    this.points = points
   }
 
   getSize(block) {
@@ -34,33 +40,28 @@ export default class Block {
   transpose() {
     const { canvasWidth, canvasHeight } = CONFIG
 
-    const newBlock = transpose(this.block)
-    const { width, height } = this.getSize(newBlock)
+    const newBlock = transposeBlock(this.block)
+    const newPoints = this.getPoints(newBlock)
 
+    const { width, height } = this.getSize(newBlock)
     if (this.x + width > canvasWidth || this.y + height > canvasHeight) {
       return
     }
 
-    // TODO 边界检测
-    const points = this.getPointList(newBlock)
-    const values = points.map((point) => {
-      return markMap.getValue(point)
-    })
-
-    if (values.includes(1)) {
+    const markers = markMap.getValueWithPoints(newPoints)
+    if (markers.includes(1)) {
       return
     }
 
     this.width = width
     this.height = height
-
     this.block = newBlock
-    this.setPointList()
+    this.points = newPoints
   }
 
   moveUp() {
     this.y = this.y - INTERVAL
-    this.setPointList()
+    this.points = this.getPoints(this.block)
   }
 
   moveLeft() {
@@ -68,23 +69,19 @@ export default class Block {
       return
     }
 
-    const rowPoint = this.getRowsForLeft().map((point) => {
+    const points = getLeftPoints(this.points).map((point) => {
       return {
         ...point,
         x: point.x - INTERVAL,
       }
     })
-
-    const values = rowPoint.map((point) => {
-      return markMap.getValue(point)
-    })
-
-    if (values.includes(1)) {
+    const markers = markMap.getValueWithPoints(points)
+    if (markers.includes(1)) {
       return
     }
 
     this.x = this.x - INTERVAL
-    this.setPointList()
+    this.points = this.getPoints(this.block)
   }
 
   moveRight() {
@@ -94,116 +91,44 @@ export default class Block {
       return
     }
 
-    const rowPoint = this.getRowsForRight().map((point) => {
+    const points = getRightPoints(this.points).map((point) => {
       return {
         ...point,
         x: point.x + INTERVAL,
       }
     })
-
-    const values = rowPoint.map((point) => {
-      return markMap.getValue(point)
-    })
-
-    if (values.includes(1)) {
+    const markers = markMap.getValueWithPoints(points)
+    if (markers.includes(1)) {
       return
     }
 
     this.x = this.x + INTERVAL
-    this.setPointList()
-  }
-
-  getColumns() {
-    const obj = this.pointList.reduce((collect, nextpoint) => {
-      const { x } = nextpoint
-      const target = collect[x]
-
-      if (target === undefined) {
-        collect[x] = nextpoint
-      } else {
-        collect[x] = target.y > nextpoint.y ? target : nextpoint
-      }
-
-      return collect
-    }, {})
-
-    return Object.entries(obj).map(([_, e]) => e)
-  }
-
-  getRowsForLeft() {
-    const obj = this.pointList.reduce((collect, nextPoint) => {
-      const { y } = nextPoint
-      const target = collect[y]
-
-      if (target === undefined) {
-        collect[y] = nextPoint
-      } else {
-        collect[y] = target.x < nextPoint.x ? target : nextPoint
-      }
-
-      return collect
-    }, {})
-
-    return Object.entries(obj).map(([_, e]) => e)
-  }
-
-  getRowsForRight() {
-    const obj = this.pointList.reduce((collect, nextPoint) => {
-      const { y } = nextPoint
-      const target = collect[y]
-
-      if (target === undefined) {
-        collect[y] = nextPoint
-      } else {
-        collect[y] = target.x > nextPoint.x ? target : nextPoint
-      }
-
-      return collect
-    }, {})
-
-    return Object.entries(obj).map(([_, e]) => e)
+    this.points = this.getPoints(this.block)
   }
 
   update() {
     if (collision(this)) {
-      this.pointList.forEach((point) => {
+      this.points.forEach((point) => {
         markMap.setValue(point, 1)
       })
 
       this.reset()
     } else {
       this.y = this.y + INTERVAL
-      this.setPointList()
+      this.points = this.getPoints(this.block)
     }
   }
 
-  setPointList() {
-    const indexPoints = []
-
-    this.block.forEach((outerElement, outerIndex) => {
-      outerElement.forEach((innerElement, innerIndex) => {
-        innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
-      })
-    })
-
-    this.pointList = indexPoints.map((point) => {
-      const x = this.x + INTERVAL * point.x
-      const y = this.y + INTERVAL * point.y
-
-      return { x, y }
-    })
-  }
-
-  getPointList(block) {
-    const indexPoints = []
+  getPoints(block) {
+    const cellIndexs = []
 
     block.forEach((outerElement, outerIndex) => {
       outerElement.forEach((innerElement, innerIndex) => {
-        innerElement === 1 && indexPoints.push({ x: innerIndex, y: outerIndex })
+        innerElement === 1 && cellIndexs.push({ x: innerIndex, y: outerIndex })
       })
     })
 
-    return indexPoints.map((point) => {
+    return cellIndexs.map((point) => {
       const x = this.x + INTERVAL * point.x
       const y = this.y + INTERVAL * point.y
 
@@ -212,7 +137,7 @@ export default class Block {
   }
 
   draw(context) {
-    this.pointList.forEach((point) => {
+    this.points.forEach((point) => {
       context.beginPath()
       context.rect(point.x, point.y, INTERVAL, INTERVAL)
 
@@ -236,19 +161,14 @@ function collision(block) {
     return true
   }
 
-  // check current block columns
-  const colPoints = block.getColumns().map((point) => {
+  const bottomPoints = getBotomPoints(block.points).map((point) => {
     return {
       ...point,
       y: point.y + INTERVAL,
     }
   })
-
-  const values = colPoints.map((point) => {
-    return markMap.getValue(point)
-  })
-
-  if (values.includes(1)) {
+  const markers = markMap.getValueWithPoints(bottomPoints)
+  if (markers.includes(1)) {
     return true
   }
 

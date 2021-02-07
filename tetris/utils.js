@@ -17,21 +17,6 @@ export function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max))
 }
 
-export function transpose(elements = []) {
-  const numOfRow = elements.length
-  const numOfColumn = elements[0].length
-
-  const newElements = []
-  for (let i = 0; i < numOfColumn; i++) {
-    newElements[i] = []
-    for (let j = numOfRow - 1; j >= 0; j--) {
-      newElements[i].push(elements[j][i])
-    }
-  }
-
-  return newElements
-}
-
 export function get2DimMark(numOfRow, numOfCol) {
   const ret = []
 
@@ -111,4 +96,44 @@ export const createNumbers = (length, dir = true) =>
 
 export function getRandomBlock() {
   return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
+}
+
+export const getBotomPoints = createGetPoints('x', (p1, p2) => p1.y > p2.y)
+
+export const getLeftPoints = createGetPoints('y', (p1, p2) => p1.x < p2.x)
+
+export const getRightPoints = createGetPoints('y', (p1, p2) => p1.x > p2.x)
+
+function createGetPoints(keyOfAxis, compare) {
+  return function getPoints(points = []) {
+    const pointsObj = points.reduce((collect, nextpoint) => {
+      const axisValue = nextpoint[keyOfAxis]
+      const target = collect[axisValue]
+
+      if (target === undefined) {
+        collect[axisValue] = nextpoint
+      } else {
+        collect[axisValue] = compare(target, nextpoint) ? target : nextpoint
+      }
+
+      return collect
+    }, {})
+
+    return Object.entries(pointsObj).map(([_, point]) => point)
+  }
+}
+
+export function transposeBlock(block = []) {
+  const numOfRow = block.length
+  const numOfColumn = block[0].length
+
+  const newBlock = []
+  for (let i = 0; i < numOfColumn; i++) {
+    newBlock[i] = []
+    for (let j = numOfRow - 1; j >= 0; j--) {
+      newBlock[i].push(block[j][i])
+    }
+  }
+
+  return newBlock
 }
