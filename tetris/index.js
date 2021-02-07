@@ -6,6 +6,7 @@ import {
   isRight,
   isBottom,
   isTop,
+  isPaused,
 } from './constant'
 import Block from './block'
 import CellMap from './CellMap'
@@ -25,8 +26,6 @@ __mian()
 
 function __mian() {
   setup()
-
-  document.addEventListener('keydown', onKeyDown)
 
   loop()
   draw()
@@ -51,6 +50,8 @@ function setup() {
 
   context.lineWidth = 1
   context.fillStyle = '#FFD500'
+
+  document.addEventListener('keydown', onKeyDown)
 }
 
 function update() {
@@ -69,12 +70,12 @@ function draw() {
 
 function onKeyDown(e) {
   const keyCode = e.keyCode
+  let isUpdated = true
 
-  if (keyCode === 80) {
+  if (isPaused(keyCode)) {
     paused = !paused
-  }
-
-  if (isSpace(keyCode)) {
+    isUpdated = false
+  } else if (isSpace(keyCode)) {
     currentBlock.transpose()
   } else if (isLeft(keyCode)) {
     currentBlock.moveLeft()
@@ -84,11 +85,14 @@ function onKeyDown(e) {
     currentBlock.update()
   } else if (isTop(keyCode)) {
     currentBlock.moveUp()
+  } else {
+    isUpdated = false
   }
 
-  context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
-
-  draw()
+  if (isUpdated) {
+    context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+    draw()
+  }
 }
 
 function drawBoard() {

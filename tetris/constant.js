@@ -54,6 +54,10 @@ export function isRight(keyCode) {
   )
 }
 
+export function isPaused(keyCode) {
+  return keyCode === 80
+}
+
 export const BLOCK_LIST = [
   // I
   [[1, 1, 1, 1]],
