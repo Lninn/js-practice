@@ -8,7 +8,7 @@ import {
   isTop,
 } from './constant'
 import Block from './block'
-import MarkMap from './MarkMap'
+import CellMap from './CellMap'
 import { utils } from './utils'
 import './index.css'
 
@@ -19,7 +19,7 @@ let paused = false
 let timer = null
 
 const currentBlock = new Block()
-const markMap = MarkMap.getInstance()
+const cellMap = CellMap.getInstance()
 
 __mian()
 
@@ -28,7 +28,7 @@ function __mian() {
 
   document.addEventListener('keydown', onKeyDown)
 
-  // loop()
+  loop()
   draw()
 }
 
@@ -60,18 +60,7 @@ function update() {
 }
 
 function draw() {
-  markMap.drawPoints.forEach((point) => {
-    context.beginPath()
-    context.rect(point.x, point.y, INTERVAL, INTERVAL)
-
-    var strokeStyle = context.strokeStyle
-    context.strokeStyle = '#0095DD'
-    context.strokeStyle = strokeStyle
-
-    context.stroke()
-    context.fill()
-    context.closePath()
-  })
+  cellMap.draw(context)
 
   currentBlock.draw(context)
 

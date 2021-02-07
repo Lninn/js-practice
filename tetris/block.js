@@ -7,9 +7,9 @@ import {
   getRightPoints,
 } from './utils'
 
-import MarkMap from './MarkMap'
+import CellMap from './CellMap'
 
-const markMap = MarkMap.getInstance()
+const cellMap = CellMap.getInstance()
 
 export default class Block {
   constructor() {
@@ -48,8 +48,7 @@ export default class Block {
       return
     }
 
-    const markers = markMap.getValueWithPoints(newPoints)
-    if (markers.includes(1)) {
+    if (cellMap.check(newPoints)) {
       return
     }
 
@@ -75,8 +74,8 @@ export default class Block {
         x: point.x - INTERVAL,
       }
     })
-    const markers = markMap.getValueWithPoints(points)
-    if (markers.includes(1)) {
+
+    if (cellMap.check(points)) {
       return
     }
 
@@ -97,8 +96,8 @@ export default class Block {
         x: point.x + INTERVAL,
       }
     })
-    const markers = markMap.getValueWithPoints(points)
-    if (markers.includes(1)) {
+
+    if (cellMap.check(points)) {
       return
     }
 
@@ -108,9 +107,7 @@ export default class Block {
 
   update() {
     if (collision(this)) {
-      this.points.forEach((point) => {
-        markMap.setValue(point, 1)
-      })
+      cellMap.set(this.points)
 
       this.reset()
     } else {
@@ -161,14 +158,14 @@ function collision(block) {
     return true
   }
 
-  const bottomPoints = getBotomPoints(block.points).map((point) => {
+  const points = getBotomPoints(block.points).map((point) => {
     return {
       ...point,
       y: point.y + INTERVAL,
     }
   })
-  const markers = markMap.getValueWithPoints(bottomPoints)
-  if (markers.includes(1)) {
+
+  if (cellMap.check(points)) {
     return true
   }
 
