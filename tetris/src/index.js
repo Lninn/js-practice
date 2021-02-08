@@ -11,7 +11,7 @@ import {
 import Block from './Block'
 import PositionMap from './PositionMap'
 import { utils } from './utils'
-import './index.css'
+import '../index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')

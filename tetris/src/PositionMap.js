@@ -19,7 +19,6 @@ export default class PositionMap {
 
     const positions = initPositions(canvasRows, canvasColumns, 0)
     const xAxes = initXAxes(canvasRows)
-    console.log(positions)
 
     this.stateOfPositions = positions
     this.xAxes = xAxes
