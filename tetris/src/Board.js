@@ -1,6 +1,9 @@
 import { CONFIG, INTERVAL } from './constant'
 import Drawer from './Drawer'
 
+const BOARD_WIDTH = CONFIG.canvasRows
+const BOARD_HEIGHT = CONFIG.canvasColumns
+
 export default class Board {
   constructor() {
     this.setup()
@@ -15,10 +18,8 @@ export default class Board {
   }
 
   setup() {
-    const { canvasRows, canvasColumns } = CONFIG
-
-    const positions = initPositions(canvasRows, canvasColumns, 0)
-    const xAxes = initXAxes(canvasRows)
+    const positions = initPositions(BOARD_WIDTH, BOARD_HEIGHT, 0)
+    const xAxes = initXAxes(BOARD_WIDTH)
 
     this.stateOfPositions = positions
     this.xAxes = xAxes
@@ -75,15 +76,12 @@ export default class Board {
   getUpdatedPositionYIndexs() {
     const { stateOfPositions } = this
 
-    const numOfCol = stateOfPositions.length
-    const numOfRow = stateOfPositions[0].length
-
     const updatedYAxes = []
     let state = null
-    for (let i = 0; i < numOfCol; i++) {
+    for (let i = 0; i < BOARD_HEIGHT; i++) {
       let isPassed = false
 
-      for (let j = 0; j < numOfRow; j++) {
+      for (let j = 0; j < BOARD_WIDTH; j++) {
         state = stateOfPositions[i][j]
         if (state === 0) {
           isPassed = false
@@ -126,15 +124,7 @@ function initPositions(numOfRow, numOfCol, initState) {
   function setState(position = {}, newState = 0) {
     const { x, y } = position
 
-    try {
-      this[y][x] = newState
-    } catch (errorInfo) {
-      console.log({
-        errorInfo,
-        obj: this,
-        position,
-      })
-    }
+    this[y][x] = newState
   }
 
   positions.getState = getState
