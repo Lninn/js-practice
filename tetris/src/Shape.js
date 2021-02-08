@@ -1,4 +1,4 @@
-import { CONFIG, ORIGINAL_POINT, INTERVAL } from './constant'
+import { CONFIG, ORIGINAL_POINT, SIDE_OF_LENGTH } from './constant'
 import {
   transposeBlock,
   getRandomBlock,
@@ -39,8 +39,8 @@ export default class Shape {
   }
 
   getSize(block) {
-    const width = block[0].length * INTERVAL
-    const height = block.length * INTERVAL
+    const width = block[0].length * SIDE_OF_LENGTH
+    const height = block.length * SIDE_OF_LENGTH
 
     return { width, height }
   }
@@ -67,7 +67,7 @@ export default class Shape {
   }
 
   moveUp() {
-    this.y = this.y - INTERVAL
+    this.y = this.y - SIDE_OF_LENGTH
     this.points = this.getPoints(this.block)
   }
 
@@ -79,7 +79,7 @@ export default class Shape {
     const points = getLeftPoints(this.points).map((point) => {
       return {
         ...point,
-        x: point.x - INTERVAL,
+        x: point.x - SIDE_OF_LENGTH,
       }
     })
 
@@ -87,7 +87,7 @@ export default class Shape {
       return
     }
 
-    this.x = this.x - INTERVAL
+    this.x = this.x - SIDE_OF_LENGTH
     this.points = this.getPoints(this.block)
   }
 
@@ -101,7 +101,7 @@ export default class Shape {
     const points = getRightPoints(this.points).map((point) => {
       return {
         ...point,
-        x: point.x + INTERVAL,
+        x: point.x + SIDE_OF_LENGTH,
       }
     })
 
@@ -109,7 +109,7 @@ export default class Shape {
       return
     }
 
-    this.x = this.x + INTERVAL
+    this.x = this.x + SIDE_OF_LENGTH
     this.points = this.getPoints(this.block)
   }
 
@@ -121,7 +121,7 @@ export default class Shape {
 
       this.reset()
     } else {
-      this.y = this.y + INTERVAL
+      this.y = this.y + SIDE_OF_LENGTH
       this.points = this.getPoints(this.block)
     }
   }
@@ -134,7 +134,7 @@ export default class Shape {
     const points = getBotomPoints(this.points).map((point) => {
       return {
         ...point,
-        y: point.y + INTERVAL,
+        y: point.y + SIDE_OF_LENGTH,
       }
     })
 
@@ -155,8 +155,8 @@ export default class Shape {
     })
 
     return cellIndexs.map((point) => {
-      const x = this.x + INTERVAL * point.x
-      const y = this.y + INTERVAL * point.y
+      const x = this.x + SIDE_OF_LENGTH * point.x
+      const y = this.y + SIDE_OF_LENGTH * point.y
 
       return { x, y }
     })
@@ -165,7 +165,7 @@ export default class Shape {
   draw(context) {
     this.points.forEach((point) => {
       context.beginPath()
-      context.rect(point.x, point.y, INTERVAL, INTERVAL)
+      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
 
       const strokeStyle = context.strokeStyle
       const fillStyle = context.fillStyle

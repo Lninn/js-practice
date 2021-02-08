@@ -1,4 +1,4 @@
-import { CONFIG, INTERVAL } from './constant'
+import { CONFIG, SIDE_OF_LENGTH } from './constant'
 import Drawer from './Drawer'
 
 const BOARD_WIDTH = CONFIG.canvasRows
@@ -146,7 +146,7 @@ function initXAxes(numOfRow) {
 function pointsToPositions(points = []) {
   const pointToPosition = (point) => {
     const { x, y } = point
-    return { x: x / INTERVAL, y: y / INTERVAL }
+    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
   }
 
   return points.map(pointToPosition)

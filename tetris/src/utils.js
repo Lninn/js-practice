@@ -1,4 +1,4 @@
-import { INTERVAL, BLOCK_LIST } from './constant'
+import { SIDE_OF_LENGTH, BLOCK_LIST } from './constant'
 
 export const utils = {
   log: console.log.bind(console),

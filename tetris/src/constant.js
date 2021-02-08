@@ -1,13 +1,13 @@
-export const INTERVAL = 30
+export const SIDE_OF_LENGTH = 30
 
 export const ORIGINAL_POINT = {
-  x: INTERVAL * 4,
-  y: INTERVAL * 0,
+  x: SIDE_OF_LENGTH * 4,
+  y: SIDE_OF_LENGTH * 0,
 }
 
 export const CONFIG = {
-  canvasRows: 420 / INTERVAL,
-  canvasColumns: 600 / INTERVAL,
+  canvasRows: 420 / SIDE_OF_LENGTH,
+  canvasColumns: 600 / SIDE_OF_LENGTH,
   canvasWidth: 420,
   canvasHeight: 600,
 }

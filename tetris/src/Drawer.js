@@ -1,4 +1,4 @@
-import { INTERVAL } from './constant'
+import { SIDE_OF_LENGTH } from './constant'
 
 export default class Drawer {
   constructor(board) {
@@ -17,20 +17,20 @@ export default class Drawer {
     let newPoints = points
     updatedYAxes.forEach((y) => {
       newPoints = newPoints.filter((point) => {
-        return point.y !== y * INTERVAL
+        return point.y !== y * SIDE_OF_LENGTH
       })
     })
 
     updatedYAxes.forEach((_) => {
       board.setStateWithPoints(newPoints, 0)
       newPoints = newPoints.map((point) => {
-        if (point.y === yAxisTail * INTERVAL) {
+        if (point.y === yAxisTail * SIDE_OF_LENGTH) {
           return point
         }
 
         return {
           ...point,
-          y: point.y + INTERVAL,
+          y: point.y + SIDE_OF_LENGTH,
         }
       })
       board.setStateWithPoints(newPoints, 1)
@@ -42,7 +42,7 @@ export default class Drawer {
   draw(context) {
     this.points.forEach((point) => {
       context.beginPath()
-      context.rect(point.x, point.y, INTERVAL, INTERVAL)
+      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
 
       const strokeStyle = context.strokeStyle
       context.strokeStyle = '#0095DD'

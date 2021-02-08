@@ -1,6 +1,6 @@
 import {
   CONFIG,
-  INTERVAL,
+  SIDE_OF_LENGTH,
   isSpace,
   isLeft,
   isRight,
@@ -32,7 +32,7 @@ function __mian() {
 }
 
 function loop() {
-  timer = setInterval(() => {
+  timer = setSIDE_OF_LENGTH(() => {
     context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
 
     update()
@@ -98,7 +98,7 @@ function onKeyDown(e) {
 function drawBoard() {
   const w = CONFIG.canvasWidth
   const h = CONFIG.canvasHeight
-  const step = INTERVAL - 0.1
+  const step = SIDE_OF_LENGTH - 0.1
 
   let i = 0
 
