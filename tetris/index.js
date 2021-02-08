@@ -9,7 +9,7 @@ import {
   isPaused,
 } from './constant'
 import Block from './block'
-import CellMap from './CellMap'
+import PositionMap from './PositionMap'
 import { utils } from './utils'
 import './index.css'
 
@@ -20,7 +20,7 @@ let paused = false
 let timer = null
 
 const currentBlock = new Block()
-const cellMap = CellMap.getInstance()
+const cellMap = PositionMap.getInstance()
 console.log(currentBlock)
 
 __mian()
@@ -28,7 +28,7 @@ __mian()
 function __mian() {
   setup()
 
-  loop()
+  // loop()
   draw()
 }
 

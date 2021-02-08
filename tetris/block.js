@@ -7,9 +7,9 @@ import {
   getRightPoints,
 } from './utils'
 
-import CellMap from './CellMap'
+import PositionMap from './PositionMap'
 
-const cellMap = CellMap.getInstance()
+const cellMap = PositionMap.getInstance()
 
 export default class Block {
   constructor() {
@@ -107,7 +107,7 @@ export default class Block {
 
   update() {
     if (this.collision()) {
-      cellMap.set(this.points)
+      cellMap.setStateWithPoints(this.points)
 
       cellMap.update()
 
