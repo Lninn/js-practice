@@ -7,9 +7,9 @@ import {
   getRightPoints,
 } from './utils'
 
-import PositionMap from './PositionMap'
+import Board from './Board'
 
-const positionMap = PositionMap.getInstance()
+const board = Board.getInstance()
 
 export default class Block {
   constructor() {
@@ -55,7 +55,7 @@ export default class Block {
     if (
       this.x + width > canvasWidth ||
       this.y + height > canvasHeight ||
-      positionMap.check(newPoints)
+      board.check(newPoints)
     ) {
       return
     }
@@ -83,7 +83,7 @@ export default class Block {
       }
     })
 
-    if (positionMap.check(points)) {
+    if (board.check(points)) {
       return
     }
 
@@ -105,7 +105,7 @@ export default class Block {
       }
     })
 
-    if (positionMap.check(points)) {
+    if (board.check(points)) {
       return
     }
 
@@ -115,9 +115,9 @@ export default class Block {
 
   update() {
     if (this.collision()) {
-      positionMap.setStateWithPoints(this.points)
+      board.setStateWithPoints(this.points)
 
-      positionMap.update()
+      board.update()
 
       this.reset()
     } else {
@@ -138,7 +138,7 @@ export default class Block {
       }
     })
 
-    if (positionMap.check(points)) {
+    if (board.check(points)) {
       return true
     }
 

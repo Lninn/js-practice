@@ -9,7 +9,7 @@ import {
   isPaused,
 } from './constant'
 import Block from './Block'
-import PositionMap from './PositionMap'
+import Board from './Board'
 import { utils } from './utils'
 import '../index.css'
 
@@ -20,7 +20,7 @@ let paused = false
 let timer = null
 
 const currentBlock = Block.getInstance()
-const positionMap = PositionMap.getInstance()
+const board = Board.getInstance()
 
 __mian()
 
@@ -61,7 +61,7 @@ function update() {
 }
 
 function draw() {
-  positionMap.draw(context)
+  board.draw(context)
 
   currentBlock.draw(context)
 

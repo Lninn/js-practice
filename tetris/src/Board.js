@@ -1,8 +1,8 @@
 import { CONFIG, INTERVAL } from './constant'
+import Drawer from './Drawer'
 
-export default class PositionMap {
+export default class Board {
   constructor() {
-    this.points = []
     this.setup()
   }
 
@@ -22,6 +22,8 @@ export default class PositionMap {
 
     this.stateOfPositions = positions
     this.xAxes = xAxes
+
+    this.drawer = new Drawer(this)
   }
 
   check(points = []) {
@@ -42,7 +44,7 @@ export default class PositionMap {
     const positions = pointsToPositions(points)
     this.setStateWithPositions(positions, newState)
 
-    this.points = this.points.concat(points)
+    this.drawer.addPoints(points)
   }
 
   setStateWithPositions(positions = [], newState = 1) {
@@ -55,8 +57,6 @@ export default class PositionMap {
 
   update() {
     const { xAxes } = this
-    const yAxisTail = 19
-
     const updatedYAxes = this.getUpdatedPositionYIndexs()
 
     if (updatedYAxes.length) {
@@ -68,29 +68,7 @@ export default class PositionMap {
         this.setStateWithPositions(positions, 0)
       })
 
-      let points = this.points
-      updatedYAxes.forEach((y) => {
-        points = points.filter((point) => {
-          return point.y !== y * INTERVAL
-        })
-      })
-
-      // FIX
-      updatedYAxes.forEach((y) => {
-        this.setStateWithPoints(points, 0)
-        points = points.map((point) => {
-          if (point.y === yAxisTail * INTERVAL) {
-            return point
-          }
-
-          return {
-            ...point,
-            y: point.y + INTERVAL,
-          }
-        })
-        this.setStateWithPoints(points, 1)
-      })
-      this.points = points
+      this.drawer.update(updatedYAxes)
     }
   }
 
@@ -124,18 +102,7 @@ export default class PositionMap {
   }
 
   draw(context) {
-    this.points.forEach((point) => {
-      context.beginPath()
-      context.rect(point.x, point.y, INTERVAL, INTERVAL)
-
-      const strokeStyle = context.strokeStyle
-      context.strokeStyle = '#0095DD'
-      context.strokeStyle = strokeStyle
-
-      context.stroke()
-      context.fill()
-      context.closePath()
-    })
+    this.drawer.draw(context)
   }
 }
 
