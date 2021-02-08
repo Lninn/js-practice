@@ -52,11 +52,11 @@ export default class Block {
     const newPoints = this.getPoints(newBlock)
 
     const { width, height } = this.getSize(newBlock)
-    if (this.x + width > canvasWidth || this.y + height > canvasHeight) {
-      return
-    }
-
-    if (positionMap.check(newPoints)) {
+    if (
+      this.x + width > canvasWidth ||
+      this.y + height > canvasHeight ||
+      positionMap.check(newPoints)
+    ) {
       return
     }
 

@@ -56,6 +56,7 @@ export default class PositionMap {
 
   update() {
     const { xAxes } = this
+    const yAxisTail = 19
 
     const updatedYAxes = this.getUpdatedPositionYIndexs()
 
@@ -75,9 +76,14 @@ export default class PositionMap {
         })
       })
 
+      // FIX
       updatedYAxes.forEach((y) => {
         this.setStateWithPoints(points, 0)
         points = points.map((point) => {
+          if (point.y === yAxisTail * INTERVAL) {
+            return point
+          }
+
           return {
             ...point,
             y: point.y + INTERVAL,
@@ -154,7 +160,15 @@ function initPositions(numOfRow, numOfCol, initState) {
   function setState(position = {}, newState = 0) {
     const { x, y } = position
 
-    this[y][x] = newState
+    try {
+      this[y][x] = newState
+    } catch (errorInfo) {
+      console.log({
+        errorInfo,
+        obj: this,
+        position,
+      })
+    }
   }
 
   positions.getState = getState
