@@ -8,7 +8,7 @@ import {
   isTop,
   isPaused,
 } from './constant'
-import Block from './block'
+import Block from './Block'
 import PositionMap from './PositionMap'
 import { utils } from './utils'
 import './index.css'
@@ -19,9 +19,8 @@ const context = canvas.getContext('2d')
 let paused = false
 let timer = null
 
-const currentBlock = new Block()
-const cellMap = PositionMap.getInstance()
-console.log(currentBlock)
+const currentBlock = Block.getInstance()
+const positionMap = PositionMap.getInstance()
 
 __mian()
 
@@ -62,7 +61,7 @@ function update() {
 }
 
 function draw() {
-  cellMap.draw(context)
+  positionMap.draw(context)
 
   currentBlock.draw(context)
 

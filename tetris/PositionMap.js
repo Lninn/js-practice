@@ -1,30 +1,8 @@
 import { CONFIG, INTERVAL } from './constant'
 
-function createPositions(numOfRow, numOfCol, initState) {
-  const table = []
-
-  for (let i = 0; i < numOfCol; i++) {
-    table[i] = []
-    for (let j = 0; j < numOfRow; j++) {
-      table[i][j] = initState
-    }
-  }
-
-  return table
-}
-
-function pointsToPositions(points = []) {
-  const pointToPosition = (point) => {
-    const { x, y } = point
-    return { x: x / INTERVAL, y: y / INTERVAL }
-  }
-
-  return points.map(pointToPosition)
-}
-
 export default class PositionMap {
   constructor() {
-    this.pointsForDraw = []
+    this.points = []
     this.setup()
   }
 
@@ -39,12 +17,10 @@ export default class PositionMap {
   setup() {
     const { canvasRows, canvasColumns } = CONFIG
 
-    const xAxes = []
-    for (let i = 0; i < canvasRows; i++) {
-      xAxes.push(i)
-    }
+    const positions = initPositions(canvasRows, canvasColumns, 0)
+    const xAxes = initXAxes(canvasRows)
+    console.log(positions)
 
-    const positions = createPositions(canvasRows, canvasColumns, 0)
     this.stateOfPositions = positions
     this.xAxes = xAxes
   }
@@ -59,7 +35,7 @@ export default class PositionMap {
     const positions = pointsToPositions(points)
 
     return positions.map((position) => {
-      return stateOfPositions[position.y][position.x]
+      return stateOfPositions.getState(position)
     })
   }
 
@@ -67,19 +43,55 @@ export default class PositionMap {
     const positions = pointsToPositions(points)
     this.setStateWithPositions(positions, newState)
 
-    this.pointsForDraw = this.pointsForDraw.concat(points)
+    this.points = this.points.concat(points)
   }
 
   setStateWithPositions(positions = [], newState = 1) {
     const { stateOfPositions } = this
 
     positions.forEach((position) => {
-      stateOfPositions[position.y][position.x] = newState
+      stateOfPositions.setState(position, newState)
     })
   }
 
   update() {
-    const { stateOfPositions, xAxes } = this
+    const { xAxes } = this
+
+    const updatedYAxes = this.getUpdatedPositionYIndexs()
+
+    if (updatedYAxes.length) {
+      const updatedPositions = updatedYAxes.map((y) => {
+        return xAxes.map((x) => ({ x, y }))
+      })
+
+      updatedPositions.forEach((positions) => {
+        this.setStateWithPositions(positions, 0)
+      })
+
+      let points = this.points
+      updatedYAxes.forEach((y) => {
+        points = points.filter((point) => {
+          return point.y !== y * INTERVAL
+        })
+      })
+
+      updatedYAxes.forEach((y) => {
+        this.setStateWithPoints(points, 0)
+        points = points.map((point) => {
+          return {
+            ...point,
+            y: point.y + INTERVAL,
+          }
+        })
+        this.setStateWithPoints(points, 1)
+      })
+      this.points = points
+    }
+  }
+
+  getUpdatedPositionYIndexs() {
+    const { stateOfPositions } = this
+
     const numOfCol = stateOfPositions.length
     const numOfRow = stateOfPositions[0].length
 
@@ -103,40 +115,11 @@ export default class PositionMap {
       }
     }
 
-    console.log(updatedYAxes)
-
-    if (updatedYAxes.length) {
-      updatedYAxes
-        .map((y) => {
-          return xAxes.map((x) => ({ x, y }))
-        })
-        .forEach((positions) => {
-          this.setStateWithPositions(positions, 0)
-        })
-
-      let updatedPoints = this.pointsForDraw
-      updatedYAxes.forEach((y) => {
-        updatedPoints = updatedPoints.filter((point) => {
-          return point.y !== y * INTERVAL
-        })
-      })
-
-      updatedYAxes.forEach((y) => {
-        this.setStateWithPoints(updatedPoints, 0)
-        updatedPoints = updatedPoints.map((point) => {
-          return {
-            ...point,
-            y: point.y + INTERVAL,
-          }
-        })
-        this.setStateWithPoints(updatedPoints, 1)
-      })
-      this.pointsForDraw = updatedPoints
-    }
+    return updatedYAxes
   }
 
   draw(context) {
-    this.pointsForDraw.forEach((point) => {
+    this.points.forEach((point) => {
       context.beginPath()
       context.rect(point.x, point.y, INTERVAL, INTERVAL)
 
@@ -149,4 +132,52 @@ export default class PositionMap {
       context.closePath()
     })
   }
+}
+
+function initPositions(numOfRow, numOfCol, initState) {
+  // 二维数组
+  const positions = []
+
+  for (let i = 0; i < numOfCol; i++) {
+    positions[i] = []
+    for (let j = 0; j < numOfRow; j++) {
+      positions[i][j] = initState
+    }
+  }
+
+  function getState(position = {}) {
+    const { x, y } = position
+
+    return this[y][x]
+  }
+
+  function setState(position = {}, newState = 0) {
+    const { x, y } = position
+
+    this[y][x] = newState
+  }
+
+  positions.getState = getState
+  positions.setState = setState
+
+  return positions
+}
+
+function initXAxes(numOfRow) {
+  const xAxes = []
+
+  for (let i = 0; i < numOfRow; i++) {
+    xAxes.push(i)
+  }
+
+  return xAxes
+}
+
+function pointsToPositions(points = []) {
+  const pointToPosition = (point) => {
+    const { x, y } = point
+    return { x: x / INTERVAL, y: y / INTERVAL }
+  }
+
+  return points.map(pointToPosition)
 }

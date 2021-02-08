@@ -9,11 +9,19 @@ import {
 
 import PositionMap from './PositionMap'
 
-const cellMap = PositionMap.getInstance()
+const positionMap = PositionMap.getInstance()
 
 export default class Block {
   constructor() {
     this.reset()
+  }
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new this()
+    }
+
+    return this.instance
   }
 
   reset() {
@@ -48,7 +56,7 @@ export default class Block {
       return
     }
 
-    if (cellMap.check(newPoints)) {
+    if (positionMap.check(newPoints)) {
       return
     }
 
@@ -75,7 +83,7 @@ export default class Block {
       }
     })
 
-    if (cellMap.check(points)) {
+    if (positionMap.check(points)) {
       return
     }
 
@@ -97,7 +105,7 @@ export default class Block {
       }
     })
 
-    if (cellMap.check(points)) {
+    if (positionMap.check(points)) {
       return
     }
 
@@ -107,9 +115,9 @@ export default class Block {
 
   update() {
     if (this.collision()) {
-      cellMap.setStateWithPoints(this.points)
+      positionMap.setStateWithPoints(this.points)
 
-      cellMap.update()
+      positionMap.update()
 
       this.reset()
     } else {
@@ -130,7 +138,7 @@ export default class Block {
       }
     })
 
-    if (cellMap.check(points)) {
+    if (positionMap.check(points)) {
       return true
     }
 
