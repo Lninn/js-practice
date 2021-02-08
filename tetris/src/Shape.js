@@ -11,7 +11,7 @@ import Board from './Board'
 
 const board = Board.getInstance()
 
-export default class Block {
+export default class Shape {
   constructor() {
     this.reset()
   }

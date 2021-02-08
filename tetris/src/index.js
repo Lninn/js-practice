@@ -8,7 +8,7 @@ import {
   isTop,
   isPaused,
 } from './constant'
-import Block from './Block'
+import Shape from './Shape'
 import Board from './Board'
 import { utils } from './utils'
 import '../index.css'
@@ -19,7 +19,7 @@ const context = canvas.getContext('2d')
 let paused = false
 let timer = null
 
-const currentBlock = Block.getInstance()
+const currentShape = Shape.getInstance()
 const board = Board.getInstance()
 
 __mian()
@@ -57,13 +57,13 @@ function setup() {
 function update() {
   if (paused) return
 
-  currentBlock.update()
+  currentShape.update()
 }
 
 function draw() {
   board.draw(context)
 
-  currentBlock.draw(context)
+  currentShape.draw(context)
 
   drawBoard()
 }
@@ -76,15 +76,15 @@ function onKeyDown(e) {
     paused = !paused
     isUpdated = false
   } else if (isSpace(keyCode)) {
-    currentBlock.transpose()
+    currentShape.transpose()
   } else if (isLeft(keyCode)) {
-    currentBlock.moveLeft()
+    currentShape.moveLeft()
   } else if (isRight(keyCode)) {
-    currentBlock.moveRight()
+    currentShape.moveRight()
   } else if (isBottom(keyCode)) {
-    currentBlock.update()
+    currentShape.update()
   } else if (isTop(keyCode)) {
-    currentBlock.moveUp()
+    currentShape.moveUp()
   } else {
     isUpdated = false
   }
