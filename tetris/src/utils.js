@@ -25,23 +25,3 @@ export const createNumbers = (length, dir = true) =>
       return length - i - 1
     }
   })
-
-export function getRandomBlock() {
-  return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
-  // return BLOCK_LIST[0]
-}
-
-export function transposeBlock(block = []) {
-  const numOfRow = block.length
-  const numOfColumn = block[0].length
-
-  const newBlock = []
-  for (let i = 0; i < numOfColumn; i++) {
-    newBlock[i] = []
-    for (let j = numOfRow - 1; j >= 0; j--) {
-      newBlock[i].push(block[j][i])
-    }
-  }
-
-  return newBlock
-}

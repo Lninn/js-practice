@@ -4,15 +4,8 @@ import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
 } from './constant'
-import {
-  transposeBlock,
-  getRandomBlock,
-  getBotomPoints,
-  getLeftPoints,
-  getRightPoints,
-} from './utils'
-
 import Board from './Board'
+import { getRandomBlock, transposeBlock } from './block'
 
 const board = Board.getInstance()
 
@@ -101,6 +94,7 @@ export default class Shape {
       board.isValidOfPreDown(pointsToPositions(this.points))
     ) {
       board.updateFlagWithPoints(this.points)
+      board.updateWithYAxes()
 
       this.reset()
     } else {
@@ -145,6 +139,12 @@ export default class Shape {
     })
   }
 }
+
+// 抽象出最底层的细节
+// Operation for points
+
+// point => { x: 0, y: 0 }
+// 最小表示 poins
 
 export function pointsToPositions(points = []) {
   const pointToPosition = (point) => {

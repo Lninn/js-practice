@@ -66,13 +66,13 @@ export default class Board {
     })
   }
 
+  // TODO
+  // 逻辑尽量分开
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
     const positions = pointsToPositions(points)
     this.setFlag(positions, newFlag)
 
     this.drawer.addPoints(points)
-
-    this.updateWithYAxes()
   }
 
   getFlags(positions = []) {
