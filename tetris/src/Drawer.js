@@ -22,7 +22,7 @@ export default class Drawer {
     })
 
     updatedYAxes.forEach((_) => {
-      board.setStateWithPoints(newPoints, 0)
+      board.updateFlagWithPoints(newPoints, 0)
       newPoints = newPoints.map((point) => {
         if (point.y === yAxisTail * SIDE_OF_LENGTH) {
           return point
@@ -33,7 +33,7 @@ export default class Drawer {
           y: point.y + SIDE_OF_LENGTH,
         }
       })
-      board.setStateWithPoints(newPoints, 1)
+      board.updateFlagWithPoints(newPoints, 1)
     })
 
     this.points = newPoints

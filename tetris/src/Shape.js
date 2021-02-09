@@ -55,7 +55,7 @@ export default class Shape {
     if (
       this.x + width > canvasWidth ||
       this.y + height > canvasHeight ||
-      board.check(newPoints)
+      board.isValidOfPreTranspose(pointsToPositions(newPoints))
     ) {
       return
     }
@@ -72,18 +72,7 @@ export default class Shape {
   }
 
   moveLeft() {
-    if (this.x <= 0) {
-      return
-    }
-
-    const points = getLeftPoints(this.points).map((point) => {
-      return {
-        ...point,
-        x: point.x - SIDE_OF_LENGTH,
-      }
-    })
-
-    if (board.check(points)) {
+    if (this.x <= 0 || board.isValidOfPreLeft(pointsToPositions(this.points))) {
       return
     }
 
@@ -94,18 +83,10 @@ export default class Shape {
   moveRight() {
     const { canvasWidth } = CONFIG
 
-    if (this.x + this.width >= canvasWidth) {
-      return
-    }
-
-    const points = getRightPoints(this.points).map((point) => {
-      return {
-        ...point,
-        x: point.x + SIDE_OF_LENGTH,
-      }
-    })
-
-    if (board.check(points)) {
+    if (
+      this.x + this.width >= canvasWidth ||
+      board.isValidOfPreRight(pointsToPositions(this.points))
+    ) {
       return
     }
 
@@ -114,35 +95,18 @@ export default class Shape {
   }
 
   update() {
-    if (this.collision()) {
-      board.setStateWithPoints(this.points)
-
-      board.update()
+    if (
+      this.y + this.height >= CONFIG.canvasHeight ||
+      board.isValidOfPreDown(pointsToPositions(this.points))
+    ) {
+      board.updateFlagWithPoints(this.points)
+      board.updateFlag()
 
       this.reset()
     } else {
       this.y = this.y + SIDE_OF_LENGTH
       this.points = this.getPoints(this.block)
     }
-  }
-
-  collision() {
-    if (this.y + this.height >= CONFIG.canvasHeight) {
-      return true
-    }
-
-    const points = getBotomPoints(this.points).map((point) => {
-      return {
-        ...point,
-        y: point.y + SIDE_OF_LENGTH,
-      }
-    })
-
-    if (board.check(points)) {
-      return true
-    }
-
-    return false
   }
 
   getPoints(block) {
@@ -180,4 +144,13 @@ export default class Shape {
       context.closePath()
     })
   }
+}
+
+function pointsToPositions(points = []) {
+  const pointToPosition = (point) => {
+    const { x, y } = point
+    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
+  }
+
+  return points.map(pointToPosition)
 }

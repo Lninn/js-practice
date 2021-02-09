@@ -4,6 +4,10 @@ import Drawer from './Drawer'
 const BOARD_WIDTH = CONFIG.canvasRows
 const BOARD_HEIGHT = CONFIG.canvasColumns
 
+const FLAGGED = 1
+const UN_FLAGGED = 0
+const isFlagged = (value) => value === FLAGGED
+
 export default class Board {
   constructor() {
     this.setup()
@@ -27,63 +31,98 @@ export default class Board {
     this.drawer = new Drawer(this)
   }
 
-  check(points = []) {
-    const states = this.getStateWithPoints(points)
-    return states.includes(1)
+  isValidOfPreLeft(positions = []) {
+    positions = this.updateHorizontal(positions, false)
+    return this.hasFlagged(positions)
   }
 
-  getStateWithPoints(points = []) {
-    const { stateOfPositions } = this
-    const positions = pointsToPositions(points)
+  isValidOfPreRight(positions = []) {
+    positions = this.updateHorizontal(positions)
+    return this.hasFlagged(positions)
+  }
 
-    return positions.map((position) => {
-      return stateOfPositions.getState(position)
+  isValidOfPreDown(positions = []) {
+    positions = this.updateVertical(positions)
+    return this.hasFlagged(positions)
+  }
+
+  isValidOfPreTranspose(positions = []) {
+    return this.hasFlagged(positions)
+  }
+
+  hasFlagged(positions = []) {
+    return this.getFlags(positions).some((flag) => isFlagged(flag))
+  }
+
+  updateHorizontal(positions = [], isPotive = true) {
+    return positions.map((pos) => {
+      return {
+        ...pos,
+        x: pos.x + (isPotive ? 1 : -1),
+      }
     })
   }
 
-  setStateWithPoints(points = [], newState = 1) {
+  updateVertical(positions = [], isPotive = true) {
+    return positions.map((pos) => {
+      return {
+        ...pos,
+        y: pos.y + (isPotive ? 1 : -1),
+      }
+    })
+  }
+
+  getFlags(positions = []) {
+    const { stateOfPositions } = this
+
+    return positions.map((pos) => {
+      const { x, y } = pos
+
+      return stateOfPositions[y][x]
+    })
+  }
+
+  updateFlagWithPoints(points = [], newFlag = 1) {
     const positions = pointsToPositions(points)
-    this.setStateWithPositions(positions, newState)
+    this.setFlag(positions, newFlag)
 
     this.drawer.addPoints(points)
   }
 
-  setStateWithPositions(positions = [], newState = 1) {
+  setFlag(positions = [], newFlag = 1) {
     const { stateOfPositions } = this
 
     positions.forEach((position) => {
-      stateOfPositions.setState(position, newState)
+      stateOfPositions.setState(position, newFlag)
     })
   }
 
-  update() {
+  updateFlag() {
     const { xAxes } = this
-    const updatedYAxes = this.getUpdatedPositionYIndexs()
+    const flaggedYAxes = this.getFlaggedOfYAxes()
 
-    if (updatedYAxes.length) {
-      const updatedPositions = updatedYAxes.map((y) => {
+    if (flaggedYAxes.length) {
+      const updatedPositions = flaggedYAxes.map((y) => {
         return xAxes.map((x) => ({ x, y }))
       })
 
       updatedPositions.forEach((positions) => {
-        this.setStateWithPositions(positions, 0)
+        this.setFlag(positions, 0)
       })
 
-      this.drawer.update(updatedYAxes)
+      this.drawer.update(flaggedYAxes)
     }
   }
 
-  getUpdatedPositionYIndexs() {
+  getFlaggedOfYAxes() {
     const { stateOfPositions } = this
 
-    const updatedYAxes = []
-    let state = null
+    const flaggedYAxes = []
     for (let i = 0; i < BOARD_HEIGHT; i++) {
       let isPassed = false
 
       for (let j = 0; j < BOARD_WIDTH; j++) {
-        state = stateOfPositions[i][j]
-        if (state === 0) {
+        if (!isFlagged(stateOfPositions[i][j])) {
           isPassed = false
           break
         } else {
@@ -92,11 +131,11 @@ export default class Board {
       }
 
       if (isPassed) {
-        updatedYAxes.push(i)
+        flaggedYAxes.push(i)
       }
     }
 
-    return updatedYAxes
+    return flaggedYAxes
   }
 
   draw(context) {
