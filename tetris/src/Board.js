@@ -1,4 +1,4 @@
-import { BOARD_WIDTH, BOARD_HEIGHT, FLAGGED } from './constant'
+import { BOARD_WIDTH, BOARD_HEIGHT, FLAGGED, UN_FLAGGED } from './constant'
 import Drawer from './Drawer'
 import { pointsToPositions } from './Shape'
 
@@ -16,13 +16,13 @@ export default class Board {
   }
 
   setup() {
-    const positions = []
+    const flaggedOfMap = []
     const xAxes = []
 
     for (let i = 0; i < BOARD_HEIGHT; i++) {
-      positions[i] = []
+      flaggedOfMap[i] = []
       for (let j = 0; j < BOARD_WIDTH; j++) {
-        positions[i][j] = FLAGGED
+        flaggedOfMap[i][j] = UN_FLAGGED
       }
     }
 
@@ -30,7 +30,7 @@ export default class Board {
       xAxes.push(i)
     }
 
-    this.stateOfPositions = positions
+    this.flaggedOfMap = flaggedOfMap
     this.xAxes = xAxes
 
     this.drawer = new Drawer(this)
@@ -56,7 +56,8 @@ export default class Board {
   }
 
   hasFlagged(positions = []) {
-    return this.getFlags(positions).some((flag) => isFlagged(flag))
+    const flags = this.getFlags(positions)
+    return flags.some((flag) => isFlagged(flag))
   }
 
   updateHorizontal(positions = [], isPotive = true) {
@@ -81,26 +82,24 @@ export default class Board {
   // 逻辑尽量分开
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
     const positions = pointsToPositions(points)
-    this.setFlag(positions, newFlag)
+    this.updateFlag(positions, newFlag)
 
     this.drawer.addPoints(points)
   }
 
   getFlags(positions = []) {
-    const { stateOfPositions } = this
+    const { flaggedOfMap } = this
 
-    return positions.map((pos) => {
-      const { x, y } = pos
-
-      return stateOfPositions[y][x]
+    return positions.map(({ x, y }) => {
+      return flaggedOfMap[y][x]
     })
   }
 
-  setFlag(positions = [], newFlag = FLAGGED) {
-    const { stateOfPositions } = this
+  updateFlag(positions = [], newFlag = FLAGGED) {
+    const { flaggedOfMap } = this
 
-    positions.forEach((pos) => {
-      stateOfPositions[pos.y][pos.x] = newFlag
+    positions.forEach(({ x, y }) => {
+      flaggedOfMap[y][x] = newFlag
     })
   }
 
@@ -114,7 +113,7 @@ export default class Board {
       })
 
       updatedPositions.forEach((positions) => {
-        this.setFlag(positions, 0)
+        this.updateFlag(positions, 0)
       })
 
       this.drawer.update(flaggedYAxes)
@@ -122,14 +121,14 @@ export default class Board {
   }
 
   getFlaggedOfYAxes() {
-    const { stateOfPositions } = this
+    const { flaggedOfMap } = this
 
     const flaggedYAxes = []
     for (let i = 0; i < BOARD_HEIGHT; i++) {
       let isPassed = false
 
       for (let j = 0; j < BOARD_WIDTH; j++) {
-        if (!isFlagged(stateOfPositions[i][j])) {
+        if (!isFlagged(flaggedOfMap[i][j])) {
           isPassed = false
           break
         } else {
@@ -148,12 +147,6 @@ export default class Board {
   draw(context) {
     this.drawer.draw(context)
   }
-}
-
-function initXAxes(numOfRow) {
-  const xAxes = []
-
-  return xAxes
 }
 
 export function isFlagged(value) {
