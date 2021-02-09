@@ -171,6 +171,6 @@ function initXAxes(numOfRow) {
   return xAxes
 }
 
-function isFlagged(value) {
+export function isFlagged(value) {
   return value === FLAGGED
 }

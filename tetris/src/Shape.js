@@ -4,7 +4,7 @@ import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
 } from './constant'
-import Board from './Board'
+import Board, { isFlagged } from './Board'
 import { getRandomBlock, transposeBlock, getSize } from './block'
 
 const board = Board.getInstance()
@@ -97,15 +97,15 @@ export default class Shape {
   }
 
   getPoints(block) {
-    const cellIndexs = []
+    const indexs = []
 
-    block.forEach((outerElement, outerIndex) => {
-      outerElement.forEach((innerElement, innerIndex) => {
-        innerElement === 1 && cellIndexs.push({ x: innerIndex, y: outerIndex })
+    block.forEach((flags, colIndex) => {
+      flags.forEach((flag, rowIndex) => {
+        isFlagged(flag) && indexs.push({ x: rowIndex, y: colIndex })
       })
     })
 
-    return cellIndexs.map((point) => {
+    return indexs.map((point) => {
       const x = this.x + SIDE_OF_LENGTH * point.x
       const y = this.y + SIDE_OF_LENGTH * point.y
 
