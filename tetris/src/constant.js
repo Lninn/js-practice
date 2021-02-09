@@ -1,16 +1,57 @@
 export const SIDE_OF_LENGTH = 30
 
+// unit for 1
+export const BOARD_WIDTH = 14
+export const BOARD_HEIGHT = 20
+
+// unit for SIDE_OF_LENGTH
+export const CANVAS_WIDTH = BOARD_WIDTH * SIDE_OF_LENGTH
+export const CANVAS_HEIGHT = BOARD_HEIGHT * SIDE_OF_LENGTH
+
 export const ORIGINAL_POINT = {
   x: SIDE_OF_LENGTH * 4,
   y: SIDE_OF_LENGTH * 0,
 }
 
-export const CONFIG = {
-  canvasRows: 420 / SIDE_OF_LENGTH,
-  canvasColumns: 600 / SIDE_OF_LENGTH,
-  canvasWidth: 420,
-  canvasHeight: 600,
-}
+export const FLAGGED = 1
+export const UN_FLAGGED = 0
+
+export const BLOCK_LIST = [
+  // I
+  [[1, 1, 1, 1]],
+  // O
+  [
+    [1, 1],
+    [1, 1],
+  ],
+  // T
+  [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  // L
+  [
+    [1, 0],
+    [1, 0],
+    [1, 1],
+  ],
+  // J
+  [
+    [0, 1],
+    [0, 1],
+    [1, 1],
+  ],
+  // Z
+  [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+  // S
+  [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+]
 
 export const KEY_CODES_ARROW = {
   SPACE: 32,
@@ -57,40 +98,3 @@ export function isRight(keyCode) {
 export function isPaused(keyCode) {
   return keyCode === 80
 }
-
-export const BLOCK_LIST = [
-  // I
-  [[1, 1, 1, 1]],
-  // O
-  [
-    [1, 1],
-    [1, 1],
-  ],
-  // T
-  [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  // L
-  [
-    [1, 0],
-    [1, 0],
-    [1, 1],
-  ],
-  // J
-  [
-    [0, 1],
-    [0, 1],
-    [1, 1],
-  ],
-  // Z
-  [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  // S
-  [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-]

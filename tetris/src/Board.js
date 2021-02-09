@@ -1,13 +1,6 @@
-import { CONFIG } from './constant'
+import { BOARD_WIDTH, BOARD_HEIGHT, FLAGGED } from './constant'
 import Drawer from './Drawer'
 import { pointsToPositions } from './Shape'
-
-const BOARD_WIDTH = CONFIG.canvasRows
-const BOARD_HEIGHT = CONFIG.canvasColumns
-
-const FLAGGED = 1
-const UN_FLAGGED = 0
-const isFlagged = (value) => value === FLAGGED
 
 export default class Board {
   constructor() {
@@ -174,4 +167,8 @@ function initXAxes(numOfRow) {
   }
 
   return xAxes
+}
+
+function isFlagged(value) {
+  return value === FLAGGED
 }

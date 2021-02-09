@@ -1,5 +1,6 @@
 import {
-  CONFIG,
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
   SIDE_OF_LENGTH,
   isSpace,
   isLeft,
@@ -33,7 +34,7 @@ function __mian() {
 
 function loop() {
   timer = setSIDE_OF_LENGTH(() => {
-    context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
     update()
 
@@ -42,11 +43,11 @@ function loop() {
 }
 
 function setup() {
-  canvas.style.width = CONFIG.canvasWidth + 'px'
-  canvas.style.height = CONFIG.canvasHeight + 'px'
+  canvas.style.width = CANVAS_WIDTH + 'px'
+  canvas.style.height = CANVAS_HEIGHT + 'px'
 
-  canvas.width = CONFIG.canvasWidth
-  canvas.height = CONFIG.canvasHeight
+  canvas.width = CANVAS_WIDTH
+  canvas.height = CANVAS_HEIGHT
 
   context.lineWidth = 1
   context.fillStyle = '#FFD500'
@@ -90,14 +91,14 @@ function onKeyDown(e) {
   }
 
   if (isUpdated) {
-    context.clearRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight)
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
     draw()
   }
 }
 
 function drawBoard() {
-  const w = CONFIG.canvasWidth
-  const h = CONFIG.canvasHeight
+  const w = CANVAS_WIDTH
+  const h = CANVAS_HEIGHT
   const step = SIDE_OF_LENGTH - 0.1
 
   let i = 0

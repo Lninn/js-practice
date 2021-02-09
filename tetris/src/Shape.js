@@ -1,4 +1,9 @@
-import { CONFIG, ORIGINAL_POINT, SIDE_OF_LENGTH } from './constant'
+import {
+  ORIGINAL_POINT,
+  SIDE_OF_LENGTH,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+} from './constant'
 import {
   transposeBlock,
   getRandomBlock,
@@ -46,15 +51,13 @@ export default class Shape {
   }
 
   transpose() {
-    const { canvasWidth, canvasHeight } = CONFIG
-
     const newBlock = transposeBlock(this.block)
     const newPoints = this.getPoints(newBlock)
 
     const { width, height } = this.getSize(newBlock)
     if (
-      this.x + width > canvasWidth ||
-      this.y + height > canvasHeight ||
+      this.x + width > CANVAS_WIDTH ||
+      this.y + height > CANVAS_HEIGHT ||
       board.isValidOfPreTranspose(pointsToPositions(newPoints))
     ) {
       return
@@ -81,10 +84,8 @@ export default class Shape {
   }
 
   moveRight() {
-    const { canvasWidth } = CONFIG
-
     if (
-      this.x + this.width >= canvasWidth ||
+      this.x + this.width >= CANVAS_WIDTH ||
       board.isValidOfPreRight(pointsToPositions(this.points))
     ) {
       return
@@ -96,7 +97,7 @@ export default class Shape {
 
   update() {
     if (
-      this.y + this.height >= CONFIG.canvasHeight ||
+      this.y + this.height >= CANVAS_HEIGHT ||
       board.isValidOfPreDown(pointsToPositions(this.points))
     ) {
       board.updateFlagWithPoints(this.points)
