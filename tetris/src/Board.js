@@ -16,8 +16,19 @@ export default class Board {
   }
 
   setup() {
-    const positions = initPositions(BOARD_WIDTH, BOARD_HEIGHT, 0)
-    const xAxes = initXAxes(BOARD_WIDTH)
+    const positions = []
+    const xAxes = []
+
+    for (let i = 0; i < BOARD_HEIGHT; i++) {
+      positions[i] = []
+      for (let j = 0; j < BOARD_WIDTH; j++) {
+        positions[i][j] = FLAGGED
+      }
+    }
+
+    for (let i = 0; i < BOARD_WIDTH; i++) {
+      xAxes.push(i)
+    }
 
     this.stateOfPositions = positions
     this.xAxes = xAxes
@@ -88,8 +99,8 @@ export default class Board {
   setFlag(positions = [], newFlag = FLAGGED) {
     const { stateOfPositions } = this
 
-    positions.forEach((position) => {
-      stateOfPositions.setState(position, newFlag)
+    positions.forEach((pos) => {
+      stateOfPositions[pos.y][pos.x] = newFlag
     })
   }
 
@@ -139,34 +150,8 @@ export default class Board {
   }
 }
 
-function initPositions(numOfRow, numOfCol, initState) {
-  // 二维数组
-  const positions = []
-
-  for (let i = 0; i < numOfCol; i++) {
-    positions[i] = []
-    for (let j = 0; j < numOfRow; j++) {
-      positions[i][j] = initState
-    }
-  }
-
-  function setState(position = {}, newState = 0) {
-    const { x, y } = position
-
-    this[y][x] = newState
-  }
-
-  positions.setState = setState
-
-  return positions
-}
-
 function initXAxes(numOfRow) {
   const xAxes = []
-
-  for (let i = 0; i < numOfRow; i++) {
-    xAxes.push(i)
-  }
 
   return xAxes
 }
