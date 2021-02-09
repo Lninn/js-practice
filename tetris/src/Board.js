@@ -38,26 +38,21 @@ export default class Board {
 
   isValidOfPreLeft(positions = []) {
     positions = this.updateHorizontal(positions, false)
-    return this.hasFlagged(positions)
+    return this.hasFlag(positions)
   }
 
   isValidOfPreRight(positions = []) {
     positions = this.updateHorizontal(positions)
-    return this.hasFlagged(positions)
+    return this.hasFlag(positions)
   }
 
   isValidOfPreDown(positions = []) {
     positions = this.updateVertical(positions)
-    return this.hasFlagged(positions)
+    return this.hasFlag(positions)
   }
 
   isValidOfPreTranspose(positions = []) {
-    return this.hasFlagged(positions)
-  }
-
-  hasFlagged(positions = []) {
-    const flags = this.getFlags(positions)
-    return flags.some((flag) => isFlagged(flag))
+    return this.hasFlag(positions)
   }
 
   updateHorizontal(positions = [], isPotive = true) {
@@ -83,6 +78,11 @@ export default class Board {
 
     const positions = pointsToPositions(points)
     this.updateFlag(positions, newFlag)
+  }
+
+  hasFlag(positions = []) {
+    const flags = this.getFlags(positions)
+    return flags.some((flag) => isFlagged(flag))
   }
 
   getFlags(positions = []) {
