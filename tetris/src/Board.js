@@ -1,5 +1,6 @@
-import { CONFIG, SIDE_OF_LENGTH } from './constant'
+import { CONFIG } from './constant'
 import Drawer from './Drawer'
+import { pointsToPositions } from './Shape'
 
 const BOARD_WIDTH = CONFIG.canvasRows
 const BOARD_HEIGHT = CONFIG.canvasColumns
@@ -72,6 +73,13 @@ export default class Board {
     })
   }
 
+  updateFlagWithPoints(points = [], newFlag = FLAGGED) {
+    const positions = pointsToPositions(points)
+    this.setFlag(positions, newFlag)
+
+    this.drawer.addPoints(points)
+  }
+
   getFlags(positions = []) {
     const { stateOfPositions } = this
 
@@ -82,14 +90,7 @@ export default class Board {
     })
   }
 
-  updateFlagWithPoints(points = [], newFlag = 1) {
-    const positions = pointsToPositions(points)
-    this.setFlag(positions, newFlag)
-
-    this.drawer.addPoints(points)
-  }
-
-  setFlag(positions = [], newFlag = 1) {
+  setFlag(positions = [], newFlag = FLAGGED) {
     const { stateOfPositions } = this
 
     positions.forEach((position) => {
@@ -97,7 +98,7 @@ export default class Board {
     })
   }
 
-  updateFlag() {
+  updateWithYAxes() {
     const { xAxes } = this
     const flaggedYAxes = this.getFlaggedOfYAxes()
 
@@ -154,19 +155,12 @@ function initPositions(numOfRow, numOfCol, initState) {
     }
   }
 
-  function getState(position = {}) {
-    const { x, y } = position
-
-    return this[y][x]
-  }
-
   function setState(position = {}, newState = 0) {
     const { x, y } = position
 
     this[y][x] = newState
   }
 
-  positions.getState = getState
   positions.setState = setState
 
   return positions
@@ -180,13 +174,4 @@ function initXAxes(numOfRow) {
   }
 
   return xAxes
-}
-
-function pointsToPositions(points = []) {
-  const pointToPosition = (point) => {
-    const { x, y } = point
-    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
-  }
-
-  return points.map(pointToPosition)
 }

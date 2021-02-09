@@ -100,7 +100,7 @@ export default class Shape {
       board.isValidOfPreDown(pointsToPositions(this.points))
     ) {
       board.updateFlagWithPoints(this.points)
-      board.updateFlag()
+      board.updateWithYAxes()
 
       this.reset()
     } else {
@@ -146,7 +146,7 @@ export default class Shape {
   }
 }
 
-function pointsToPositions(points = []) {
+export function pointsToPositions(points = []) {
   const pointToPosition = (point) => {
     const { x, y } = point
     return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
