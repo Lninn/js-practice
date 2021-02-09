@@ -31,31 +31,6 @@ export function getRandomBlock() {
   // return BLOCK_LIST[0]
 }
 
-export const getBotomPoints = createGetPoints('x', (p1, p2) => p1.y > p2.y)
-
-export const getLeftPoints = createGetPoints('y', (p1, p2) => p1.x < p2.x)
-
-export const getRightPoints = createGetPoints('y', (p1, p2) => p1.x > p2.x)
-
-function createGetPoints(keyOfAxis, compare) {
-  return function getPoints(points = []) {
-    const pointsObj = points.reduce((collect, nextpoint) => {
-      const axisValue = nextpoint[keyOfAxis]
-      const target = collect[axisValue]
-
-      if (target === undefined) {
-        collect[axisValue] = nextpoint
-      } else {
-        collect[axisValue] = compare(target, nextpoint) ? target : nextpoint
-      }
-
-      return collect
-    }, {})
-
-    return Object.entries(pointsObj).map(([_, point]) => point)
-  }
-}
-
 export function transposeBlock(block = []) {
   const numOfRow = block.length
   const numOfColumn = block[0].length

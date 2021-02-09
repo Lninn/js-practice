@@ -71,6 +71,8 @@ export default class Board {
     this.setFlag(positions, newFlag)
 
     this.drawer.addPoints(points)
+
+    this.updateWithYAxes()
   }
 
   getFlags(positions = []) {

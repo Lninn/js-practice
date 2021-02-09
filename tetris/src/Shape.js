@@ -101,7 +101,6 @@ export default class Shape {
       board.isValidOfPreDown(pointsToPositions(this.points))
     ) {
       board.updateFlagWithPoints(this.points)
-      board.updateWithYAxes()
 
       this.reset()
     } else {
