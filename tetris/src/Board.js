@@ -1,6 +1,11 @@
-import { BOARD_WIDTH, BOARD_HEIGHT, FLAGGED, UN_FLAGGED } from './constant'
+import {
+  BOARD_WIDTH,
+  BOARD_HEIGHT,
+  FLAGGED,
+  UN_FLAGGED,
+  SIDE_OF_LENGTH,
+} from './constant'
 import Drawer from './Drawer'
-import { pointsToPositions } from './Shape'
 
 export default class Board {
   constructor() {
@@ -36,22 +41,26 @@ export default class Board {
     this.drawer = new Drawer(this)
   }
 
-  isValidOfPreLeft(positions = []) {
+  isValidOfPreLeft(points = []) {
+    let positions = pointsToPositions(points)
     positions = this.updateHorizontal(positions, false)
     return this.hasFlag(positions)
   }
 
-  isValidOfPreRight(positions = []) {
+  isValidOfPreRight(points = []) {
+    let positions = pointsToPositions(points)
     positions = this.updateHorizontal(positions)
     return this.hasFlag(positions)
   }
 
-  isValidOfPreDown(positions = []) {
+  isValidOfPreDown(points = []) {
+    let positions = pointsToPositions(points)
     positions = this.updateVertical(positions)
     return this.hasFlag(positions)
   }
 
-  isValidOfPreTranspose(positions = []) {
+  isValidOfPreTranspose(points = []) {
+    let positions = pointsToPositions(points)
     return this.hasFlag(positions)
   }
 
@@ -145,6 +154,15 @@ export default class Board {
   draw(context) {
     this.drawer.draw(context)
   }
+}
+
+function pointsToPositions(points = []) {
+  const pointToPosition = (point) => {
+    const { x, y } = point
+    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
+  }
+
+  return points.map(pointToPosition)
 }
 
 export function isFlagged(value) {

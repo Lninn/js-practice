@@ -33,13 +33,13 @@ function __mian() {
 }
 
 function loop() {
-  timer = setSIDE_OF_LENGTH(() => {
+  timer = setInterval(() => {
     context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
     update()
 
     draw()
-  }, 600)
+  }, 500)
 }
 
 function setup() {

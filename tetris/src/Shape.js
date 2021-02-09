@@ -44,7 +44,7 @@ export default class Shape {
     if (
       this.x + width > CANVAS_WIDTH ||
       this.y + height > CANVAS_HEIGHT ||
-      board.isValidOfPreTranspose(pointsToPositions(newPoints))
+      board.isValidOfPreTranspose(newPoints)
     ) {
       return
     }
@@ -61,7 +61,7 @@ export default class Shape {
   }
 
   moveLeft() {
-    if (this.x <= 0 || board.isValidOfPreLeft(pointsToPositions(this.points))) {
+    if (this.x <= 0 || board.isValidOfPreLeft(this.points)) {
       return
     }
 
@@ -72,7 +72,7 @@ export default class Shape {
   moveRight() {
     if (
       this.x + this.width >= CANVAS_WIDTH ||
-      board.isValidOfPreRight(pointsToPositions(this.points))
+      board.isValidOfPreRight(this.points)
     ) {
       return
     }
@@ -84,7 +84,7 @@ export default class Shape {
   update() {
     if (
       this.y + this.height >= CANVAS_HEIGHT ||
-      board.isValidOfPreDown(pointsToPositions(this.points))
+      board.isValidOfPreDown(this.points)
     ) {
       board.updateFlagWithPoints(this.points)
       board.updateWithYAxes()
@@ -116,15 +116,6 @@ export default class Shape {
   draw(context) {
     drawPoints(this.points, context)
   }
-}
-
-export function pointsToPositions(points = []) {
-  const pointToPosition = (point) => {
-    const { x, y } = point
-    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
-  }
-
-  return points.map(pointToPosition)
 }
 
 export function drawPoints(points = [], context) {
