@@ -1,4 +1,5 @@
 import { SIDE_OF_LENGTH } from './constant'
+import { drawPoints } from './Shape'
 
 export default class Drawer {
   constructor(board) {
@@ -40,17 +41,6 @@ export default class Drawer {
   }
 
   draw(context) {
-    this.points.forEach((point) => {
-      context.beginPath()
-      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
-
-      const strokeStyle = context.strokeStyle
-      context.strokeStyle = '#0095DD'
-      context.strokeStyle = strokeStyle
-
-      context.stroke()
-      context.fill()
-      context.closePath()
-    })
+    drawPoints(this.points, context)
   }
 }

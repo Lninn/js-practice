@@ -114,30 +114,9 @@ export default class Shape {
   }
 
   draw(context) {
-    this.points.forEach((point) => {
-      context.beginPath()
-      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
-
-      const strokeStyle = context.strokeStyle
-      const fillStyle = context.fillStyle
-      context.strokeStyle = '#0341AE'
-      context.fillStyle = '#FFD500'
-
-      context.stroke()
-      context.fill()
-
-      context.strokeStyle = strokeStyle
-      context.fillStyle = fillStyle
-      context.closePath()
-    })
+    drawPoints(this.points, context)
   }
 }
-
-// 抽象出最底层的细节
-// Operation for points
-
-// point => { x: 0, y: 0 }
-// 最小表示 poins
 
 export function pointsToPositions(points = []) {
   const pointToPosition = (point) => {
@@ -146,4 +125,24 @@ export function pointsToPositions(points = []) {
   }
 
   return points.map(pointToPosition)
+}
+
+export function drawPoints(points = [], context) {
+  const strokeStyle = context.strokeStyle
+  const fillStyle = context.fillStyle
+
+  points.forEach((point) => {
+    context.beginPath()
+    context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+
+    context.strokeStyle = '#0341AE'
+    context.fillStyle = '#FFD500'
+
+    context.stroke()
+    context.fill()
+    context.closePath()
+  })
+
+  context.strokeStyle = strokeStyle
+  context.fillStyle = fillStyle
 }
