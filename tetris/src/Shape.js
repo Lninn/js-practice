@@ -5,7 +5,7 @@ import {
   CANVAS_WIDTH,
 } from './constant'
 import Board from './Board'
-import { getRandomBlock, transposeBlock } from './block'
+import { getRandomBlock, transposeBlock, getSize } from './block'
 
 const board = Board.getInstance()
 
@@ -28,7 +28,7 @@ export default class Shape {
 
     const block = getRandomBlock()
     const points = this.getPoints(block)
-    const { width, height } = this.getSize(block)
+    const { width, height } = getSize(block)
 
     this.width = width
     this.height = height
@@ -36,18 +36,11 @@ export default class Shape {
     this.points = points
   }
 
-  getSize(block) {
-    const width = block[0].length * SIDE_OF_LENGTH
-    const height = block.length * SIDE_OF_LENGTH
-
-    return { width, height }
-  }
-
   transpose() {
     const newBlock = transposeBlock(this.block)
     const newPoints = this.getPoints(newBlock)
 
-    const { width, height } = this.getSize(newBlock)
+    const { width, height } = getSize(newBlock)
     if (
       this.x + width > CANVAS_WIDTH ||
       this.y + height > CANVAS_HEIGHT ||
