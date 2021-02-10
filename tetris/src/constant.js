@@ -16,6 +16,16 @@ export const ORIGINAL_POINT = {
 export const FLAGGED = 1
 export const UN_FLAGGED = 0
 
+export const Config = {
+  shape: {
+    fillStyle: '#FFD500',
+    strokeStyle: '#0341AE',
+  },
+  board: {
+    strokeStyle: '#72CB3B',
+  },
+}
+
 export const KEY_CODES_ARROW = {
   SPACE: 32,
   TOP: 38,

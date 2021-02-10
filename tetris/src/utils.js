@@ -1,5 +1,3 @@
-import { BLOCK_LIST } from './constant'
-
 export const utils = {
   log: console.log.bind(console),
   e(s) {

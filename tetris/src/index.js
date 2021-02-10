@@ -2,6 +2,7 @@ import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   SIDE_OF_LENGTH,
+  Config,
   isSpace,
   isLeft,
   isRight,
@@ -133,7 +134,8 @@ function drawBoard() {
   }
 
   const strokeStyle = context.strokeStyle
-  context.strokeStyle = '#72CB3B'
+
+  context.strokeStyle = Config.board.strokeStyle
   context.stroke()
 
   context.strokeStyle = strokeStyle

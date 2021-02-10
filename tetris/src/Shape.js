@@ -3,6 +3,7 @@ import {
   SIDE_OF_LENGTH,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
+  Config,
 } from './constant'
 import Board, { isFlagged } from './Board'
 import { getRandomBlock, transposeBlock, getSize } from './block'
@@ -126,8 +127,8 @@ export function drawPoints(points = [], context) {
     context.beginPath()
     context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
 
-    context.strokeStyle = '#0341AE'
-    context.fillStyle = '#FFD500'
+    context.strokeStyle = Config.shape.strokeStyle
+    context.fillStyle = Config.shape.fillStyle
 
     context.stroke()
     context.fill()
