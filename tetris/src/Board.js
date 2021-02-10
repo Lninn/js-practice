@@ -6,6 +6,7 @@ import {
   SIDE_OF_LENGTH,
 } from './constant'
 import Drawer from './Drawer'
+import { createNumbers } from './utils'
 
 export default class Board {
   constructor() {
@@ -29,7 +30,6 @@ export default class Board {
 
   setup() {
     const flaggedOfMap = []
-    const xAxes = []
 
     for (let i = 0; i < BOARD_HEIGHT; i++) {
       flaggedOfMap[i] = []
@@ -38,12 +38,9 @@ export default class Board {
       }
     }
 
-    for (let i = 0; i < BOARD_WIDTH; i++) {
-      xAxes.push(i)
-    }
-
     this.flaggedOfMap = flaggedOfMap
-    this.xAxes = xAxes
+    this.xAxes = createNumbers(BOARD_WIDTH)
+    this.yAxes = createNumbers(BOARD_HEIGHT)
   }
 
   isValidOfPreLeft(points = []) {
