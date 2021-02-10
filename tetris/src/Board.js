@@ -9,15 +9,22 @@ import Drawer from './Drawer'
 
 export default class Board {
   constructor() {
+    this.init()
+
     this.setup()
   }
 
-  static getInstance() {
+  static getInstance(...args) {
     if (!this.instance) {
-      this.instance = new this()
+      this.instance = new this(...args)
     }
 
     return this.instance
+  }
+
+  init() {
+    const drawer = Drawer.getInstance(this)
+    this.drawer = drawer
   }
 
   setup() {
@@ -37,8 +44,6 @@ export default class Board {
 
     this.flaggedOfMap = flaggedOfMap
     this.xAxes = xAxes
-
-    this.drawer = new Drawer(this)
   }
 
   isValidOfPreLeft(points = []) {

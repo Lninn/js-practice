@@ -12,6 +12,7 @@ import {
 } from './constant'
 import Shape from './Shape'
 import Board from './Board'
+import Drawer from './Drawer'
 import { utils } from './utils'
 import '../index.css'
 
@@ -23,11 +24,11 @@ let paused = false
 let now,
   then,
   delta,
-  fps = 1,
+  fps = Config.fps,
   interval = 1000 / fps
 
-const currentShape = Shape.getInstance()
 const board = Board.getInstance()
+const currentShape = Shape.getInstance(board)
 
 __mian()
 
@@ -39,8 +40,6 @@ function loop(timestamp) {
   now = timestamp
   delta = now - then
   if (delta > interval) {
-    console.log('update')
-
     update()
 
     context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
@@ -66,9 +65,6 @@ function setup() {
 
   canvas.width = CANVAS_WIDTH
   canvas.height = CANVAS_HEIGHT
-
-  context.lineWidth = 1
-  context.fillStyle = '#FFD500'
 
   document.addEventListener('keydown', onKeyDown)
 }

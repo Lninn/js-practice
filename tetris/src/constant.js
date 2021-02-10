@@ -17,6 +17,7 @@ export const FLAGGED = 1
 export const UN_FLAGGED = 0
 
 export const Config = {
+  fps: 1,
   shape: {
     fillStyle: '#FFD500',
     strokeStyle: '#0341AE',

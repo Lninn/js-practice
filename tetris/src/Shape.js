@@ -5,19 +5,19 @@ import {
   CANVAS_WIDTH,
   Config,
 } from './constant'
-import Board, { isFlagged } from './Board'
+import { isFlagged } from './Board'
 import { getRandomBlock, transposeBlock, getSize } from './block'
 
-const board = Board.getInstance()
-
 export default class Shape {
-  constructor() {
+  constructor(board) {
+    this.board = board
+
     this.reset()
   }
 
-  static getInstance() {
+  static getInstance(...args) {
     if (!this.instance) {
-      this.instance = new this()
+      this.instance = new this(...args)
     }
 
     return this.instance
@@ -38,6 +38,8 @@ export default class Shape {
   }
 
   transpose() {
+    const { board } = this
+
     const newBlock = transposeBlock(this.block)
     const newPoints = this.getPoints(newBlock)
 
@@ -62,6 +64,8 @@ export default class Shape {
   }
 
   moveLeft() {
+    const { board } = this
+
     if (this.x <= 0 || board.isValidOfPreLeft(this.points)) {
       return
     }
@@ -71,6 +75,8 @@ export default class Shape {
   }
 
   moveRight() {
+    const { board } = this
+
     if (
       this.x + this.width >= CANVAS_WIDTH ||
       board.isValidOfPreRight(this.points)
@@ -83,6 +89,8 @@ export default class Shape {
   }
 
   update() {
+    const { board } = this
+
     if (
       this.y + this.height >= CANVAS_HEIGHT ||
       board.isValidOfPreDown(this.points)

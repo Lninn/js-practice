@@ -7,6 +7,14 @@ export default class Drawer {
     this.board = board
   }
 
+  static getInstance(...args) {
+    if (!this.instance) {
+      this.instance = new this(...args)
+    }
+
+    return this.instance
+  }
+
   addPoints(newPoints = []) {
     this.points = this.points.concat(newPoints)
   }
