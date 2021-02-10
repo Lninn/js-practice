@@ -23,9 +23,11 @@ export default class Animation {
     // initial direction is up
     this.numOfUpdateYAxis = this.yAxes.length - 1
     this.direction = -1
+
+    this.count = 1
   }
 
-  update() {
+  update(callback) {
     const {
       flaggedOfMap,
       points,
@@ -34,6 +36,11 @@ export default class Animation {
       numOfUpdateYAxis,
       direction,
     } = this
+
+    if (this.count === 3) {
+      callback()
+      return
+    }
 
     for (const x of xAxes) {
       flaggedOfMap[numOfUpdateYAxis][x] = FLAGGED
@@ -51,6 +58,8 @@ export default class Animation {
       this.map = create2DimList(BOARD_WIDTH, BOARD_HEIGHT, UN_FLAGGED)
       this.direction = this.direction * -1
       this.numOfUpdateYAxis = this.direction > 0 ? 0 : yAxes.length - 1
+
+      this.count++
     }
   }
 

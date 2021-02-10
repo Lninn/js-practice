@@ -1,5 +1,6 @@
 import Animation from './Animation'
 import Scene from './Scene'
+import GameScene from './GameScene'
 
 export default class StartScene extends Scene {
   constructor(app) {
@@ -14,7 +15,10 @@ export default class StartScene extends Scene {
   }
 
   update() {
-    this.animation.update()
+    const self = this
+    this.animation.update(function () {
+      self.app.replaceScene(new GameScene(self.app))
+    })
   }
 
   draw() {

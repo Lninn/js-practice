@@ -1,7 +1,6 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT, isPaused } from './constant'
 import { utils } from './utils'
 import StartScene from './scene/StartScene'
-import GameScene from './scene/GameScene'
 import '../index.css'
 
 const canvas = utils.$('#canvas')
@@ -12,7 +11,7 @@ class App {
     this.context = context
 
     this.actions = {}
-    this.currentScene = new GameScene(this)
+    this.currentScene = new StartScene(this)
 
     this.setup()
   }
@@ -23,6 +22,11 @@ class App {
     document.addEventListener('keydown', function (e) {
       self.onKeyDown(e)
     })
+  }
+
+  replaceScene(s) {
+    this.currentScene = s
+    this.interval = 1000 / s.fps
   }
 
   registerOfAction(key, action) {
@@ -62,8 +66,9 @@ class App {
     let now,
       then,
       delta,
-      fps = this.currentScene.fps,
-      interval = 1000 / fps
+      fps = this.currentScene.fps
+
+    this.interval = 1000 / fps
 
     const self = this
     function start(timestamp) {
@@ -73,14 +78,14 @@ class App {
 
       now = timestamp
       delta = now - then
-      if (delta > interval) {
+      if (delta > self.interval) {
         self.update()
 
         context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
         self.draw()
 
-        then = now - (delta % interval)
+        then = now - (delta % self.interval)
       }
 
       requestAnimationFrame(start)
