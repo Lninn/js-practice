@@ -10,7 +10,7 @@ export default class StartScene extends Scene {
   }
 
   setup() {
-    this.fps = 20
+    this.fps = 30
     this.animation = new Animation()
   }
 
