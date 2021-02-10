@@ -12,7 +12,6 @@ import {
 } from './constant'
 import Shape from './Shape'
 import Board from './Board'
-import Drawer from './Drawer'
 import { utils } from './utils'
 import '../index.css'
 
