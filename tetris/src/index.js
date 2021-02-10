@@ -6,7 +6,7 @@ import {
   isPaused,
 } from './constant'
 import { utils } from './utils'
-import { GameScence } from './Scence'
+import { GameScence, StartScence } from './Scence'
 import '../index.css'
 
 const canvas = utils.$('#canvas')
@@ -67,7 +67,7 @@ class App {
     let now,
       then,
       delta,
-      fps = Config.fps,
+      fps = this.currentScene.fps,
       interval = 1000 / fps
 
     const self = this

@@ -8,10 +8,12 @@ import {
 
 import Shape from './Shape'
 import Board from './Board'
+import Animation from './Animation'
 
 class Scence {
   constructor(app) {
     this.app = app
+    this.fps = 1
   }
 
   update() {}
@@ -19,14 +21,15 @@ class Scence {
   draw() {}
 }
 
-class StartScence extends Scence {
-  constructor(context) {
-    super(context)
+export class StartScence extends Scence {
+  constructor(app) {
+    super(app)
 
     this.setup()
   }
 
   setup() {
+    this.fps = 20
     this.animation = new Animation()
   }
 
@@ -35,7 +38,8 @@ class StartScence extends Scence {
   }
 
   draw() {
-    this.animation.draw(this.context)
+    const { app } = this
+    this.animation.draw(app.context)
   }
 }
 
@@ -53,6 +57,7 @@ export class GameScence extends Scence {
 
     this.board = board
     this.shape = shape
+    this.fps = 1
   }
 
   register() {
