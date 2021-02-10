@@ -1,6 +1,7 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT, isPaused } from './constant'
 import { utils } from './utils'
-import { GameScene, StartScene } from './scene/Scene'
+import StartScene from './scene/StartScene'
+import GameScene from './scene/GameScene'
 import '../index.css'
 
 const canvas = utils.$('#canvas')
