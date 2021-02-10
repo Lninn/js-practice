@@ -125,6 +125,8 @@ export default class Board {
         this.updateFlag(positions, 0)
       })
 
+      // 直接替换当前的场景，并且保存上一个场景
+      // 这是一个临时的场景
       this.drawer.update(flaggedYAxes)
     }
   }

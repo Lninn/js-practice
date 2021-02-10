@@ -1,5 +1,4 @@
-import { SIDE_OF_LENGTH, CANVAS_HEIGHT } from './constant'
-import { drawPoints } from './Shape'
+import { SIDE_OF_LENGTH, CANVAS_HEIGHT, Config } from './constant'
 
 export default class Drawer {
   constructor(board) {
@@ -21,14 +20,12 @@ export default class Drawer {
 
   update(updatedYAxes) {
     const { board, points } = this
-
     let newPoints = points
     updatedYAxes.forEach((y) => {
       newPoints = newPoints.filter((point) => {
         return point.y !== y * SIDE_OF_LENGTH
       })
     })
-
     updatedYAxes.forEach((_) => {
       board.updateFlagWithPoints(newPoints, 0)
       newPoints = newPoints.map((point) => {
@@ -37,7 +34,6 @@ export default class Drawer {
         if (point.y === CANVAS_HEIGHT - SIDE_OF_LENGTH) {
           return point
         }
-
         return {
           ...point,
           y: point.y + SIDE_OF_LENGTH,
@@ -45,11 +41,26 @@ export default class Drawer {
       })
       board.updateFlagWithPoints(newPoints, 1)
     })
-
     this.points = newPoints
   }
 
   draw(context) {
-    drawPoints(this.points, context)
+    const strokeStyle = context.strokeStyle
+    const fillStyle = context.fillStyle
+
+    this.points.forEach((point) => {
+      context.beginPath()
+      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+
+      context.strokeStyle = Config.shape.strokeStyle
+      context.fillStyle = Config.shape.fillStyle
+
+      context.stroke()
+      context.fill()
+      context.closePath()
+    })
+
+    context.strokeStyle = strokeStyle
+    context.fillStyle = fillStyle
   }
 }

@@ -60,6 +60,7 @@ export default class GameScene extends Scene {
   draw() {
     const { board, shape, app } = this
 
+    // TODO 在这个场景里面处理闪烁的动画逻辑
     board.draw(app.context)
     shape.draw(app.context)
 
