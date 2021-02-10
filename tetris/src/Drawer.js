@@ -1,4 +1,4 @@
-import { SIDE_OF_LENGTH } from './constant'
+import { SIDE_OF_LENGTH, CANVAS_HEIGHT } from './constant'
 import { drawPoints } from './Shape'
 
 export default class Drawer {
@@ -21,7 +21,6 @@ export default class Drawer {
 
   update(updatedYAxes) {
     const { board, points } = this
-    const yAxisTail = 19
 
     let newPoints = points
     updatedYAxes.forEach((y) => {
@@ -33,7 +32,9 @@ export default class Drawer {
     updatedYAxes.forEach((_) => {
       board.updateFlagWithPoints(newPoints, 0)
       newPoints = newPoints.map((point) => {
-        if (point.y === yAxisTail * SIDE_OF_LENGTH) {
+        // trail is 19 if Max countOfCol eq 20
+        // the last is 19 * step
+        if (point.y === CANVAS_HEIGHT - SIDE_OF_LENGTH) {
           return point
         }
 
