@@ -18,28 +18,45 @@ const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
 let paused = false
-let timer = null
+
+let now,
+  then,
+  delta,
+  fps = 1,
+  interval = 1000 / fps
 
 const currentShape = Shape.getInstance()
 const board = Board.getInstance()
 
 __mian()
 
-function __mian() {
-  setup()
+function loop(timestamp) {
+  if (then === undefined) {
+    then = timestamp
+  }
 
-  // loop()
-  draw()
-}
-
-function loop() {
-  timer = setInterval(() => {
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  now = timestamp
+  delta = now - then
+  if (delta > interval) {
+    console.log('update')
 
     update()
 
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+
     draw()
-  }, 500)
+
+    then = now - (delta % interval)
+  }
+
+  requestAnimationFrame(loop)
+}
+
+function __mian() {
+  setup()
+
+  loop()
+  draw()
 }
 
 function setup() {
