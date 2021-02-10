@@ -4,9 +4,9 @@ import {
   SIDE_OF_LENGTH,
   UN_FLAGGED,
   FLAGGED,
-} from './constant'
-import { drawPoints } from './Shape'
-import { createNumbers, create2DimList } from './utils'
+} from '../constant'
+import { drawPoints } from '../Shape'
+import { createNumbers, create2DimList } from '../utils'
 
 export default class Animation {
   constructor() {

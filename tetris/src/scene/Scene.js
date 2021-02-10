@@ -4,13 +4,13 @@ import {
   CANVAS_WIDTH,
   SIDE_OF_LENGTH,
   Config,
-} from './constant'
+} from '../constant'
 
-import Shape from './Shape'
-import Board from './Board'
+import Shape from '../Shape'
+import Board from '../Board'
 import Animation from './Animation'
 
-class Scence {
+class Scene {
   constructor(app) {
     this.app = app
     this.fps = 1
@@ -21,7 +21,7 @@ class Scence {
   draw() {}
 }
 
-export class StartScence extends Scence {
+export class StartScene extends Scene {
   constructor(app) {
     super(app)
 
@@ -43,7 +43,7 @@ export class StartScence extends Scence {
   }
 }
 
-export class GameScence extends Scence {
+export class GameScene extends Scene {
   constructor(app) {
     super(app)
 

@@ -1,12 +1,6 @@
-import {
-  CANVAS_WIDTH,
-  CANVAS_HEIGHT,
-  SIDE_OF_LENGTH,
-  Config,
-  isPaused,
-} from './constant'
+import { CANVAS_WIDTH, CANVAS_HEIGHT, isPaused } from './constant'
 import { utils } from './utils'
-import { GameScence, StartScence } from './Scence'
+import { GameScene, StartScene } from './scene/Scene'
 import '../index.css'
 
 const canvas = utils.$('#canvas')
@@ -17,7 +11,7 @@ class App {
     this.context = context
 
     this.actions = {}
-    this.currentScene = new GameScence(this)
+    this.currentScene = new GameScene(this)
 
     this.setup()
   }
