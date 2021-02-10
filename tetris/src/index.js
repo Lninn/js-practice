@@ -3,59 +3,115 @@ import {
   CANVAS_HEIGHT,
   SIDE_OF_LENGTH,
   Config,
-  isSpace,
-  isLeft,
-  isRight,
-  isBottom,
-  isTop,
   isPaused,
 } from './constant'
-import Shape from './Shape'
-import Board from './Board'
 import { utils } from './utils'
+import { GameScence } from './Scence'
 import '../index.css'
 
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
-let paused = false
+class App {
+  constructor(context) {
+    this.context = context
 
-let now,
-  then,
-  delta,
-  fps = Config.fps,
-  interval = 1000 / fps
+    this.actions = {}
+    this.currentScene = new GameScence(this)
 
-const board = Board.getInstance()
-const currentShape = Shape.getInstance(board)
+    this.setup()
+  }
+
+  setup() {
+    const self = this
+
+    document.addEventListener('keydown', function (e) {
+      self.onKeyDown(e)
+    })
+  }
+
+  registerOfAction(key, action) {
+    this.actions[key] = action
+  }
+
+  onKeyDown(e) {
+    const { context } = this
+
+    const keyCode = e.keyCode
+    let isUpdated = true
+
+    if (isPaused(keyCode)) {
+      paused = !paused
+      isUpdated = false
+    } else {
+      isUpdated = this.handlerEvent(keyCode)
+    }
+
+    if (isUpdated) {
+      context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+
+      this.draw()
+    }
+  }
+
+  handlerEvent(keyCode) {
+    if (keyCode in this.actions) {
+      this.actions[keyCode]()
+      return true
+    } else {
+      return false
+    }
+  }
+
+  loop() {
+    let now,
+      then,
+      delta,
+      fps = Config.fps,
+      interval = 1000 / fps
+
+    const self = this
+    function start(timestamp) {
+      if (then === undefined) {
+        then = timestamp
+      }
+
+      now = timestamp
+      delta = now - then
+      if (delta > interval) {
+        self.update()
+
+        context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+
+        self.draw()
+
+        then = now - (delta % interval)
+      }
+
+      requestAnimationFrame(start)
+    }
+
+    start()
+  }
+
+  update() {
+    this.currentScene.update()
+  }
+
+  draw() {
+    this.currentScene.draw()
+  }
+}
+
+const app = new App(context)
 
 __mian()
-
-function loop(timestamp) {
-  if (then === undefined) {
-    then = timestamp
-  }
-
-  now = timestamp
-  delta = now - then
-  if (delta > interval) {
-    update()
-
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
-
-    draw()
-
-    then = now - (delta % interval)
-  }
-
-  requestAnimationFrame(loop)
-}
 
 function __mian() {
   setup()
 
-  loop()
-  draw()
+  app.loop()
+  app.draw()
 }
 
 function setup() {
@@ -64,74 +120,4 @@ function setup() {
 
   canvas.width = CANVAS_WIDTH
   canvas.height = CANVAS_HEIGHT
-
-  document.addEventListener('keydown', onKeyDown)
-}
-
-function update() {
-  if (paused) return
-
-  currentShape.update()
-}
-
-function draw() {
-  board.draw(context)
-
-  currentShape.draw(context)
-
-  drawBoard()
-}
-
-function onKeyDown(e) {
-  const keyCode = e.keyCode
-  let isUpdated = true
-
-  if (isPaused(keyCode)) {
-    paused = !paused
-    isUpdated = false
-  } else if (isSpace(keyCode)) {
-    currentShape.transpose()
-  } else if (isLeft(keyCode)) {
-    currentShape.moveLeft()
-  } else if (isRight(keyCode)) {
-    currentShape.moveRight()
-  } else if (isBottom(keyCode)) {
-    currentShape.update()
-  } else if (isTop(keyCode)) {
-    currentShape.moveUp()
-  } else {
-    isUpdated = false
-  }
-
-  if (isUpdated) {
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
-    draw()
-  }
-}
-
-function drawBoard() {
-  const w = CANVAS_WIDTH
-  const h = CANVAS_HEIGHT
-  const step = SIDE_OF_LENGTH - 0.1
-
-  let i = 0
-
-  // draw vertical line
-  for (; i <= w; i += step) {
-    context.moveTo(0.5 + i, 0)
-    context.lineTo(0.5 + i, h)
-  }
-
-  // draw horizontal line
-  for (i = 0; i <= h; i += step) {
-    context.moveTo(0, 0.5 + i)
-    context.lineTo(w, 0.5 + i)
-  }
-
-  const strokeStyle = context.strokeStyle
-
-  context.strokeStyle = Config.board.strokeStyle
-  context.stroke()
-
-  context.strokeStyle = strokeStyle
 }
