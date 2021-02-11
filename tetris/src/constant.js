@@ -1,7 +1,7 @@
 export const SIDE_OF_LENGTH = 30
 
 // unit for 1
-export const BOARD_WIDTH = 14
+export const BOARD_WIDTH = 10
 export const BOARD_HEIGHT = 20
 
 // unit for SIDE_OF_LENGTH

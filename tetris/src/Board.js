@@ -185,36 +185,16 @@ export default class Board {
         if (isFlagged(this.flaggedOfMap[col][row])) {
           if (scene.isAnimation && flaggedYAxes.includes(col)) {
             if (scene.count % 2 === 0) {
-              context.beginPath()
-              context.rect(
-                row * SIDE_OF_LENGTH,
-                col * SIDE_OF_LENGTH,
-                SIDE_OF_LENGTH,
-                SIDE_OF_LENGTH,
+              drawRect(
+                { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
+                context,
               )
-
-              context.strokeStyle = Config.shape.strokeStyle
-              context.fillStyle = Config.shape.fillStyle
-
-              context.stroke()
-              context.fill()
-              context.closePath()
             }
           } else {
-            context.beginPath()
-            context.rect(
-              row * SIDE_OF_LENGTH,
-              col * SIDE_OF_LENGTH,
-              SIDE_OF_LENGTH,
-              SIDE_OF_LENGTH,
+            drawRect(
+              { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
+              context,
             )
-
-            context.strokeStyle = Config.shape.strokeStyle
-            context.fillStyle = Config.shape.fillStyle
-
-            context.stroke()
-            context.fill()
-            context.closePath()
           }
         }
       }
@@ -236,4 +216,22 @@ function pointsToPositions(points = []) {
 
 export function isFlagged(value) {
   return value === FLAGGED
+}
+
+function drawRect(point, context) {
+  const strokeStyle = context.strokeStyle
+  const fillStyle = context.fillStyle
+
+  context.beginPath()
+  context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+
+  context.strokeStyle = Config.shape.strokeStyle
+  context.fillStyle = Config.shape.fillStyle
+
+  context.stroke()
+  context.fill()
+  context.closePath()
+
+  context.strokeStyle = strokeStyle
+  context.fillStyle = fillStyle
 }
