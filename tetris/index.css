@@ -58,3 +58,10 @@ body {
 .brick-item:hover {
   border: 1px solid #f2f2f2;
 }
+
+#end-scene {
+  display: none;
+  position: absolute;
+
+  border: 1px solid #fff;
+}
