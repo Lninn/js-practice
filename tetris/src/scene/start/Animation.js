@@ -5,8 +5,8 @@ import {
   UN_FLAGGED,
   FLAGGED,
   Config,
-} from '../constant'
-import { createNumbers, create2DimList } from '../utils'
+} from '../../constant'
+import { createNumbers, create2DimList } from '../../utils'
 
 export default class Animation {
   constructor() {

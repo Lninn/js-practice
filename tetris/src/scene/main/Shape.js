@@ -4,9 +4,9 @@ import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   Config,
-} from './constant'
+} from '../../constant'
 import { isFlagged } from './Board'
-import { getRandomBlock, transposeBlock, getSize } from './block'
+import { getRandomBlock, transposeBlock, getSize } from '../../block'
 
 export default class Shape {
   constructor(board) {

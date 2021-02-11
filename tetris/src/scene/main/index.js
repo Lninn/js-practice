@@ -5,11 +5,11 @@ import {
   CANVAS_WIDTH,
   SIDE_OF_LENGTH,
   Config,
-} from '../constant'
+} from '../../constant'
 
-import Shape from '../Shape'
-import Board from '../Board'
-import Scene from './Scene'
+import Shape from './Shape'
+import Board from './Board'
+import Scene from '../Scene'
 
 export default class GameScene extends Scene {
   constructor(app) {

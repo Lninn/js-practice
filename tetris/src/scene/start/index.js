@@ -1,6 +1,6 @@
 import Animation from './Animation'
-import Scene from './Scene'
-import GameScene from './GameScene'
+import Scene from '../Scene'
+import GameScene from '../main'
 
 export default class StartScene extends Scene {
   constructor(app) {

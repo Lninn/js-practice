@@ -5,8 +5,8 @@ import {
   UN_FLAGGED,
   SIDE_OF_LENGTH,
   Config,
-} from './constant'
-import { createNumbers } from './utils'
+} from '../../constant'
+import { createNumbers } from '../../utils'
 
 export default class Board {
   constructor(scene) {
