@@ -106,9 +106,9 @@ export default class GameScene extends Scene {
         } else {
           if (shape.y === 0) {
             app.replaceScene(new EndScene(app))
-            return
+          } else {
+            shape.reset()
           }
-          shape.reset()
         }
       } else {
         shape.update()
