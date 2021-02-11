@@ -9,11 +9,18 @@ export default class EndScene extends Scene {
 
     // clear the canvas content
     // https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
-    app.context.canvas.width = canvas.width
+    // for debug
+    app.context && (app.context.canvas.width = canvas.width)
+
+    this.renderHtml()
   }
 
-  update() {
-    this.x++
+  update() {}
+
+  renderHtml() {
+    const container = document.createElement('div')
+
+    document.body.appendChild(container)
   }
 
   draw() {
@@ -23,8 +30,5 @@ export default class EndScene extends Scene {
 
     context.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
     context.stroke()
-
-    context.font = '16px serif'
-    context.fillText('游戏结束，刷新重新开始', 0, 50)
   }
 }
