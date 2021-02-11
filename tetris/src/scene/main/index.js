@@ -10,6 +10,7 @@ import {
 import Shape from './Shape'
 import Board from './Board'
 import Scene from '../Scene'
+import EndScene from '../end'
 import Animation from './Animaiton'
 
 export default class GameScene extends Scene {
@@ -88,7 +89,7 @@ export default class GameScene extends Scene {
   }
 
   update() {
-    const { board, shape, animation } = this
+    const { board, shape, animation, app } = this
 
     if (animation.isAnimation) {
       this.updateForAnimation()
@@ -103,6 +104,10 @@ export default class GameScene extends Scene {
         if (flaggedYAxes.length) {
           animation.open()
         } else {
+          if (shape.y === 0) {
+            app.replaceScene(new EndScene(app))
+            return
+          }
           shape.reset()
         }
       } else {
