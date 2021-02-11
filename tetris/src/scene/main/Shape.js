@@ -1,10 +1,4 @@
-import {
-  ORIGINAL_POINT,
-  SIDE_OF_LENGTH,
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
-  Config,
-} from '../../constant'
+import { ORIGINAL_POINT, SIDE_OF_LENGTH, Config } from '../../constant'
 import { isFlagged } from './Board'
 import { getRandomBlock, transposeBlock, getSize } from '../../block'
 
@@ -37,8 +31,8 @@ export default class Shape {
 
     const { width, height } = getSize(newBlock)
     if (
-      this.x + width > CANVAS_WIDTH ||
-      this.y + height > CANVAS_HEIGHT ||
+      this.x + width > Config.CanvasWidth ||
+      this.y + height > Config.CanvasHeight ||
       board.isValidOfPreTranspose(newPoints)
     ) {
       return
@@ -70,7 +64,7 @@ export default class Shape {
     const { board } = this
 
     if (
-      this.x + this.width >= CANVAS_WIDTH ||
+      this.x + this.width >= Config.CanvasWidth ||
       board.isValidOfPreRight(this.points)
     ) {
       return

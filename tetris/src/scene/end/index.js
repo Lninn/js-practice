@@ -1,5 +1,5 @@
 import Scene from '../Scene'
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../../constant'
+import { Config } from '../../constant'
 import StartScene from '../start'
 
 export default class EndScene extends Scene {
@@ -48,7 +48,7 @@ export default class EndScene extends Scene {
       app: { context },
     } = this
 
-    context.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+    context.rect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
     context.stroke()
   }
 }

@@ -1,8 +1,6 @@
 import {
   KEY_CODES_ALPHABET,
   KEY_CODES_ARROW,
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
   SIDE_OF_LENGTH,
   Config,
 } from '../../constant'
@@ -95,7 +93,7 @@ export default class GameScene extends Scene {
       this.updateForAnimation()
     } else {
       if (
-        shape.y + shape.height >= CANVAS_HEIGHT ||
+        shape.y + shape.height >= Config.CanvasHeight ||
         board.isValidOfPreDown(shape.points)
       ) {
         board.updateFlagWithPoints(shape.points)
@@ -131,8 +129,8 @@ export default class GameScene extends Scene {
 }
 
 function drawBoard(context) {
-  const w = CANVAS_WIDTH
-  const h = CANVAS_HEIGHT
+  const w = Config.CanvasWidth
+  const h = Config.CanvasHeight
   const step = SIDE_OF_LENGTH - 0.1
 
   let i = 0

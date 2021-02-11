@@ -1,13 +1,5 @@
 export const SIDE_OF_LENGTH = 30
 
-// unit for 1
-export const BOARD_WIDTH = 10
-export const BOARD_HEIGHT = 14
-
-// unit for SIDE_OF_LENGTH
-export const CANVAS_WIDTH = BOARD_WIDTH * SIDE_OF_LENGTH
-export const CANVAS_HEIGHT = BOARD_HEIGHT * SIDE_OF_LENGTH
-
 export const ORIGINAL_POINT = {
   x: SIDE_OF_LENGTH * 4,
   y: SIDE_OF_LENGTH * 0,
@@ -17,6 +9,13 @@ export const FLAGGED = 1
 export const UN_FLAGGED = 0
 
 export const Config = {
+  // unit for 1
+  BoardWidth: 10,
+  BoardHeight: 14,
+  // unit for SIDE_OF_LENGTH
+  CanvasWidth: 10 * SIDE_OF_LENGTH,
+  CanvasHeight: 14 * SIDE_OF_LENGTH,
+
   fps: 1,
   shape: {
     fillStyle: '#FFD500',

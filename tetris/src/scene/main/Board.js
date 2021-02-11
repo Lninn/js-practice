@@ -1,11 +1,4 @@
-import {
-  BOARD_WIDTH,
-  BOARD_HEIGHT,
-  FLAGGED,
-  UN_FLAGGED,
-  SIDE_OF_LENGTH,
-  Config,
-} from '../../constant'
+import { FLAGGED, UN_FLAGGED, SIDE_OF_LENGTH, Config } from '../../constant'
 import { createNumbers } from '../../utils'
 
 export default class Board {
@@ -17,16 +10,16 @@ export default class Board {
   setup() {
     const flaggedOfMap = []
 
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
+    for (let i = 0; i < Config.BoardHeight; i++) {
       flaggedOfMap[i] = []
-      for (let j = 0; j < BOARD_WIDTH; j++) {
+      for (let j = 0; j < Config.BoardWidth; j++) {
         flaggedOfMap[i][j] = UN_FLAGGED
       }
     }
 
     this.flaggedOfMap = flaggedOfMap
-    this.xAxes = createNumbers(BOARD_WIDTH)
-    this.yAxes = createNumbers(BOARD_HEIGHT)
+    this.xAxes = createNumbers(Config.BoardWidth)
+    this.yAxes = createNumbers(Config.BoardHeight)
   }
 
   isValidOfPreLeft(points = []) {
@@ -126,7 +119,7 @@ export default class Board {
         positions = positions.map((position) => {
           // trail is 19 if Max countOfCol eq 20
           // the last is 19 * step
-          if (position.y === BOARD_HEIGHT - 1) {
+          if (position.y === Config.BoardHeight - 1) {
             return position
           }
 
@@ -145,10 +138,10 @@ export default class Board {
     const { flaggedOfMap } = this
 
     const flaggedYAxes = []
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
+    for (let i = 0; i < Config.BoardHeight; i++) {
       let isPassed = false
 
-      for (let j = 0; j < BOARD_WIDTH; j++) {
+      for (let j = 0; j < Config.BoardWidth; j++) {
         if (!isFlagged(flaggedOfMap[i][j])) {
           isPassed = false
           break
