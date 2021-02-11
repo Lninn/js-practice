@@ -1,5 +1,6 @@
 import {
   KEY_CODES_ALPHABET,
+  KEY_CODES_ARROW,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   SIDE_OF_LENGTH,
@@ -49,6 +50,22 @@ export default class GameScene extends Scene {
     app.registerOfAction(KEY_CODES_ALPHABET.BOTTOM, function (e) {
       shape.update()
     })
+
+    app.registerOfAction(KEY_CODES_ARROW.LEFT, function (e) {
+      shape.moveLeft()
+    })
+
+    app.registerOfAction(KEY_CODES_ARROW.RIGHT, function (e) {
+      shape.moveRight()
+    })
+
+    app.registerOfAction(KEY_CODES_ARROW.TOP, function (e) {
+      shape.moveUp()
+    })
+
+    app.registerOfAction(KEY_CODES_ARROW.BOTTOM, function (e) {
+      shape.update()
+    })
   }
 
   update() {
@@ -60,7 +77,6 @@ export default class GameScene extends Scene {
   draw() {
     const { board, shape, app } = this
 
-    // TODO 在这个场景里面处理闪烁的动画逻辑
     board.draw(app.context)
     shape.draw(app.context)
 
