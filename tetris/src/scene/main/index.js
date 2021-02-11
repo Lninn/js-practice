@@ -25,6 +25,7 @@ export default class GameScene extends Scene {
 
     this.board = board
     this.shape = shape
+
     this.fps = 1
 
     this.resetAnimation()
@@ -33,6 +34,16 @@ export default class GameScene extends Scene {
   resetAnimation() {
     this.isAnimation = false
     this.numOfFrame = 1
+  }
+
+  openAnimation() {
+    this.isAnimation = true
+    this.app.setFps(5)
+  }
+
+  closeAnimation() {
+    this.app.setFps(1)
+    this.resetAnimation()
   }
 
   nextFrame() {
@@ -95,8 +106,7 @@ export default class GameScene extends Scene {
 
     if (this.isTailFrame()) {
       board.updateWithYAxes()
-      this.app.setFps(1)
-      this.resetAnimation()
+      this.closeAnimation()
     }
   }
 
@@ -112,9 +122,9 @@ export default class GameScene extends Scene {
       ) {
         board.updateFlagWithPoints(shape.points)
         const flaggedYAxes = board.getFlaggedOfYAxes()
+
         if (flaggedYAxes.length) {
-          this.isAnimation = true
-          this.app.setFps(5)
+          this.openAnimation()
         } else {
           shape.reset()
         }
