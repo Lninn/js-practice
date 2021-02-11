@@ -1,9 +1,4 @@
-import {
-  KEY_CODES_ALPHABET,
-  KEY_CODES_ARROW,
-  SIDE_OF_LENGTH,
-  Config,
-} from '../../constant'
+import { KEY_CODES_ALPHABET, KEY_CODES_ARROW, Config } from '../../constant'
 
 import Shape from './Shape'
 import Board from './Board'
@@ -131,7 +126,7 @@ export default class GameScene extends Scene {
 function drawBoard(context) {
   const w = Config.CanvasWidth
   const h = Config.CanvasHeight
-  const step = SIDE_OF_LENGTH - 0.1
+  const step = Config.sideOfLength - 0.1
 
   let i = 0
 

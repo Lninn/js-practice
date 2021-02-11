@@ -1,4 +1,4 @@
-import { SIDE_OF_LENGTH, UN_FLAGGED, FLAGGED, Config } from '../../constant'
+import { UN_FLAGGED, FLAGGED, Config } from '../../constant'
 import { createNumbers, create2DimList } from '../../utils'
 
 export default class Animation {
@@ -46,8 +46,8 @@ export default class Animation {
       flaggedOfMap[numOfUpdateYAxis][x] = FLAGGED
 
       points.push({
-        x: x * SIDE_OF_LENGTH,
-        y: numOfUpdateYAxis * SIDE_OF_LENGTH,
+        x: x * Config.sideOfLength,
+        y: numOfUpdateYAxis * Config.sideOfLength,
       })
     }
 
@@ -81,7 +81,7 @@ export default class Animation {
 
     this.points.forEach((point) => {
       context.beginPath()
-      context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+      context.rect(point.x, point.y, Config.sideOfLength, Config.sideOfLength)
 
       context.strokeStyle = Config.shape.strokeStyle
       context.fillStyle = Config.shape.fillStyle

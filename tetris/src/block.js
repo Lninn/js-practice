@@ -1,5 +1,5 @@
 import { getRandomInt } from './utils'
-import { SIDE_OF_LENGTH } from './constant'
+import { Config } from './constant'
 
 const BLOCK_LIST = [
   // I
@@ -59,8 +59,8 @@ export function transposeBlock(block = []) {
 }
 
 export function getSize(block) {
-  const width = block[0].length * SIDE_OF_LENGTH
-  const height = block.length * SIDE_OF_LENGTH
+  const width = block[0].length * Config.sideOfLength
+  const height = block.length * Config.sideOfLength
 
   return { width, height }
 }

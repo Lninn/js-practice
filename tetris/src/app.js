@@ -22,6 +22,8 @@ export default class App {
 
     if (isMob) {
       const width = window.innerWidth
+
+      console.log(width)
       const height = window.innerHeight
     } else {
       canvas.style.width = Config.CanvasWidth + 'px'

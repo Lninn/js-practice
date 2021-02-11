@@ -1,4 +1,4 @@
-import { ORIGINAL_POINT, SIDE_OF_LENGTH, Config } from '../../constant'
+import { ORIGINAL_POINT, Config } from '../../constant'
 import { isFlagged } from './Board'
 import { getRandomBlock, transposeBlock, getSize } from '../../block'
 
@@ -45,7 +45,7 @@ export default class Shape {
   }
 
   moveUp() {
-    this.y = this.y - SIDE_OF_LENGTH
+    this.y = this.y - Config.sideOfLength
     this.points = this.getPoints(this.block)
   }
 
@@ -56,7 +56,7 @@ export default class Shape {
       return
     }
 
-    this.x = this.x - SIDE_OF_LENGTH
+    this.x = this.x - Config.sideOfLength
     this.points = this.getPoints(this.block)
   }
 
@@ -70,12 +70,12 @@ export default class Shape {
       return
     }
 
-    this.x = this.x + SIDE_OF_LENGTH
+    this.x = this.x + Config.sideOfLength
     this.points = this.getPoints(this.block)
   }
 
   update() {
-    this.y = this.y + SIDE_OF_LENGTH
+    this.y = this.y + Config.sideOfLength
     this.points = this.getPoints(this.block)
   }
 
@@ -89,8 +89,8 @@ export default class Shape {
     })
 
     return indexs.map((point) => {
-      const x = this.x + SIDE_OF_LENGTH * point.x
-      const y = this.y + SIDE_OF_LENGTH * point.y
+      const x = this.x + Config.sideOfLength * point.x
+      const y = this.y + Config.sideOfLength * point.y
 
       return { x, y }
     })
@@ -107,7 +107,7 @@ export function drawPoints(points = [], context) {
 
   points.forEach((point) => {
     context.beginPath()
-    context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+    context.rect(point.x, point.y, Config.sideOfLength, Config.sideOfLength)
 
     context.strokeStyle = Config.shape.strokeStyle
     context.fillStyle = Config.shape.fillStyle

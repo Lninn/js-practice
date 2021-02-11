@@ -1,4 +1,4 @@
-import { FLAGGED, UN_FLAGGED, SIDE_OF_LENGTH, Config } from '../../constant'
+import { FLAGGED, UN_FLAGGED, Config } from '../../constant'
 import { createNumbers } from '../../utils'
 
 export default class Board {
@@ -171,13 +171,13 @@ export default class Board {
           if (animation.isAnimation && flaggedYAxes.includes(col)) {
             if (animation.displayOnFrame()) {
               drawRect(
-                { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
+                { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
                 context,
               )
             }
           } else {
             drawRect(
-              { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
+              { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
               context,
             )
           }
@@ -190,7 +190,7 @@ export default class Board {
 function pointsToPositions(points = []) {
   const pointToPosition = (point) => {
     const { x, y } = point
-    return { x: x / SIDE_OF_LENGTH, y: y / SIDE_OF_LENGTH }
+    return { x: x / Config.sideOfLength, y: y / Config.sideOfLength }
   }
 
   return points.map(pointToPosition)
@@ -205,7 +205,7 @@ function drawRect(point, context) {
   const fillStyle = context.fillStyle
 
   context.beginPath()
-  context.rect(point.x, point.y, SIDE_OF_LENGTH, SIDE_OF_LENGTH)
+  context.rect(point.x, point.y, Config.sideOfLength, Config.sideOfLength)
 
   context.strokeStyle = Config.shape.strokeStyle
   context.fillStyle = Config.shape.fillStyle

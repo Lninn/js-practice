@@ -1,10 +1,3 @@
-export const SIDE_OF_LENGTH = 30
-
-export const ORIGINAL_POINT = {
-  x: SIDE_OF_LENGTH * 4,
-  y: SIDE_OF_LENGTH * 0,
-}
-
 export const FLAGGED = 1
 export const UN_FLAGGED = 0
 
@@ -12,9 +5,11 @@ export const Config = {
   // unit for 1
   BoardWidth: 10,
   BoardHeight: 14,
-  // unit for SIDE_OF_LENGTH
-  CanvasWidth: 10 * SIDE_OF_LENGTH,
-  CanvasHeight: 14 * SIDE_OF_LENGTH,
+  // unit for Config.sideOfLength
+  CanvasWidth: 10 * 30,
+  CanvasHeight: 14 * 30,
+
+  sideOfLength: 30,
 
   fps: 1,
   shape: {
@@ -24,6 +19,11 @@ export const Config = {
   board: {
     strokeStyle: '#72CB3B',
   },
+}
+
+export const ORIGINAL_POINT = {
+  x: Config.sideOfLength * 4,
+  y: Config.sideOfLength * 0,
 }
 
 export const KEY_CODES_ARROW = {
