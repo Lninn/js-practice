@@ -137,6 +137,7 @@ function drawBoard(context) {
 
   let i = 0
 
+  context.save()
   // draw vertical line
   for (; i <= w; i += step) {
     context.moveTo(0.5 + i, 0)
@@ -155,4 +156,5 @@ function drawBoard(context) {
   context.stroke()
 
   context.strokeStyle = strokeStyle
+  context.restore()
 }
