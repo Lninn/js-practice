@@ -177,14 +177,17 @@ export default class Board {
     const strokeStyle = context.strokeStyle
     const fillStyle = context.fillStyle
 
-    const { scene } = this
+    const {
+      scene: { animation },
+    } = this
+
     const flaggedYAxes = this.getFlaggedOfYAxes()
 
     for (const col of this.yAxes) {
       for (const row of this.xAxes) {
         if (isFlagged(this.flaggedOfMap[col][row])) {
-          if (scene.isAnimation && flaggedYAxes.includes(col)) {
-            if (scene.displayOnFrame()) {
+          if (animation.isAnimation && flaggedYAxes.includes(col)) {
+            if (animation.displayOnFrame()) {
               drawRect(
                 { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
                 context,

@@ -11,6 +11,41 @@ import Shape from './Shape'
 import Board from './Board'
 import Scene from '../Scene'
 
+class Animation {
+  constructor(app) {
+    this.app = app
+
+    this.reset()
+  }
+
+  reset() {
+    this.isAnimation = false
+    this.numOfFrame = 1
+  }
+
+  open() {
+    this.isAnimation = true
+    this.app.setFps(5)
+  }
+
+  close() {
+    this.app.setFps(1)
+    this.reset()
+  }
+
+  next() {
+    this.numOfFrame += 1
+  }
+
+  displayOnFrame() {
+    return this.numOfFrame % 2 === 0
+  }
+
+  isTail() {
+    return this.numOfFrame === 10
+  }
+}
+
 export default class GameScene extends Scene {
   constructor(app) {
     super(app)
@@ -22,40 +57,13 @@ export default class GameScene extends Scene {
   setup() {
     const board = Board.getInstance(this)
     const shape = Shape.getInstance(board)
+    const animation = new Animation(this.app)
 
     this.board = board
     this.shape = shape
+    this.animation = animation
 
     this.fps = 1
-
-    this.resetAnimation()
-  }
-
-  resetAnimation() {
-    this.isAnimation = false
-    this.numOfFrame = 1
-  }
-
-  openAnimation() {
-    this.isAnimation = true
-    this.app.setFps(5)
-  }
-
-  closeAnimation() {
-    this.app.setFps(1)
-    this.resetAnimation()
-  }
-
-  nextFrame() {
-    this.numOfFrame += 1
-  }
-
-  displayOnFrame() {
-    return this.numOfFrame % 2 === 0
-  }
-
-  isTailFrame() {
-    return this.numOfFrame === 10
   }
 
   register() {
@@ -100,20 +108,21 @@ export default class GameScene extends Scene {
   }
 
   updateForAnimation() {
-    const { board } = this
+    const { board, animation, shape } = this
 
-    this.nextFrame()
+    animation.next()
 
-    if (this.isTailFrame()) {
+    if (animation.isTail()) {
       board.updateWithYAxes()
-      this.closeAnimation()
+      animation.close()
+      shape.reset()
     }
   }
 
   update() {
-    const { board, shape } = this
+    const { board, shape, animation } = this
 
-    if (this.isAnimation) {
+    if (animation.isAnimation) {
       this.updateForAnimation()
     } else {
       if (
@@ -124,7 +133,7 @@ export default class GameScene extends Scene {
         const flaggedYAxes = board.getFlaggedOfYAxes()
 
         if (flaggedYAxes.length) {
-          this.openAnimation()
+          animation.open()
         } else {
           shape.reset()
         }
@@ -135,15 +144,16 @@ export default class GameScene extends Scene {
   }
 
   draw() {
-    const { board, shape, app } = this
+    const { board, shape, app, animation } = this
+    const { context } = app
 
-    board.draw(app.context)
+    board.draw(context)
 
-    if (!this.isAnimation) {
-      shape.draw(app.context)
+    if (!animation.isAnimation) {
+      shape.draw(context)
     }
 
-    drawBoard(app.context)
+    drawBoard(context)
   }
 }
 
