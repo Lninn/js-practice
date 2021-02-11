@@ -14,14 +14,6 @@ export default class Board {
     this.scene = scene
   }
 
-  static getInstance(...args) {
-    if (!this.instance) {
-      this.instance = new this(...args)
-    }
-
-    return this.instance
-  }
-
   setup() {
     const flaggedOfMap = []
 

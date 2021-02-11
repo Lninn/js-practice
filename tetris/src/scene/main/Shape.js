@@ -15,14 +15,6 @@ export default class Shape {
     this.reset()
   }
 
-  static getInstance(...args) {
-    if (!this.instance) {
-      this.instance = new this(...args)
-    }
-
-    return this.instance
-  }
-
   reset() {
     this.x = ORIGINAL_POINT.x
     this.y = ORIGINAL_POINT.y

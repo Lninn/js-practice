@@ -24,8 +24,8 @@ export default class GameScene extends Scene {
   setup() {
     const { app } = this
 
-    const board = Board.getInstance(this)
-    const shape = Shape.getInstance(board)
+    const board = new Board(this)
+    const shape = new Shape(board)
     const animation = new Animation(app)
 
     this.board = board
