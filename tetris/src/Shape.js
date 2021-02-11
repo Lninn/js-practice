@@ -89,20 +89,8 @@ export default class Shape {
   }
 
   update() {
-    const { board } = this
-
-    if (
-      this.y + this.height >= CANVAS_HEIGHT ||
-      board.isValidOfPreDown(this.points)
-    ) {
-      board.updateFlagWithPoints(this.points)
-      board.updateWithYAxes()
-
-      this.reset()
-    } else {
-      this.y = this.y + SIDE_OF_LENGTH
-      this.points = this.getPoints(this.block)
-    }
+    this.y = this.y + SIDE_OF_LENGTH
+    this.points = this.getPoints(this.block)
   }
 
   getPoints(block) {

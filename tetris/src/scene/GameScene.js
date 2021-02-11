@@ -31,6 +31,7 @@ export default class GameScene extends Scene {
   register() {
     const { app, shape } = this
 
+    const self = this
     app.registerOfAction(KEY_CODES_ALPHABET.LEFT, function (e) {
       shape.moveLeft()
     })
@@ -48,7 +49,7 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ALPHABET.BOTTOM, function (e) {
-      shape.update()
+      self.update()
     })
 
     app.registerOfAction(KEY_CODES_ARROW.LEFT, function (e) {
@@ -64,14 +65,24 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ARROW.BOTTOM, function (e) {
-      shape.update()
+      self.update()
     })
   }
 
   update() {
-    const { shape } = this
+    const { board, shape } = this
 
-    shape.update()
+    if (
+      shape.y + shape.height >= CANVAS_HEIGHT ||
+      board.isValidOfPreDown(shape.points)
+    ) {
+      board.updateFlagWithPoints(shape.points)
+      board.updateWithYAxes()
+
+      shape.reset()
+    } else {
+      shape.update()
+    }
   }
 
   draw() {
