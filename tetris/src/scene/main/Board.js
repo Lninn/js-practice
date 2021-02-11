@@ -174,9 +174,6 @@ export default class Board {
   }
 
   draw(context) {
-    const strokeStyle = context.strokeStyle
-    const fillStyle = context.fillStyle
-
     const {
       scene: { animation },
     } = this
@@ -202,9 +199,6 @@ export default class Board {
         }
       }
     }
-
-    context.strokeStyle = strokeStyle
-    context.fillStyle = fillStyle
   }
 }
 

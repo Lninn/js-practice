@@ -10,41 +10,7 @@ import {
 import Shape from './Shape'
 import Board from './Board'
 import Scene from '../Scene'
-
-class Animation {
-  constructor(app) {
-    this.app = app
-
-    this.reset()
-  }
-
-  reset() {
-    this.isAnimation = false
-    this.numOfFrame = 1
-  }
-
-  open() {
-    this.isAnimation = true
-    this.app.setFps(5)
-  }
-
-  close() {
-    this.app.setFps(1)
-    this.reset()
-  }
-
-  next() {
-    this.numOfFrame += 1
-  }
-
-  displayOnFrame() {
-    return this.numOfFrame % 2 === 0
-  }
-
-  isTail() {
-    return this.numOfFrame === 10
-  }
-}
+import Animation from './Animaiton'
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -55,9 +21,11 @@ export default class GameScene extends Scene {
   }
 
   setup() {
+    const { app } = this
+
     const board = Board.getInstance(this)
     const shape = Shape.getInstance(board)
-    const animation = new Animation(this.app)
+    const animation = new Animation(app)
 
     this.board = board
     this.shape = shape
@@ -130,8 +98,8 @@ export default class GameScene extends Scene {
         board.isValidOfPreDown(shape.points)
       ) {
         board.updateFlagWithPoints(shape.points)
-        const flaggedYAxes = board.getFlaggedOfYAxes()
 
+        const flaggedYAxes = board.getFlaggedOfYAxes()
         if (flaggedYAxes.length) {
           animation.open()
         } else {
