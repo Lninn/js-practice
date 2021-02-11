@@ -9,8 +9,9 @@ import {
 import { createNumbers } from './utils'
 
 export default class Board {
-  constructor() {
+  constructor(scene) {
     this.setup()
+    this.scene = scene
   }
 
   static getInstance(...args) {
@@ -176,23 +177,45 @@ export default class Board {
     const strokeStyle = context.strokeStyle
     const fillStyle = context.fillStyle
 
+    const { scene } = this
+    const flaggedYAxes = this.getFlaggedOfYAxes()
+
     for (const col of this.yAxes) {
       for (const row of this.xAxes) {
         if (isFlagged(this.flaggedOfMap[col][row])) {
-          context.beginPath()
-          context.rect(
-            row * SIDE_OF_LENGTH,
-            col * SIDE_OF_LENGTH,
-            SIDE_OF_LENGTH,
-            SIDE_OF_LENGTH,
-          )
+          if (scene.isAnimation && flaggedYAxes.includes(col)) {
+            if (scene.count % 2 === 0) {
+              context.beginPath()
+              context.rect(
+                row * SIDE_OF_LENGTH,
+                col * SIDE_OF_LENGTH,
+                SIDE_OF_LENGTH,
+                SIDE_OF_LENGTH,
+              )
 
-          context.strokeStyle = Config.shape.strokeStyle
-          context.fillStyle = Config.shape.fillStyle
+              context.strokeStyle = Config.shape.strokeStyle
+              context.fillStyle = Config.shape.fillStyle
 
-          context.stroke()
-          context.fill()
-          context.closePath()
+              context.stroke()
+              context.fill()
+              context.closePath()
+            }
+          } else {
+            context.beginPath()
+            context.rect(
+              row * SIDE_OF_LENGTH,
+              col * SIDE_OF_LENGTH,
+              SIDE_OF_LENGTH,
+              SIDE_OF_LENGTH,
+            )
+
+            context.strokeStyle = Config.shape.strokeStyle
+            context.fillStyle = Config.shape.fillStyle
+
+            context.stroke()
+            context.fill()
+            context.closePath()
+          }
         }
       }
     }

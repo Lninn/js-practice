@@ -26,7 +26,11 @@ class App {
 
   replaceScene(s) {
     this.currentScene = s
-    this.interval = 1000 / s.fps
+    this.setFps(s.fps)
+  }
+
+  setFps(fps) {
+    this.interval = 1000 / fps
   }
 
   registerOfAction(key, action) {

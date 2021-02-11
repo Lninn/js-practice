@@ -20,12 +20,15 @@ export default class GameScene extends Scene {
   }
 
   setup() {
-    const board = Board.getInstance()
+    const board = Board.getInstance(this)
     const shape = Shape.getInstance(board)
 
     this.board = board
     this.shape = shape
     this.fps = 1
+
+    this.isAnimation = false
+    this.count = 0
   }
 
   register() {
@@ -72,14 +75,29 @@ export default class GameScene extends Scene {
   update() {
     const { board, shape } = this
 
+    if (this.isAnimation) {
+      this.count++
+      if (this.count === 10) {
+        board.updateWithYAxes()
+        this.isAnimation = false
+        this.app.setFps(1)
+        this.count = 0
+      }
+      return
+    }
+
     if (
       shape.y + shape.height >= CANVAS_HEIGHT ||
       board.isValidOfPreDown(shape.points)
     ) {
       board.updateFlagWithPoints(shape.points)
-      board.updateWithYAxes()
-
-      shape.reset()
+      const flaggedYAxes = board.getFlaggedOfYAxes()
+      if (flaggedYAxes.length) {
+        this.isAnimation = true
+        this.app.setFps(5)
+      } else {
+        shape.reset()
+      }
     } else {
       shape.update()
     }
@@ -89,7 +107,9 @@ export default class GameScene extends Scene {
     const { board, shape, app } = this
 
     board.draw(app.context)
-    shape.draw(app.context)
+    if (!this.isAnimation) {
+      shape.draw(app.context)
+    }
 
     drawBoard(app.context)
   }
