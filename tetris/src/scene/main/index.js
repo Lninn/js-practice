@@ -27,8 +27,24 @@ export default class GameScene extends Scene {
     this.shape = shape
     this.fps = 1
 
+    this.resetAnimation()
+  }
+
+  resetAnimation() {
     this.isAnimation = false
-    this.count = 0
+    this.numOfFrame = 1
+  }
+
+  nextFrame() {
+    this.numOfFrame += 1
+  }
+
+  displayOnFrame() {
+    return this.numOfFrame % 2 === 0
+  }
+
+  isTailFrame() {
+    return this.numOfFrame === 10
   }
 
   register() {
@@ -72,34 +88,39 @@ export default class GameScene extends Scene {
     })
   }
 
+  updateForAnimation() {
+    const { board } = this
+
+    this.nextFrame()
+
+    if (this.isTailFrame()) {
+      board.updateWithYAxes()
+      this.app.setFps(1)
+      this.resetAnimation()
+    }
+  }
+
   update() {
     const { board, shape } = this
 
     if (this.isAnimation) {
-      this.count++
-      if (this.count === 10) {
-        board.updateWithYAxes()
-        this.isAnimation = false
-        this.app.setFps(1)
-        this.count = 0
-      }
-      return
-    }
-
-    if (
-      shape.y + shape.height >= CANVAS_HEIGHT ||
-      board.isValidOfPreDown(shape.points)
-    ) {
-      board.updateFlagWithPoints(shape.points)
-      const flaggedYAxes = board.getFlaggedOfYAxes()
-      if (flaggedYAxes.length) {
-        this.isAnimation = true
-        this.app.setFps(5)
-      } else {
-        shape.reset()
-      }
+      this.updateForAnimation()
     } else {
-      shape.update()
+      if (
+        shape.y + shape.height >= CANVAS_HEIGHT ||
+        board.isValidOfPreDown(shape.points)
+      ) {
+        board.updateFlagWithPoints(shape.points)
+        const flaggedYAxes = board.getFlaggedOfYAxes()
+        if (flaggedYAxes.length) {
+          this.isAnimation = true
+          this.app.setFps(5)
+        } else {
+          shape.reset()
+        }
+      } else {
+        shape.update()
+      }
     }
   }
 
@@ -107,6 +128,7 @@ export default class GameScene extends Scene {
     const { board, shape, app } = this
 
     board.draw(app.context)
+
     if (!this.isAnimation) {
       shape.draw(app.context)
     }

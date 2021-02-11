@@ -184,7 +184,7 @@ export default class Board {
       for (const row of this.xAxes) {
         if (isFlagged(this.flaggedOfMap[col][row])) {
           if (scene.isAnimation && flaggedYAxes.includes(col)) {
-            if (scene.count % 2 === 0) {
+            if (scene.displayOnFrame()) {
               drawRect(
                 { x: row * SIDE_OF_LENGTH, y: col * SIDE_OF_LENGTH },
                 context,

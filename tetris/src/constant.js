@@ -2,7 +2,7 @@ export const SIDE_OF_LENGTH = 30
 
 // unit for 1
 export const BOARD_WIDTH = 10
-export const BOARD_HEIGHT = 20
+export const BOARD_HEIGHT = 14
 
 // unit for SIDE_OF_LENGTH
 export const CANVAS_WIDTH = BOARD_WIDTH * SIDE_OF_LENGTH
