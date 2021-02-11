@@ -4,14 +4,12 @@ import {
   FLAGGED,
   UN_FLAGGED,
   SIDE_OF_LENGTH,
+  Config,
 } from './constant'
-import Drawer from './Drawer'
 import { createNumbers } from './utils'
 
 export default class Board {
   constructor() {
-    this.init()
-
     this.setup()
   }
 
@@ -21,11 +19,6 @@ export default class Board {
     }
 
     return this.instance
-  }
-
-  init() {
-    const drawer = Drawer.getInstance(this)
-    this.drawer = drawer
   }
 
   setup() {
@@ -85,8 +78,6 @@ export default class Board {
   }
 
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
-    this.drawer.addPoints(points)
-
     const positions = pointsToPositions(points)
     this.updateFlag(positions, newFlag)
   }
@@ -125,9 +116,35 @@ export default class Board {
         this.updateFlag(positions, 0)
       })
 
-      // 直接替换当前的场景，并且保存上一个场景
-      // 这是一个临时的场景
-      this.drawer.update(flaggedYAxes)
+      let positions = []
+      for (const col of this.yAxes) {
+        for (const row of this.xAxes) {
+          if (
+            isFlagged(this.flaggedOfMap[col][row]) &&
+            !flaggedYAxes.includes(col)
+          ) {
+            positions.push({ x: row, y: col })
+          }
+        }
+      }
+
+      this.updateFlag(positions, UN_FLAGGED)
+      flaggedYAxes.forEach((_) => {
+        positions = positions.map((position) => {
+          // trail is 19 if Max countOfCol eq 20
+          // the last is 19 * step
+          if (position.y === BOARD_HEIGHT - 1) {
+            return position
+          }
+
+          return {
+            ...position,
+            y: position.y + 1,
+          }
+        })
+      })
+
+      this.updateFlag(positions, FLAGGED)
     }
   }
 
@@ -156,7 +173,32 @@ export default class Board {
   }
 
   draw(context) {
-    this.drawer.draw(context)
+    const strokeStyle = context.strokeStyle
+    const fillStyle = context.fillStyle
+
+    for (const col of this.yAxes) {
+      for (const row of this.xAxes) {
+        if (isFlagged(this.flaggedOfMap[col][row])) {
+          context.beginPath()
+          context.rect(
+            row * SIDE_OF_LENGTH,
+            col * SIDE_OF_LENGTH,
+            SIDE_OF_LENGTH,
+            SIDE_OF_LENGTH,
+          )
+
+          context.strokeStyle = Config.shape.strokeStyle
+          context.fillStyle = Config.shape.fillStyle
+
+          context.stroke()
+          context.fill()
+          context.closePath()
+        }
+      }
+    }
+
+    context.strokeStyle = strokeStyle
+    context.fillStyle = fillStyle
   }
 }
 
