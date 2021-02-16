@@ -1,6 +1,12 @@
+html,
+body {
+  height: 100%;
+}
 body {
   background: #434440;
-  padding: 15px;
+
+  /* padding: 15px; */
+  margin: 0;
 
   display: flex;
   justify-content: center;
