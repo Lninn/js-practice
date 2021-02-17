@@ -4,10 +4,10 @@ export const UN_FLAGGED = 0
 export const Config = {
   // unit for 1
   BoardWidth: 10,
-  BoardHeight: 14,
+  BoardHeight: 16,
   // unit for Config.sideOfLength
   CanvasWidth: 10 * 30,
-  CanvasHeight: 14 * 30,
+  CanvasHeight: 16 * 30,
 
   sideOfLength: 30,
 
