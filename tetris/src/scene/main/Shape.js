@@ -97,11 +97,11 @@ export default class Shape {
   }
 
   draw(context) {
-    drawPoints(this.points, context)
+    drawPoints(this.points, context, false)
   }
 }
 
-export function drawPoints(points = [], context) {
+export function drawPoints(points = [], context, isStroke = true) {
   const strokeStyle = context.strokeStyle
   const fillStyle = context.fillStyle
 
@@ -112,7 +112,7 @@ export function drawPoints(points = [], context) {
     context.strokeStyle = Config.shape.strokeStyle
     context.fillStyle = Config.shape.fillStyle
 
-    context.stroke()
+    isStroke && context.stroke()
     context.fill()
     context.closePath()
   })

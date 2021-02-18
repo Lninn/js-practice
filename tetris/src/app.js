@@ -48,8 +48,6 @@ export default class App {
   }
 
   onKeyDown(e) {
-    const { context } = this
-
     const keyCode = e.keyCode
     let isUpdated = true
 
@@ -75,12 +73,7 @@ export default class App {
   }
 
   loop() {
-    let now,
-      then,
-      delta,
-      fps = this.currentScene.fps
-
-    this.interval = 1000 / fps
+    let now, then, delta
 
     const self = this
     function start(timestamp) {

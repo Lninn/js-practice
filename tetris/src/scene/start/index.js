@@ -16,7 +16,9 @@ export default class StartScene extends Scene {
   }
 
   setup() {
-    this.fps = 30
+    const { app } = this
+
+    app.setFps(30)
     this.animation = new Animation(this)
   }
 

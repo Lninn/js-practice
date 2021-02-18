@@ -173,12 +173,14 @@ export default class Board {
               drawRect(
                 { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
                 context,
+                false,
               )
             }
           } else {
             drawRect(
               { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
               context,
+              false,
             )
           }
         }
