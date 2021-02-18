@@ -3,11 +3,6 @@ import { utils } from './utils'
 import StartScene from './scene/start'
 import '../index.css'
 
-const canvas = utils.$('#canvas')
-const context = canvas.getContext('2d')
-
-let paused = false
-
 export default class App {
   constructor() {
     this.actions = {}
@@ -28,6 +23,7 @@ export default class App {
     canvas.height = Config.CanvasHeight
 
     this.context = context
+    this.paused = false
   }
 
   setup() {
@@ -58,7 +54,7 @@ export default class App {
     let isUpdated = true
 
     if (isPaused(keyCode)) {
-      paused = !paused
+      this.paused = !this.paused
       isUpdated = false
     } else {
       isUpdated = this.handlerEvent(keyCode)
@@ -85,6 +81,8 @@ export default class App {
       then,
       delta,
       fps = this.currentScene.fps
+
+    const { context } = this
 
     this.interval = 1000 / fps
 
@@ -113,7 +111,7 @@ export default class App {
   }
 
   update() {
-    if (paused) {
+    if (this.paused) {
       return
     }
 
