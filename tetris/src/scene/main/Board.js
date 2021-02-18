@@ -22,6 +22,15 @@ export default class Board {
     this.yAxes = createNumbers(Config.BoardHeight)
   }
 
+  isEnd() {
+    const { yAxes, xAxes } = this
+    const topIndex = yAxes[0]
+    const positions = xAxes.map((x) => ({ x, y: topIndex }))
+    const flags = this.getFlags(positions)
+
+    return flags.some((flag) => isFlagged(flag))
+  }
+
   isValidOfPreLeft(points = []) {
     let positions = pointsToPositions(points)
     positions = this.updateHorizontal(positions, false)
@@ -116,6 +125,7 @@ export default class Board {
 
       this.updateFlag(positions, UN_FLAGGED)
       flaggedYAxes.forEach((_) => {
+        // console.log(flaggedYAxes, positions, Config.BoardHeight)
         positions = positions.map((position) => {
           // trail is 19 if Max countOfCol eq 20
           // the last is 19 * step

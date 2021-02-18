@@ -84,8 +84,8 @@ export default class GameScene extends Scene {
   update() {
     const { board, shape, animation, app } = this
 
-    if (animation.isAnimation) {
-      this.updateForAnimation()
+    if (board.isEnd()) {
+      app.replaceScene(new EndScene(app))
     } else {
       if (
         shape.y + shape.height >= Config.CanvasHeight ||
@@ -96,12 +96,9 @@ export default class GameScene extends Scene {
         const flaggedYAxes = board.getFlaggedOfYAxes()
         if (flaggedYAxes.length) {
           animation.open()
+          this.updateForAnimation()
         } else {
-          if (shape.y === 0) {
-            app.replaceScene(new EndScene(app))
-          } else {
-            shape.reset()
-          }
+          shape.reset()
         }
       } else {
         shape.update()
