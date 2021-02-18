@@ -9,20 +9,24 @@ export default class StartScene extends Scene {
     this.setup()
   }
 
+  start() {
+    const { app } = this
+
+    app.replaceScene(new GameScene(app))
+  }
+
   setup() {
     this.fps = 30
-    this.animation = new Animation()
+    this.animation = new Animation(this)
   }
 
   update() {
-    const self = this
-    this.animation.update(function () {
-      self.app.replaceScene(new GameScene(self.app))
-    })
+    this.animation.update()
   }
 
   draw() {
     const { app } = this
+
     this.animation.draw(app.context)
   }
 }
