@@ -120,7 +120,7 @@ export default class GameScene extends Scene {
   }
 }
 
-function drawBoard(context) {
+export function drawBoard(context) {
   const w = Config.CanvasWidth
   const h = Config.CanvasHeight
   const step = Config.sideOfLength - 0.1
