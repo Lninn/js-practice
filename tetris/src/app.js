@@ -1,13 +1,10 @@
 import { Config, isPaused } from './constant'
 import { utils } from './utils'
-import StartScene from './scene/start'
+import { StartScene } from './scene'
 import '../index.css'
 
 export default class App {
   constructor() {
-    this.actions = {}
-    this.currentScene = new StartScene(this)
-
     this.init()
     this.setup()
   }
@@ -24,6 +21,9 @@ export default class App {
 
     this.context = context
     this.paused = false
+
+    this.actions = {}
+    this.currentScene = new StartScene(this)
   }
 
   setup() {
@@ -61,8 +61,6 @@ export default class App {
     }
 
     if (isUpdated) {
-      context.clearRect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
-
       this.draw()
     }
   }
@@ -82,8 +80,6 @@ export default class App {
       delta,
       fps = this.currentScene.fps
 
-    const { context } = this
-
     this.interval = 1000 / fps
 
     const self = this
@@ -96,8 +92,6 @@ export default class App {
       delta = now - then
       if (delta > self.interval) {
         self.update()
-
-        context.clearRect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
 
         self.draw()
 
@@ -119,6 +113,9 @@ export default class App {
   }
 
   draw() {
+    const { context } = this
+    context.clearRect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
+
     this.currentScene.draw()
   }
 }
