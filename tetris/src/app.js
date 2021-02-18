@@ -6,6 +6,8 @@ import '../index.css'
 const canvas = utils.$('#canvas')
 const context = canvas.getContext('2d')
 
+let paused = false
+
 export default class App {
   constructor() {
     this.actions = {}
@@ -111,6 +113,10 @@ export default class App {
   }
 
   update() {
+    if (paused) {
+      return
+    }
+
     this.currentScene.update()
   }
 
