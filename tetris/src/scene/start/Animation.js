@@ -15,11 +15,11 @@ export default class Animation {
     this.direction = 1
   }
 
-  update() {
-    if (this.life === 0) {
-      this.scene.start()
-      return
-    }
+  update(delta) {
+    // if (this.life === 0) {
+    //   this.scene.start()
+    //   return
+    // }
 
     if (this.yAxis === Config.BoardHeight || this.yAxis === 0) {
       this.direction *= -1

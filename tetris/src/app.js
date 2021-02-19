@@ -36,11 +36,6 @@ export default class App {
 
   replaceScene(s) {
     this.currentScene = s
-    this.setFps(s.fps)
-  }
-
-  setFps(fps) {
-    this.interval = 1000 / fps
   }
 
   registerOfAction(key, action) {
@@ -72,40 +67,49 @@ export default class App {
     }
   }
 
-  loop() {
-    let now, then, delta
+  start() {
+    let delta = 0,
+      lastFrameTimeMs = 0,
+      timestep = 1000 / 60
 
     const self = this
-    function start(timestamp) {
-      if (then === undefined) {
-        then = timestamp
+
+    function mainLoop(timestamp) {
+      delta += timestamp - lastFrameTimeMs
+      lastFrameTimeMs = timestamp
+
+      let numUpdateSteps = 0
+      while (delta >= timestep) {
+        self.update(timestep)
+        delta -= timestep
+
+        if (++numUpdateSteps >= 240) {
+          panic()
+          break
+        }
       }
 
-      now = timestamp
-      delta = now - then
-      if (delta > self.interval) {
-        self.update()
+      self.draw(delta / timestep)
 
-        self.draw()
-
-        then = now - (delta % self.interval)
-      }
-
-      requestAnimationFrame(start)
+      requestAnimationFrame(mainLoop)
     }
 
-    start()
+    function panic() {
+      delta = 0
+    }
+
+    mainLoop(0)
   }
 
-  update() {
+  update(delta) {
     if (this.paused) {
       return
     }
 
-    this.currentScene.update()
+    this.currentScene.update(delta)
   }
 
-  draw() {
+  draw(interp) {
     const { context } = this
     context.clearRect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
 

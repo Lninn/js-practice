@@ -16,14 +16,19 @@ export default class StartScene extends Scene {
   }
 
   setup() {
-    const { app } = this
-
-    app.setFps(30)
     this.animation = new Animation(this)
+
+    this.timer = 0
+    this.fps = 10
   }
 
-  update() {
-    this.animation.update()
+  update(delta) {
+    this.timer += delta
+
+    if (this.timer >= 1000 / this.fps) {
+      this.animation.update()
+      this.timer = 0
+    }
   }
 
   draw() {
