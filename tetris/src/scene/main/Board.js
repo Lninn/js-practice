@@ -1,5 +1,5 @@
 import { FLAGGED, UN_FLAGGED, Config } from '../../constant'
-import { createNumbers } from '../../utils'
+import { createNumbers, pointsToPositions, drawRect } from '../../utils'
 
 export default class Board {
   constructor(scene) {
@@ -168,6 +168,8 @@ export default class Board {
     return flaggedYAxes
   }
 
+  update(delta) {}
+
   draw(context) {
     const {
       scene: { animation },
@@ -199,33 +201,6 @@ export default class Board {
   }
 }
 
-function pointsToPositions(points = []) {
-  const pointToPosition = (point) => {
-    const { x, y } = point
-    return { x: x / Config.sideOfLength, y: y / Config.sideOfLength }
-  }
-
-  return points.map(pointToPosition)
-}
-
 export function isFlagged(value) {
   return value === FLAGGED
-}
-
-function drawRect(point, context) {
-  const strokeStyle = context.strokeStyle
-  const fillStyle = context.fillStyle
-
-  context.beginPath()
-  context.rect(point.x, point.y, Config.sideOfLength, Config.sideOfLength)
-
-  context.strokeStyle = Config.shape.strokeStyle
-  context.fillStyle = Config.shape.fillStyle
-
-  context.stroke()
-  context.fill()
-  context.closePath()
-
-  context.strokeStyle = strokeStyle
-  context.fillStyle = fillStyle
 }

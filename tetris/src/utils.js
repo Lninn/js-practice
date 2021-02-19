@@ -1,3 +1,5 @@
+import { Config } from './constant'
+
 export const utils = {
   log: console.log.bind(console),
   e(s) {
@@ -51,4 +53,31 @@ export function mobileCheck() {
       check = true
   })(navigator.userAgent || navigator.vendor || window.opera)
   return check
+}
+
+export function pointsToPositions(points = []) {
+  const pointToPosition = (point) => {
+    const { x, y } = point
+    return { x: x / Config.sideOfLength, y: y / Config.sideOfLength }
+  }
+
+  return points.map(pointToPosition)
+}
+
+export function drawRect(point, context) {
+  const strokeStyle = context.strokeStyle
+  const fillStyle = context.fillStyle
+
+  context.beginPath()
+  context.rect(point.x, point.y, Config.sideOfLength, Config.sideOfLength)
+
+  context.strokeStyle = Config.shape.strokeStyle
+  context.fillStyle = Config.shape.fillStyle
+
+  context.stroke()
+  context.fill()
+  context.closePath()
+
+  context.strokeStyle = strokeStyle
+  context.fillStyle = fillStyle
 }

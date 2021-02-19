@@ -25,6 +25,7 @@ export default class GameScene extends Scene {
     this.shape = shape
     this.animation = animation
 
+    this.timer = performance.now()
     this.fps = 1
   }
 
@@ -81,12 +82,17 @@ export default class GameScene extends Scene {
     }
   }
 
-  update() {
+  update(delta) {
     const { board, shape, animation, app } = this
 
     if (board.isEnd()) {
       app.replaceScene(new EndScene(app))
-    } else {
+      return
+    }
+
+    this.timer += delta
+
+    if (this.timer >= 1000 / this.fps) {
       if (
         shape.y + shape.height >= Config.CanvasHeight ||
         board.isValidOfPreDown(shape.points)
@@ -103,6 +109,8 @@ export default class GameScene extends Scene {
       } else {
         shape.update()
       }
+
+      this.timer = 0
     }
   }
 

@@ -15,10 +15,10 @@ export default class Animation {
   }
 
   update() {
-    // if (this.life === 0) {
-    //   this.scene.start()
-    //   return
-    // }
+    if (this.life === 0) {
+      this.scene.start()
+      return
+    }
 
     if (this.yAxis === Config.BoardHeight || this.yAxis === 0) {
       this.direction *= -1
