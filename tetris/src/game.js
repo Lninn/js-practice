@@ -30,7 +30,7 @@ export default class Game {
     const self = this
 
     document.addEventListener('keydown', function (e) {
-      self.onKeyDown(e)
+      self.handlerKeyDown(e)
     })
   }
 
@@ -42,7 +42,7 @@ export default class Game {
     this.actions[key] = action
   }
 
-  onKeyDown(e) {
+  handlerKeyDown(e) {
     const keyCode = e.keyCode
     let isUpdated = true
 
@@ -73,7 +73,6 @@ export default class Game {
       timestep = 1000 / 60
 
     const self = this
-
     function mainLoop(timestamp) {
       delta += timestamp - lastFrameTimeMs
       lastFrameTimeMs = timestamp
@@ -98,6 +97,7 @@ export default class Game {
       delta = 0
     }
 
+    this.draw()
     mainLoop(0)
   }
 
@@ -109,8 +109,9 @@ export default class Game {
     this.currentScene.update(delta)
   }
 
-  draw(interp) {
+  draw() {
     const { context } = this
+
     context.clearRect(0, 0, Config.CanvasWidth, Config.CanvasHeight)
 
     this.currentScene.draw()

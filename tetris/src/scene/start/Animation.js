@@ -1,5 +1,4 @@
 import { Config } from '../../constant'
-import { drawBoard } from '../main'
 
 export default class Animation {
   constructor(scene) {
@@ -15,7 +14,7 @@ export default class Animation {
     this.direction = 1
   }
 
-  update(delta) {
+  update() {
     // if (this.life === 0) {
     //   this.scene.start()
     //   return
@@ -30,10 +29,6 @@ export default class Animation {
   }
 
   draw(context) {
-    if (this.life === 0) {
-      return
-    }
-
     for (let i = this.yAxis; i <= Config.BoardHeight; i++) {
       for (let j = 0; j < Config.BoardWidth; j++) {
         context.beginPath()
@@ -52,7 +47,5 @@ export default class Animation {
         context.closePath()
       }
     }
-
-    drawBoard(context)
   }
 }

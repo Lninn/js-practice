@@ -1,6 +1,6 @@
 import Animation from './Animation'
 import Scene from '../Scene'
-import GameScene from '../main'
+import GameScene, { drawBoard } from '../main'
 
 export default class StartScene extends Scene {
   constructor(app) {
@@ -18,7 +18,7 @@ export default class StartScene extends Scene {
   setup() {
     this.animation = new Animation(this)
 
-    this.timer = 0
+    this.timer = performance.now()
     this.fps = 10
   }
 
@@ -27,13 +27,18 @@ export default class StartScene extends Scene {
 
     if (this.timer >= 1000 / this.fps) {
       this.animation.update()
+
       this.timer = 0
     }
   }
 
   draw() {
-    const { app } = this
+    const {
+      app: { context },
+    } = this
 
-    this.animation.draw(app.context)
+    this.animation.draw(context)
+
+    drawBoard(context)
   }
 }

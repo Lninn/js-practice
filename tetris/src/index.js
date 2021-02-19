@@ -7,6 +7,4 @@ __mian()
 
 function __mian() {
   game.start()
-
-  game.draw()
 }
