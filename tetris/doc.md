@@ -62,3 +62,7 @@ CELLS
 5 交互音效
 6 游戏控制，开始，结束，暂停，重玩
 7 适配移动端
+
+### Main loop
+
+https://isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
