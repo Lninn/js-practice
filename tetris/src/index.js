@@ -1,12 +1,12 @@
-import App from './app'
+import Game from './game'
 import '../index.css'
 
-const app = new App()
+const game = new Game()
 
 __mian()
 
 function __mian() {
-  app.start()
+  game.start()
 
-  app.draw()
+  game.draw()
 }

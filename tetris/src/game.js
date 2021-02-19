@@ -3,7 +3,7 @@ import { utils } from './utils'
 import { StartScene } from './scene'
 import '../index.css'
 
-export default class App {
+export default class Game {
   constructor() {
     this.init()
     this.setup()
