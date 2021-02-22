@@ -28,24 +28,34 @@ export default class Board {
   isValidOfPreLeft(points = []) {
     let positions = pointsToPositions(points)
     positions = this.updateHorizontal(positions, false)
-    return this.hasFlag(positions)
+
+    return this.isValidPosition(positions)
   }
 
   isValidOfPreRight(points = []) {
     let positions = pointsToPositions(points)
     positions = this.updateHorizontal(positions)
-    return this.hasFlag(positions)
+
+    return this.isValidPosition(positions)
   }
 
   isValidOfPreDown(points = []) {
     let positions = pointsToPositions(points)
     positions = this.updateVertical(positions)
-    return this.hasFlag(positions)
+
+    return this.isValidPosition(positions)
   }
 
   isValidOfPreTranspose(points = []) {
     let positions = pointsToPositions(points)
-    return this.hasFlag(positions)
+
+    return this.isValidPosition(positions)
+  }
+
+  isValidPosition(positions = []) {
+    const { flaggedOfMap } = this
+
+    return flaggedOfMap.hasFlag(positions)
   }
 
   updateHorizontal(positions = [], isPotive = true) {
@@ -67,28 +77,17 @@ export default class Board {
   }
 
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
+    const { flaggedOfMap } = this
+
     const positions = pointsToPositions(points)
-    this.updateFlag(positions, newFlag)
+    flaggedOfMap.setFlags(positions, newFlag)
   }
 
-  hasFlag(positions = []) {
-    const flags = this.getFlags(positions)
-    return flags.some((flag) => isFlagged(flag))
-  }
-
-  getFlags(positions = []) {
+  updateFlag(positionsList, newFlag) {
     const { flaggedOfMap } = this
 
-    return positions.map(({ x, y }) => {
-      return flaggedOfMap.getFlag(x, y)
-    })
-  }
-
-  updateFlag(positions = [], newFlag = FLAGGED) {
-    const { flaggedOfMap } = this
-
-    positions.forEach(({ x, y }) => {
-      flaggedOfMap.setFlag(x, y, newFlag)
+    positionsList.forEach((positions) => {
+      flaggedOfMap.setFlags(positions, newFlag)
     })
   }
 
@@ -98,16 +97,16 @@ export default class Board {
 
     const minYAxis = Math.min(...flaggedYAxes)
     let positions = []
-    for (const col of yAxes) {
-      for (const row of xAxes) {
-        if (isFlagged(flaggedOfMap.getFlag(row, col)) && col <= minYAxis) {
-          positions.push({ x: row, y: col })
+    for (const y of yAxes) {
+      for (const x of xAxes) {
+        if (isFlagged(flaggedOfMap.getFlag({ x, y })) && y <= minYAxis) {
+          positions.push({ x, y })
         }
       }
     }
 
     flaggedYAxes.forEach((_) => {
-      this.updateFlag(positions, UN_FLAGGED)
+      flaggedOfMap.setFlags(positions, UN_FLAGGED)
       positions = positions.map((position) => {
         if (position.y === Config.BoardHeight - 1) {
           return position
@@ -119,7 +118,7 @@ export default class Board {
         }
       })
 
-      this.updateFlag(positions, FLAGGED)
+      flaggedOfMap.setFlags(positions, FLAGGED)
     })
   }
 
@@ -127,11 +126,11 @@ export default class Board {
     const { flaggedOfMap } = this
 
     const flaggedYAxes = []
-    for (let i = 0; i < Config.BoardHeight; i++) {
+    for (const y of flaggedOfMap.yAxes) {
       let isPassed = false
 
-      for (let j = 0; j < Config.BoardWidth; j++) {
-        if (!isFlagged(flaggedOfMap.getFlag(j, i))) {
+      for (const x of flaggedOfMap.xAxes) {
+        if (!isFlagged(flaggedOfMap.getFlag({ x, y }))) {
           isPassed = false
           break
         } else {
@@ -140,7 +139,7 @@ export default class Board {
       }
 
       if (isPassed) {
-        flaggedYAxes.push(i)
+        flaggedYAxes.push(y)
       }
     }
 
@@ -148,16 +147,17 @@ export default class Board {
   }
 
   draw(context) {
+    const { flaggedOfMap } = this
     const flaggedYAxes = this.getFlaggedOfYAxes()
 
-    for (const col of this.flaggedOfMap.yAxes) {
-      for (const row of this.flaggedOfMap.xAxes) {
+    for (const y of flaggedOfMap.yAxes) {
+      for (const x of flaggedOfMap.xAxes) {
         if (
-          isFlagged(this.flaggedOfMap.getFlag(row, col)) &&
-          !flaggedYAxes.includes(col)
+          isFlagged(this.flaggedOfMap.getFlag({ x, y })) &&
+          !flaggedYAxes.includes(y)
         ) {
           drawRect(
-            { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
+            { x: x * Config.sideOfLength, y: y * Config.sideOfLength },
             context,
             false,
           )
@@ -181,11 +181,31 @@ function createMap(width, height, flag) {
     }
   }
 
-  function getFlag(x, y) {
+  function hasFlag(positions = []) {
+    const flags = getFlags(positions)
+
+    return flags.some((flag) => isFlagged(flag))
+  }
+
+  function getFlags(positions = []) {
+    return positions.map(getFlag)
+  }
+
+  function setFlags(positions = [], newFlag) {
+    positions.forEach((position) => {
+      setFlag(position, newFlag)
+    })
+  }
+
+  function getFlag(position) {
+    const { x, y } = position
+
     return map[y][x]
   }
 
-  function setFlag(x, y, newFlag) {
+  function setFlag(position, newFlag) {
+    const { x, y } = position
+
     map[y][x] = newFlag
   }
 
@@ -195,5 +215,8 @@ function createMap(width, height, flag) {
 
     getFlag,
     setFlag,
+    getFlags,
+    setFlags,
+    hasFlag,
   }
 }

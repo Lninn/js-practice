@@ -102,9 +102,7 @@ export default class GameScene extends Scene {
         const positionsList = flaggedYAxes.map((y) => {
           return board.flaggedOfMap.xAxes.map((x) => ({ x, y }))
         })
-        positionsList.forEach((positions) => {
-          board.updateFlag(positions, UN_FLAGGED)
-        })
+        board.updateFlag(positionsList, UN_FLAGGED)
         status.toggle()
         animation.start(positionsList, flaggedYAxes)
       } else {
