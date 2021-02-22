@@ -4,22 +4,16 @@ import { createNumbers, pointsToPositions, drawRect } from '../../utils'
 export default class Board {
   constructor(scene) {
     this.setup()
+
     this.scene = scene
   }
 
   setup() {
-    const flaggedOfMap = []
-
-    for (let i = 0; i < Config.BoardHeight; i++) {
-      flaggedOfMap[i] = []
-      for (let j = 0; j < Config.BoardWidth; j++) {
-        flaggedOfMap[i][j] = UN_FLAGGED
-      }
-    }
-
-    this.flaggedOfMap = flaggedOfMap
-    this.xAxes = createNumbers(Config.BoardWidth)
-    this.yAxes = createNumbers(Config.BoardHeight)
+    this.flaggedOfMap = createMap(
+      Config.BoardWidth,
+      Config.BoardHeight,
+      UN_FLAGGED,
+    )
   }
 
   isEnd() {
@@ -86,7 +80,7 @@ export default class Board {
     const { flaggedOfMap } = this
 
     return positions.map(({ x, y }) => {
-      return flaggedOfMap[y][x]
+      return flaggedOfMap.getFlag(x, y)
     })
   }
 
@@ -94,18 +88,19 @@ export default class Board {
     const { flaggedOfMap } = this
 
     positions.forEach(({ x, y }) => {
-      flaggedOfMap[y][x] = newFlag
+      flaggedOfMap.setFlag(x, y, newFlag)
     })
   }
 
   updateWithYAxes(flaggedYAxes) {
-    const { xAxes, yAxes, flaggedOfMap } = this
+    const { flaggedOfMap } = this
+    const { xAxes, yAxes } = flaggedOfMap
 
     const minYAxis = Math.min(...flaggedYAxes)
     let positions = []
     for (const col of yAxes) {
       for (const row of xAxes) {
-        if (isFlagged(flaggedOfMap[col][row]) && col <= minYAxis) {
+        if (isFlagged(flaggedOfMap.getFlag(row, col)) && col <= minYAxis) {
           positions.push({ x: row, y: col })
         }
       }
@@ -136,7 +131,7 @@ export default class Board {
       let isPassed = false
 
       for (let j = 0; j < Config.BoardWidth; j++) {
-        if (!isFlagged(flaggedOfMap[i][j])) {
+        if (!isFlagged(flaggedOfMap.getFlag(j, i))) {
           isPassed = false
           break
         } else {
@@ -155,10 +150,10 @@ export default class Board {
   draw(context) {
     const flaggedYAxes = this.getFlaggedOfYAxes()
 
-    for (const col of this.yAxes) {
-      for (const row of this.xAxes) {
+    for (const col of this.flaggedOfMap.yAxes) {
+      for (const row of this.flaggedOfMap.xAxes) {
         if (
-          isFlagged(this.flaggedOfMap[col][row]) &&
+          isFlagged(this.flaggedOfMap.getFlag(row, col)) &&
           !flaggedYAxes.includes(col)
         ) {
           drawRect(
@@ -174,4 +169,31 @@ export default class Board {
 
 export function isFlagged(value) {
   return value === FLAGGED
+}
+
+function createMap(width, height, flag) {
+  const map = []
+
+  for (let col = 0; col < height; col++) {
+    map[col] = []
+    for (let row = 0; row < width; row++) {
+      map[col][row] = flag
+    }
+  }
+
+  function getFlag(x, y) {
+    return map[y][x]
+  }
+
+  function setFlag(x, y, newFlag) {
+    map[y][x] = newFlag
+  }
+
+  return {
+    xAxes: createNumbers(width),
+    yAxes: createNumbers(height),
+
+    getFlag,
+    setFlag,
+  }
 }

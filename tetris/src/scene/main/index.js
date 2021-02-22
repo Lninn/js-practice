@@ -100,7 +100,7 @@ export default class GameScene extends Scene {
       const flaggedYAxes = board.getFlaggedOfYAxes()
       if (flaggedYAxes.length) {
         const positionsList = flaggedYAxes.map((y) => {
-          return board.xAxes.map((x) => ({ x, y }))
+          return board.flaggedOfMap.xAxes.map((x) => ({ x, y }))
         })
         positionsList.forEach((positions) => {
           board.updateFlag(positions, UN_FLAGGED)
