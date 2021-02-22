@@ -1,6 +1,6 @@
 import { Config, isPaused } from './constant'
 import { utils } from './utils'
-import { StartScene } from './scene'
+import { StartScene, MainScene } from './scene'
 import '../index.css'
 
 export default class Game {
@@ -23,7 +23,7 @@ export default class Game {
     this.paused = false
 
     this.actions = {}
-    this.currentScene = new StartScene(this)
+    this.currentScene = new MainScene(this)
   }
 
   setup() {

@@ -1,10 +1,19 @@
-import { KEY_CODES_ALPHABET, KEY_CODES_ARROW, Config } from '../../constant'
+import {
+  KEY_CODES_ALPHABET,
+  KEY_CODES_ARROW,
+  Config,
+  UN_FLAGGED,
+} from '../../constant'
 
 import Shape from './Shape'
 import Board from './Board'
 import Scene from '../Scene'
 import EndScene from '../end'
 import Animation from './Animaiton'
+
+const UPDATE_FOR_NORMAL = 1
+const UDPATE_FOR_ANIMATION = 2
+const UPDATE_FOR_END = 3
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -15,18 +24,17 @@ export default class GameScene extends Scene {
   }
 
   setup() {
-    const { app } = this
-
     const board = new Board(this)
     const shape = new Shape(board)
-    const animation = new Animation(app)
+    const animation = new Animation(this)
 
     this.board = board
     this.shape = shape
     this.animation = animation
 
     this.timer = performance.now()
-    this.fps = 1
+
+    this.updatedStatus = UPDATE_FOR_NORMAL
   }
 
   register() {
@@ -50,7 +58,7 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ALPHABET.BOTTOM, function (e) {
-      self.update()
+      shape.update()
     })
 
     app.registerOfAction(KEY_CODES_ARROW.LEFT, function (e) {
@@ -66,24 +74,59 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ARROW.BOTTOM, function (e) {
-      self.update()
+      shape.update()
     })
   }
 
-  updateForAnimation() {
-    const { board, animation, shape } = this
+  update(delta) {
+    const { updatedStatus } = this
 
-    animation.next()
+    this.timer += delta
 
-    if (animation.isTail()) {
-      board.updateWithYAxes()
-      animation.close()
-      shape.reset()
+    if (updatedStatus === UPDATE_FOR_NORMAL) {
+      if (this.timer >= 1000 / 1) {
+        this.updateForNormal(delta)
+        this.timer = 0
+      }
+    } else if (updatedStatus === UDPATE_FOR_ANIMATION) {
+      this.updateForAnimation(delta)
     }
   }
 
-  update(delta) {
-    const { board, shape, animation, app } = this
+  updateForNormal(delta) {
+    const { board, shape, animation } = this
+
+    if (
+      shape.y + shape.height >= Config.CanvasHeight ||
+      board.isValidOfPreDown(shape.points)
+    ) {
+      board.updateFlagWithPoints(shape.points)
+      const flaggedYAxes = board.getFlaggedOfYAxes()
+      if (flaggedYAxes.length) {
+        const positionsList = flaggedYAxes.map((y) => {
+          return board.xAxes.map((x) => ({ x, y }))
+        })
+        positionsList.forEach((positions) => {
+          board.updateFlag(positions, UN_FLAGGED)
+        })
+        this.updatedStatus = UDPATE_FOR_ANIMATION
+        animation.open(positionsList)
+      } else {
+        shape.reset()
+      }
+    } else {
+      shape.update()
+    }
+  }
+
+  updateForAnimation(delta) {
+    const { animation } = this
+
+    animation.update(delta)
+  }
+
+  _update(delta) {
+    const { board, app, animation } = this
 
     if (board.isEnd()) {
       app.replaceScene(new EndScene(app))
@@ -93,6 +136,12 @@ export default class GameScene extends Scene {
     this.timer += delta
 
     if (this.timer >= 1000 / this.fps) {
+      const { board, shape, animation } = this
+
+      if (animation.isAnimation()) {
+        return
+      }
+
       if (
         shape.y + shape.height >= Config.CanvasHeight ||
         board.isValidOfPreDown(shape.points)
@@ -101,8 +150,7 @@ export default class GameScene extends Scene {
 
         const flaggedYAxes = board.getFlaggedOfYAxes()
         if (flaggedYAxes.length) {
-          animation.open()
-          this.updateForAnimation()
+          animation.open(flaggedYAxes)
         } else {
           shape.reset()
         }
@@ -112,6 +160,8 @@ export default class GameScene extends Scene {
 
       this.timer = 0
     }
+
+    animation.update(delta)
   }
 
   draw() {
@@ -119,10 +169,10 @@ export default class GameScene extends Scene {
     const { context } = app
 
     board.draw(context)
-
-    if (!animation.isAnimation) {
+    if (this.updatedStatus === UPDATE_FOR_NORMAL) {
       shape.draw(context)
     }
+    animation.draw(context)
 
     drawBoard(context)
   }

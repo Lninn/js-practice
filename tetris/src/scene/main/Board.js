@@ -168,33 +168,20 @@ export default class Board {
     return flaggedYAxes
   }
 
-  update(delta) {}
-
   draw(context) {
-    const {
-      scene: { animation },
-    } = this
-
     const flaggedYAxes = this.getFlaggedOfYAxes()
 
     for (const col of this.yAxes) {
       for (const row of this.xAxes) {
-        if (isFlagged(this.flaggedOfMap[col][row])) {
-          if (animation.isAnimation && flaggedYAxes.includes(col)) {
-            if (animation.displayOnFrame()) {
-              drawRect(
-                { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
-                context,
-                false,
-              )
-            }
-          } else {
-            drawRect(
-              { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
-              context,
-              false,
-            )
-          }
+        if (
+          isFlagged(this.flaggedOfMap[col][row]) &&
+          !flaggedYAxes.includes(col)
+        ) {
+          drawRect(
+            { x: row * Config.sideOfLength, y: col * Config.sideOfLength },
+            context,
+            false,
+          )
         }
       }
     }
