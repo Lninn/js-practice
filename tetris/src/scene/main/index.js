@@ -78,6 +78,12 @@ export default class GameScene extends Scene {
     })
   }
 
+  recover(flaggedYAxes) {
+    this.shape.reset()
+    this.updatedStatus = 1
+    this.board.updateWithYAxes(flaggedYAxes)
+  }
+
   update(delta) {
     const { updatedStatus } = this
 
@@ -111,7 +117,7 @@ export default class GameScene extends Scene {
           board.updateFlag(positions, UN_FLAGGED)
         })
         this.updatedStatus = UDPATE_FOR_ANIMATION
-        animation.open(positionsList)
+        animation.open(positionsList, flaggedYAxes)
       } else {
         shape.reset()
       }

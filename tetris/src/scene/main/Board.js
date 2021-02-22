@@ -98,50 +98,34 @@ export default class Board {
     })
   }
 
-  updateWithYAxes() {
-    const { xAxes } = this
-    const flaggedYAxes = this.getFlaggedOfYAxes()
+  updateWithYAxes(flaggedYAxes) {
+    const { xAxes, yAxes, flaggedOfMap } = this
 
-    if (flaggedYAxes.length) {
-      const updatedPositions = flaggedYAxes.map((y) => {
-        return xAxes.map((x) => ({ x, y }))
-      })
-
-      updatedPositions.forEach((positions) => {
-        this.updateFlag(positions, 0)
-      })
-
-      let positions = []
-      for (const col of this.yAxes) {
-        for (const row of this.xAxes) {
-          if (
-            isFlagged(this.flaggedOfMap[col][row]) &&
-            !flaggedYAxes.includes(col)
-          ) {
-            positions.push({ x: row, y: col })
-          }
+    const minYAxis = Math.min(...flaggedYAxes)
+    let positions = []
+    for (const col of yAxes) {
+      for (const row of xAxes) {
+        if (isFlagged(flaggedOfMap[col][row]) && col <= minYAxis) {
+          positions.push({ x: row, y: col })
         }
       }
+    }
 
+    flaggedYAxes.forEach((_) => {
       this.updateFlag(positions, UN_FLAGGED)
-      flaggedYAxes.forEach((_) => {
-        // console.log(flaggedYAxes, positions, Config.BoardHeight)
-        positions = positions.map((position) => {
-          // trail is 19 if Max countOfCol eq 20
-          // the last is 19 * step
-          if (position.y === Config.BoardHeight - 1) {
-            return position
-          }
+      positions = positions.map((position) => {
+        if (position.y === Config.BoardHeight - 1) {
+          return position
+        }
 
-          return {
-            ...position,
-            y: position.y + 1,
-          }
-        })
+        return {
+          ...position,
+          y: position.y + 1,
+        }
       })
 
       this.updateFlag(positions, FLAGGED)
-    }
+    })
   }
 
   getFlaggedOfYAxes() {
