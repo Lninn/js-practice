@@ -12,21 +12,12 @@ import EndScene from '../end'
 import Animation from './Animaiton'
 import { drawBoard } from '../../utils'
 
-const UPDATE_FOR_NORMAL = 1
-const UDPATE_FOR_ANIMATION = 2
-const UPDATE_FOR_END = 3
-
 export default class GameScene extends Scene {
   constructor(app) {
     super(app)
 
-    this.init()
     this.setup()
     this.register()
-  }
-
-  init() {
-    this.updatedStatus = UPDATE_FOR_NORMAL
   }
 
   setup() {
@@ -37,6 +28,7 @@ export default class GameScene extends Scene {
     this.board = board
     this.shape = shape
     this.animation = animation
+    this.status = createStatus()
   }
 
   register() {
@@ -80,33 +72,25 @@ export default class GameScene extends Scene {
   }
 
   recover(flaggedYAxes) {
-    const { shape, board } = this
+    const { shape, board, status } = this
 
     shape.reset()
     board.updateWithYAxes(flaggedYAxes)
-    this.toggleStatus()
-  }
-
-  toggleStatus() {
-    if (this.updatedStatus === UPDATE_FOR_NORMAL) {
-      this.updatedStatus = UDPATE_FOR_ANIMATION
-    } else if (this.updatedStatus === UDPATE_FOR_ANIMATION) {
-      this.updatedStatus = UPDATE_FOR_NORMAL
-    }
+    status.toggle()
   }
 
   update(delta) {
-    const { updatedStatus } = this
+    const { status } = this
 
-    if (updatedStatus === UPDATE_FOR_NORMAL) {
+    if (status.isNormal()) {
       this.updateForNormal(delta)
-    } else if (updatedStatus === UDPATE_FOR_ANIMATION) {
+    } else if (status.isAnimation()) {
       this.updateForAnimation(delta)
     }
   }
 
   updateForNormal(delta) {
-    const { board, shape, animation } = this
+    const { board, shape, animation, status } = this
 
     if (
       shape.y + shape.height >= Config.CanvasHeight ||
@@ -121,7 +105,7 @@ export default class GameScene extends Scene {
         positionsList.forEach((positions) => {
           board.updateFlag(positions, UN_FLAGGED)
         })
-        this.updatedStatus = UDPATE_FOR_ANIMATION
+        status.toggle()
         animation.start(positionsList, flaggedYAxes)
       } else {
         shape.reset()
@@ -138,15 +122,41 @@ export default class GameScene extends Scene {
   }
 
   draw() {
-    const { board, shape, app, animation } = this
+    const { board, shape, app, animation, status } = this
     const { context } = app
 
     board.draw(context)
-    if (this.updatedStatus === UPDATE_FOR_NORMAL) {
+    if (status.isNormal()) {
       shape.draw(context)
     }
     animation.draw(context)
 
     drawBoard(context)
+  }
+}
+
+function createStatus() {
+  let value = 0
+
+  function isNormal() {
+    return value === 0
+  }
+
+  function isAnimation() {
+    return value === 1
+  }
+
+  function toggle() {
+    if (value === 0) {
+      value = 1
+    } else if (value === 1) {
+      value = 0
+    }
+  }
+
+  return {
+    isNormal,
+    isAnimation,
+    toggle,
   }
 }
