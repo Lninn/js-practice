@@ -58,7 +58,7 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ALPHABET.BOTTOM, function (e) {
-      shape.update()
+      shape.moveBottom()
     })
 
     app.registerOfAction(KEY_CODES_ARROW.LEFT, function (e) {
@@ -74,7 +74,7 @@ export default class GameScene extends Scene {
     })
 
     app.registerOfAction(KEY_CODES_ARROW.BOTTOM, function (e) {
-      shape.update()
+      shape.moveBottom()
     })
   }
 
@@ -85,9 +85,10 @@ export default class GameScene extends Scene {
 
     if (updatedStatus === UPDATE_FOR_NORMAL) {
       if (this.timer >= 1000 / 1) {
-        this.updateForNormal(delta)
+        // TODO
         this.timer = 0
       }
+      this.updateForNormal(delta)
     } else if (updatedStatus === UDPATE_FOR_ANIMATION) {
       this.updateForAnimation(delta)
     }
@@ -115,7 +116,7 @@ export default class GameScene extends Scene {
         shape.reset()
       }
     } else {
-      shape.update()
+      shape.update(delta)
     }
   }
 

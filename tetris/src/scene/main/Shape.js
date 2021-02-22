@@ -10,6 +10,9 @@ export default class Shape {
   }
 
   reset() {
+    this.fps = 1
+    this.timer = 0
+
     this.x = ORIGINAL_POINT.x
     this.y = ORIGINAL_POINT.y
 
@@ -74,9 +77,19 @@ export default class Shape {
     this.points = this.getPoints(this.block)
   }
 
-  update() {
-    this.y = this.y + Config.sideOfLength
-    this.points = this.getPoints(this.block)
+  moveBottom() {
+    this.fps = 60
+  }
+
+  update(delta) {
+    this.timer += delta
+
+    if (this.timer >= 1000 / this.fps) {
+      this.y = this.y + Config.sideOfLength
+      this.points = this.getPoints(this.block)
+
+      this.timer = 0
+    }
   }
 
   getPoints(block) {
