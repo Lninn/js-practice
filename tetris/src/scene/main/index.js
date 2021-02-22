@@ -20,8 +20,13 @@ export default class GameScene extends Scene {
   constructor(app) {
     super(app)
 
+    this.init()
     this.setup()
     this.register()
+  }
+
+  init() {
+    this.updatedStatus = UPDATE_FOR_NORMAL
   }
 
   setup() {
@@ -32,14 +37,11 @@ export default class GameScene extends Scene {
     this.board = board
     this.shape = shape
     this.animation = animation
-
-    this.updatedStatus = UPDATE_FOR_NORMAL
   }
 
   register() {
     const { app, shape } = this
 
-    const self = this
     app.registerOfAction(KEY_CODES_ALPHABET.LEFT, function (e) {
       shape.moveLeft()
     })
@@ -78,9 +80,19 @@ export default class GameScene extends Scene {
   }
 
   recover(flaggedYAxes) {
-    this.shape.reset()
-    this.updatedStatus = 1
-    this.board.updateWithYAxes(flaggedYAxes)
+    const { shape, board } = this
+
+    shape.reset()
+    board.updateWithYAxes(flaggedYAxes)
+    this.toggleStatus()
+  }
+
+  toggleStatus() {
+    if (this.updatedStatus === UPDATE_FOR_NORMAL) {
+      this.updatedStatus = UDPATE_FOR_ANIMATION
+    } else if (this.updatedStatus === UDPATE_FOR_ANIMATION) {
+      this.updatedStatus = UPDATE_FOR_NORMAL
+    }
   }
 
   update(delta) {
