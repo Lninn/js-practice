@@ -32,8 +32,6 @@ export default class GameScene extends Scene {
     this.shape = shape
     this.animation = animation
 
-    this.timer = performance.now()
-
     this.updatedStatus = UPDATE_FOR_NORMAL
   }
 
@@ -87,13 +85,7 @@ export default class GameScene extends Scene {
   update(delta) {
     const { updatedStatus } = this
 
-    this.timer += delta
-
     if (updatedStatus === UPDATE_FOR_NORMAL) {
-      if (this.timer >= 1000 / 1) {
-        // TODO
-        this.timer = 0
-      }
       this.updateForNormal(delta)
     } else if (updatedStatus === UDPATE_FOR_ANIMATION) {
       this.updateForAnimation(delta)
@@ -128,45 +120,6 @@ export default class GameScene extends Scene {
 
   updateForAnimation(delta) {
     const { animation } = this
-
-    animation.update(delta)
-  }
-
-  _update(delta) {
-    const { board, app, animation } = this
-
-    if (board.isEnd()) {
-      app.replaceScene(new EndScene(app))
-      return
-    }
-
-    this.timer += delta
-
-    if (this.timer >= 1000 / this.fps) {
-      const { board, shape, animation } = this
-
-      if (animation.isAnimation()) {
-        return
-      }
-
-      if (
-        shape.y + shape.height >= Config.CanvasHeight ||
-        board.isValidOfPreDown(shape.points)
-      ) {
-        board.updateFlagWithPoints(shape.points)
-
-        const flaggedYAxes = board.getFlaggedOfYAxes()
-        if (flaggedYAxes.length) {
-          animation.open(flaggedYAxes)
-        } else {
-          shape.reset()
-        }
-      } else {
-        shape.update()
-      }
-
-      this.timer = 0
-    }
 
     animation.update(delta)
   }
