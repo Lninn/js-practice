@@ -1,9 +1,10 @@
 import { Config } from '../../constant'
-import { createNumbers, drawRect } from '../../utils'
+import { drawRect } from '../../utils'
 
 export default class Animation {
   constructor(scene) {
     this.scene = scene
+
     this.init()
   }
 
@@ -14,7 +15,7 @@ export default class Animation {
     this.reset()
   }
 
-  open(positionsList = [], flaggedYAxes) {
+  start(positionsList = [], flaggedYAxes) {
     const s = Config.sideOfLength
 
     const points = []

@@ -10,6 +10,7 @@ import Board from './Board'
 import Scene from '../Scene'
 import EndScene from '../end'
 import Animation from './Animaiton'
+import { drawBoard } from '../../utils'
 
 const UPDATE_FOR_NORMAL = 1
 const UDPATE_FOR_ANIMATION = 2
@@ -109,7 +110,7 @@ export default class GameScene extends Scene {
           board.updateFlag(positions, UN_FLAGGED)
         })
         this.updatedStatus = UDPATE_FOR_ANIMATION
-        animation.open(positionsList, flaggedYAxes)
+        animation.start(positionsList, flaggedYAxes)
       } else {
         shape.reset()
       }
@@ -136,33 +137,4 @@ export default class GameScene extends Scene {
 
     drawBoard(context)
   }
-}
-
-export function drawBoard(context) {
-  const w = Config.CanvasWidth
-  const h = Config.CanvasHeight
-  const step = Config.sideOfLength - 0.1
-
-  let i = 0
-
-  context.save()
-  // draw vertical line
-  for (; i <= w; i += step) {
-    context.moveTo(0.5 + i, 0)
-    context.lineTo(0.5 + i, h)
-  }
-
-  // draw horizontal line
-  for (i = 0; i <= h; i += step) {
-    context.moveTo(0, 0.5 + i)
-    context.lineTo(w, 0.5 + i)
-  }
-
-  const strokeStyle = context.strokeStyle
-
-  context.strokeStyle = Config.board.strokeStyle
-  context.stroke()
-
-  context.strokeStyle = strokeStyle
-  context.restore()
 }

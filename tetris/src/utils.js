@@ -81,3 +81,32 @@ export function drawRect(point, context) {
   context.strokeStyle = strokeStyle
   context.fillStyle = fillStyle
 }
+
+export function drawBoard(context) {
+  const w = Config.CanvasWidth
+  const h = Config.CanvasHeight
+  const step = Config.sideOfLength - 0.1
+
+  let i = 0
+
+  context.save()
+  // draw vertical line
+  for (; i <= w; i += step) {
+    context.moveTo(0.5 + i, 0)
+    context.lineTo(0.5 + i, h)
+  }
+
+  // draw horizontal line
+  for (i = 0; i <= h; i += step) {
+    context.moveTo(0, 0.5 + i)
+    context.lineTo(w, 0.5 + i)
+  }
+
+  const strokeStyle = context.strokeStyle
+
+  context.strokeStyle = Config.board.strokeStyle
+  context.stroke()
+
+  context.strokeStyle = strokeStyle
+  context.restore()
+}
