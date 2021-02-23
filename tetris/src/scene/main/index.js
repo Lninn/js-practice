@@ -105,7 +105,7 @@ export default class GameScene extends Scene {
       shape.isValidOfPreDown()
     ) {
       board.updateFlagWithPoints(shape.points)
-      const flaggedYAxes = board.getFlaggedOfYAxes()
+      const flaggedYAxes = board.getContinuousLineOfIndex()
       if (flaggedYAxes.length) {
         const positionsList = flaggedYAxes.map((y) => {
           return board.flaggedOfMap.xAxes.map((x) => ({ x, y }))

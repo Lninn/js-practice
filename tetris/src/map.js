@@ -2,6 +2,9 @@ import { createNumbers } from './utils'
 import { isFlagged } from './constant'
 
 export function createMap(width, height, flag) {
+  const xAxes = createNumbers(width)
+  const yAxes = createNumbers(height)
+
   const map = []
 
   for (let col = 0; col < height; col++) {
@@ -39,14 +42,39 @@ export function createMap(width, height, flag) {
     map[y][x] = newFlag
   }
 
+  function getContinuousLineOfIndex() {
+    const result = []
+
+    for (const y of yAxes) {
+      let isPassed = false
+
+      for (const x of xAxes) {
+        if (!isFlagged(map[y][x])) {
+          isPassed = false
+          break
+        } else {
+          isPassed = true
+        }
+      }
+
+      if (isPassed) {
+        result.push(y)
+      }
+    }
+
+    return result
+  }
+
   return {
-    xAxes: createNumbers(width),
-    yAxes: createNumbers(height),
+    xAxes,
+    yAxes,
 
     getFlag,
     setFlag,
     getFlags,
     setFlags,
     hasFlag,
+
+    getContinuousLineOfIndex,
   }
 }

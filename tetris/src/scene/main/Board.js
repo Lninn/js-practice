@@ -86,33 +86,13 @@ export default class Board {
     })
   }
 
-  getFlaggedOfYAxes() {
-    const { flaggedOfMap } = this
-
-    const flaggedYAxes = []
-    for (const y of flaggedOfMap.yAxes) {
-      let isPassed = false
-
-      for (const x of flaggedOfMap.xAxes) {
-        if (!isFlagged(flaggedOfMap.getFlag({ x, y }))) {
-          isPassed = false
-          break
-        } else {
-          isPassed = true
-        }
-      }
-
-      if (isPassed) {
-        flaggedYAxes.push(y)
-      }
-    }
-
-    return flaggedYAxes
+  getContinuousLineOfIndex() {
+    return this.flaggedOfMap.getContinuousLineOfIndex()
   }
 
   draw(context) {
     const { flaggedOfMap } = this
-    const flaggedYAxes = this.getFlaggedOfYAxes()
+    const flaggedYAxes = this.getContinuousLineOfIndex()
 
     for (const y of flaggedOfMap.yAxes) {
       for (const x of flaggedOfMap.xAxes) {
