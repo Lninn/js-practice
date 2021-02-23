@@ -50,22 +50,11 @@ export default class Board {
   }
 
   updateWithYAxes() {
-    const flaggedYAxes = this.indexs
+    const { flaggedOfMap, indexs } = this
 
-    const { flaggedOfMap } = this
-    const { xAxes, yAxes } = flaggedOfMap
+    let positions = flaggedOfMap.getValidPositios(indexs)
 
-    const minYAxis = Math.min(...flaggedYAxes)
-    let positions = []
-    for (const y of yAxes) {
-      for (const x of xAxes) {
-        if (isFlagged(flaggedOfMap.getFlag({ x, y })) && y <= minYAxis) {
-          positions.push({ x, y })
-        }
-      }
-    }
-
-    flaggedYAxes.forEach((_) => {
+    indexs.forEach((_) => {
       flaggedOfMap.setFlags(positions, UN_FLAGGED)
       positions = positions.map((position) => {
         if (position.y === Config.BoardHeight - 1) {
