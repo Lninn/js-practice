@@ -1,9 +1,4 @@
-import {
-  KEY_CODES_ALPHABET,
-  KEY_CODES_ARROW,
-  Config,
-  UN_FLAGGED,
-} from '../../constant'
+import { KEY_CODES_ALPHABET, KEY_CODES_ARROW } from '../../constant'
 
 import Board from './Board'
 import Scene from '../Scene'
@@ -29,7 +24,6 @@ export default class GameScene extends Scene {
   }
 
   register(shape) {
-    console.log('register', shape)
     const { app } = this
 
     app.registerOfAction(KEY_CODES_ALPHABET.LEFT, function (e) {
@@ -112,13 +106,11 @@ export default class GameScene extends Scene {
   }
 
   draw() {
-    const { board, shape, app, animation, status } = this
+    const { board, app, animation } = this
     const { context } = app
 
     board.draw(context)
-
     animation.draw(context)
-
     drawBoard(context)
   }
 }

@@ -115,7 +115,7 @@ export default class Board {
   }
 
   isNormal() {
-    return this.indexs.length
+    return !this.indexs.length
   }
 
   draw(context) {
@@ -137,7 +137,7 @@ export default class Board {
       }
     }
 
-    if (!this.isNormal()) {
+    if (this.isNormal()) {
       shape.draw(context)
     }
   }
