@@ -1,6 +1,6 @@
 import { FLAGGED, UN_FLAGGED, Config, isFlagged } from '../../constant'
 import { pointsToPositions, drawRect } from '../../utils'
-import { transoform } from '../../transform'
+import { transoform, Transform } from '../../transform'
 import { createMap } from '../../map'
 import Shape from './Shape'
 
@@ -90,7 +90,7 @@ export default class Board {
 
     if (
       shape.y + shape.height >= Config.CanvasHeight ||
-      shape.isValidOfPreDown()
+      this.isValidTransform(shape.points, Transform.bottom)
     ) {
       this.updateFlagWithPoints(shape.points)
 
