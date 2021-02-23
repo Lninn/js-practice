@@ -1,6 +1,10 @@
 export const FLAGGED = 1
 export const UN_FLAGGED = 0
 
+export function isFlagged(value) {
+  return value === FLAGGED
+}
+
 export const Config = {
   // unit for 1
   BoardWidth: 10,

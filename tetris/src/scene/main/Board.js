@@ -1,5 +1,7 @@
-import { FLAGGED, UN_FLAGGED, Config } from '../../constant'
-import { createNumbers, pointsToPositions, drawRect } from '../../utils'
+import { FLAGGED, UN_FLAGGED, Config, isFlagged } from '../../constant'
+import { pointsToPositions, drawRect } from '../../utils'
+import { transoform } from '../../transform'
+import { createMap } from '../../map'
 
 export default class Board {
   constructor(scene) {
@@ -25,29 +27,9 @@ export default class Board {
     return flags.some((flag) => isFlagged(flag))
   }
 
-  isValidOfPreLeft(points = []) {
+  isValidTransform(points, actionName) {
     let positions = pointsToPositions(points)
-    positions = this.updateHorizontal(positions, false)
-
-    return this.isValidPosition(positions)
-  }
-
-  isValidOfPreRight(points = []) {
-    let positions = pointsToPositions(points)
-    positions = this.updateHorizontal(positions)
-
-    return this.isValidPosition(positions)
-  }
-
-  isValidOfPreDown(points = []) {
-    let positions = pointsToPositions(points)
-    positions = this.updateVertical(positions)
-
-    return this.isValidPosition(positions)
-  }
-
-  isValidOfPreTranspose(points = []) {
-    let positions = pointsToPositions(points)
+    positions = transoform(positions, actionName)
 
     return this.isValidPosition(positions)
   }
@@ -56,24 +38,6 @@ export default class Board {
     const { flaggedOfMap } = this
 
     return flaggedOfMap.hasFlag(positions)
-  }
-
-  updateHorizontal(positions = [], isPotive = true) {
-    return positions.map((pos) => {
-      return {
-        ...pos,
-        x: pos.x + (isPotive ? 1 : -1),
-      }
-    })
-  }
-
-  updateVertical(positions = [], isPotive = true) {
-    return positions.map((pos) => {
-      return {
-        ...pos,
-        y: pos.y + (isPotive ? 1 : -1),
-      }
-    })
   }
 
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
@@ -164,59 +128,5 @@ export default class Board {
         }
       }
     }
-  }
-}
-
-export function isFlagged(value) {
-  return value === FLAGGED
-}
-
-function createMap(width, height, flag) {
-  const map = []
-
-  for (let col = 0; col < height; col++) {
-    map[col] = []
-    for (let row = 0; row < width; row++) {
-      map[col][row] = flag
-    }
-  }
-
-  function hasFlag(positions = []) {
-    const flags = getFlags(positions)
-
-    return flags.some((flag) => isFlagged(flag))
-  }
-
-  function getFlags(positions = []) {
-    return positions.map(getFlag)
-  }
-
-  function setFlags(positions = [], newFlag) {
-    positions.forEach((position) => {
-      setFlag(position, newFlag)
-    })
-  }
-
-  function getFlag(position) {
-    const { x, y } = position
-
-    return map[y][x]
-  }
-
-  function setFlag(position, newFlag) {
-    const { x, y } = position
-
-    map[y][x] = newFlag
-  }
-
-  return {
-    xAxes: createNumbers(width),
-    yAxes: createNumbers(height),
-
-    getFlag,
-    setFlag,
-    getFlags,
-    setFlags,
-    hasFlag,
   }
 }

@@ -1,6 +1,6 @@
-import { ORIGINAL_POINT, Config } from '../../constant'
-import { isFlagged } from './Board'
+import { ORIGINAL_POINT, Config, isFlagged } from '../../constant'
 import { getRandomBlock, transposeBlock, getSize } from '../../block'
+import { Transform } from '../../transform'
 
 export default class Shape {
   constructor(board) {
@@ -36,7 +36,7 @@ export default class Shape {
     if (
       this.x + width > Config.CanvasWidth ||
       this.y + height > Config.CanvasHeight ||
-      board.isValidOfPreTranspose(newPoints)
+      board.isValidTransform(newPoints, Transform.transpose)
     ) {
       return
     }
@@ -52,15 +52,8 @@ export default class Shape {
     this.points = this.getPoints(this.block)
   }
 
-  moveLeft() {
-    const { board } = this
-
-    if (this.x <= 0 || board.isValidOfPreLeft(this.points)) {
-      return
-    }
-
-    this.x = this.x - Config.sideOfLength
-    this.points = this.getPoints(this.block)
+  moveBottom() {
+    this.fps = 60
   }
 
   moveRight() {
@@ -68,7 +61,7 @@ export default class Shape {
 
     if (
       this.x + this.width >= Config.CanvasWidth ||
-      board.isValidOfPreRight(this.points)
+      board.isValidTransform(this.points, Transform.right)
     ) {
       return
     }
@@ -77,8 +70,21 @@ export default class Shape {
     this.points = this.getPoints(this.block)
   }
 
-  moveBottom() {
-    this.fps = 60
+  isValidOfPreDown() {
+    const { board, points } = this
+
+    return board.isValidTransform(points, Transform.bottom)
+  }
+
+  moveLeft() {
+    const { board } = this
+
+    if (this.x <= 0 || board.isValidTransform(this.points, Transform.left)) {
+      return
+    }
+
+    this.x = this.x - Config.sideOfLength
+    this.points = this.getPoints(this.block)
   }
 
   update(delta) {

@@ -94,7 +94,7 @@ export default class GameScene extends Scene {
 
     if (
       shape.y + shape.height >= Config.CanvasHeight ||
-      board.isValidOfPreDown(shape.points)
+      shape.isValidOfPreDown()
     ) {
       board.updateFlagWithPoints(shape.points)
       const flaggedYAxes = board.getFlaggedOfYAxes()
