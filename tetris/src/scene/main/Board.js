@@ -2,12 +2,13 @@ import { FLAGGED, UN_FLAGGED, Config, isFlagged } from '../../constant'
 import { pointsToPositions, drawRect } from '../../utils'
 import { transoform } from '../../transform'
 import { createMap } from '../../map'
+import Shape from './Shape'
 
 export default class Board {
   constructor(scene) {
-    this.setup()
-
     this.scene = scene
+
+    this.setup()
   }
 
   setup() {
@@ -16,10 +17,12 @@ export default class Board {
       Config.BoardHeight,
       UN_FLAGGED,
     )
-  }
 
-  isEnd() {
-    return this.flaggedOfMap.isEnd()
+    this.shape = new Shape(this)
+    this.scene.register(this.shape)
+
+    // for animation
+    this.indexs = []
   }
 
   isValidTransform(points, actionName) {
@@ -30,8 +33,6 @@ export default class Board {
 
     return flaggedOfMap.hasFlag(positions)
   }
-
- 
 
   updateFlagWithPoints(points = [], newFlag = FLAGGED) {
     const { flaggedOfMap } = this
@@ -48,7 +49,9 @@ export default class Board {
     })
   }
 
-  updateWithYAxes(flaggedYAxes) {
+  updateWithYAxes() {
+    const flaggedYAxes = this.indexs
+
     const { flaggedOfMap } = this
     const { xAxes, yAxes } = flaggedOfMap
 
@@ -77,15 +80,47 @@ export default class Board {
 
       flaggedOfMap.setFlags(positions, FLAGGED)
     })
+
+    this.shape.reset()
+    this.indexs = []
   }
 
-  getContinuousLineOfIndex() {
-    return this.flaggedOfMap.getContinuousLineOfIndex()
+  update(delta) {
+    const { flaggedOfMap, shape, scene } = this
+
+    if (
+      shape.y + shape.height >= Config.CanvasHeight ||
+      shape.isValidOfPreDown()
+    ) {
+      this.updateFlagWithPoints(shape.points)
+
+      const indexs = flaggedOfMap.getContinuousLineOfIndex()
+      this.indexs = indexs
+      if (indexs.length) {
+        const positionsList = indexs.map((y) => {
+          return flaggedOfMap.xAxes.map((x) => ({ x, y }))
+        })
+        this.updateFlag(positionsList, UN_FLAGGED)
+        scene.animationStart(positionsList)
+      } else {
+        shape.reset()
+      }
+    } else {
+      shape.update(delta)
+    }
+  }
+
+  isEnd() {
+    return this.flaggedOfMap.isEnd()
+  }
+
+  isNormal() {
+    return this.indexs.length
   }
 
   draw(context) {
-    const { flaggedOfMap } = this
-    const flaggedYAxes = this.getContinuousLineOfIndex()
+    const { flaggedOfMap, shape } = this
+    const flaggedYAxes = flaggedOfMap.getContinuousLineOfIndex()
 
     for (const y of flaggedOfMap.yAxes) {
       for (const x of flaggedOfMap.xAxes) {
@@ -100,6 +135,10 @@ export default class Board {
           )
         }
       }
+    }
+
+    if (!this.isNormal()) {
+      shape.draw(context)
     }
   }
 }

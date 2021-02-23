@@ -15,7 +15,7 @@ export default class Animation {
     this.reset()
   }
 
-  start(positionsList = [], flaggedYAxes) {
+  start(positionsList = []) {
     const s = Config.sideOfLength
 
     const points = []
@@ -28,7 +28,6 @@ export default class Animation {
       }
     }
 
-    this.flaggedYAxes = flaggedYAxes
     this.points = points
     this.numOfStar = 10
   }
@@ -45,11 +44,10 @@ export default class Animation {
   _update() {
     if (this.numOfStar < 0) {
       this.reset()
-      this.scene.recover(this.flaggedYAxes)
-      return
+      this.scene.recover()
+    } else {
+      this.numOfStar -= 1
     }
-
-    this.numOfStar -= 1
   }
 
   reset() {
