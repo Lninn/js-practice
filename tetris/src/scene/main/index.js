@@ -11,6 +11,7 @@ import Scene from '../Scene'
 import EndScene from '../end'
 import Animation from './Animaiton'
 import { drawBoard } from '../../utils'
+import { createStatus } from './status'
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -86,11 +87,18 @@ export default class GameScene extends Scene {
       this.updateForNormal(delta)
     } else if (status.isAnimation()) {
       this.updateForAnimation(delta)
+    } else if (status.isEnd()) {
+      this.app.replaceScene(new EndScene(this.app))
     }
   }
 
   updateForNormal(delta) {
     const { board, shape, animation, status } = this
+
+    if (board.isEnd()) {
+      status.toEnd()
+      return
+    }
 
     if (
       shape.y + shape.height >= Config.CanvasHeight ||
@@ -130,31 +138,5 @@ export default class GameScene extends Scene {
     animation.draw(context)
 
     drawBoard(context)
-  }
-}
-
-function createStatus() {
-  let value = 0
-
-  function isNormal() {
-    return value === 0
-  }
-
-  function isAnimation() {
-    return value === 1
-  }
-
-  function toggle() {
-    if (value === 0) {
-      value = 1
-    } else if (value === 1) {
-      value = 0
-    }
-  }
-
-  return {
-    isNormal,
-    isAnimation,
-    toggle,
   }
 }

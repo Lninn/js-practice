@@ -39,8 +39,8 @@ const BLOCK_LIST = [
 ]
 
 export function getRandomBlock() {
-  // return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
-  return BLOCK_LIST[0]
+  return BLOCK_LIST[getRandomInt(BLOCK_LIST.length)]
+  // return BLOCK_LIST[0]
 }
 
 export function transposeBlock(block = []) {
