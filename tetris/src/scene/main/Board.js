@@ -19,12 +19,9 @@ export default class Board {
   }
 
   isEnd() {
-    const { yAxes, xAxes } = this.flaggedOfMap
-    const topIndex = yAxes[0]
-    const positions = xAxes.map((x) => ({ x, y: topIndex }))
-    const flags = this.flaggedOfMap.getFlags(positions)
+    const { flaggedOfMap } = this
 
-    return flags.some((flag) => isFlagged(flag))
+    return flaggedOfMap.isEnd()
   }
 
   isValidTransform(points, actionName) {

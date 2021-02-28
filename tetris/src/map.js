@@ -65,6 +65,13 @@ export function createMap(width, height, flag) {
     return result
   }
 
+  const isEnd = () => {
+    const topIndex = yAxes[0]
+    const positions = xAxes.map((x) => ({ x, y: topIndex }))
+
+    return hasFlag(positions)
+  }
+
   return {
     xAxes,
     yAxes,
@@ -76,5 +83,6 @@ export function createMap(width, height, flag) {
     hasFlag,
 
     getContinuousLineOfIndex,
+    isEnd,
   }
 }
