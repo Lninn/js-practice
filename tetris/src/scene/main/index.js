@@ -1,11 +1,5 @@
-import {
-  KEY_CODES_ALPHABET,
-  KEY_CODES_ARROW,
-  Config,
-  UN_FLAGGED,
-} from '../../constant'
+import { KEY_CODES_ALPHABET, KEY_CODES_ARROW } from '../../constant'
 
-import Shape from './Shape'
 import Board from './Board'
 import Scene from '../Scene'
 import EndScene from '../end'
@@ -18,22 +12,19 @@ export default class GameScene extends Scene {
     super(app)
 
     this.setup()
-    this.register()
   }
 
   setup() {
     const board = new Board(this)
-    const shape = new Shape(board)
     const animation = new Animation(this)
 
     this.board = board
-    this.shape = shape
     this.animation = animation
     this.status = createStatus()
   }
 
-  register() {
-    const { app, shape } = this
+  register(shape) {
+    const { app } = this
 
     app.registerOfAction(KEY_CODES_ALPHABET.LEFT, function (e) {
       shape.moveLeft()
@@ -72,12 +63,18 @@ export default class GameScene extends Scene {
     })
   }
 
-  recover(flaggedYAxes) {
-    const { shape, board, status } = this
+  recover() {
+    const { board, status } = this
 
-    shape.reset()
-    board.updateWithYAxes(flaggedYAxes)
+    board.updateWithYAxes()
     status.toggle()
+  }
+
+  animationStart(positionsList, indexs) {
+    const { status, animation } = this
+
+    status.toggle()
+    animation.start(positionsList, indexs)
   }
 
   update(delta) {
@@ -93,31 +90,12 @@ export default class GameScene extends Scene {
   }
 
   updateForNormal(delta) {
-    const { board, shape, animation, status } = this
+    const { board, status } = this
 
     if (board.isEnd()) {
       status.toEnd()
-      return
-    }
-
-    if (
-      shape.y + shape.height >= Config.CanvasHeight ||
-      shape.isValidOfPreDown()
-    ) {
-      board.updateFlagWithPoints(shape.points)
-      const flaggedYAxes = board.getContinuousLineOfIndex()
-      if (flaggedYAxes.length) {
-        const positionsList = flaggedYAxes.map((y) => {
-          return board.flaggedOfMap.xAxes.map((x) => ({ x, y }))
-        })
-        board.updateFlag(positionsList, UN_FLAGGED)
-        status.toggle()
-        animation.start(positionsList, flaggedYAxes)
-      } else {
-        shape.reset()
-      }
     } else {
-      shape.update(delta)
+      board.update(delta)
     }
   }
 
@@ -128,15 +106,11 @@ export default class GameScene extends Scene {
   }
 
   draw() {
-    const { board, shape, app, animation, status } = this
+    const { board, app, animation } = this
     const { context } = app
 
     board.draw(context)
-    if (status.isNormal()) {
-      shape.draw(context)
-    }
     animation.draw(context)
-
     drawBoard(context)
   }
 }

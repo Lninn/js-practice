@@ -65,6 +65,21 @@ export function createMap(width, height, flag) {
     return result
   }
 
+  function getValidPositios(indexs) {
+    const positions = []
+    const minYIndex = Math.min(...indexs)
+
+    for (const y of yAxes) {
+      for (const x of xAxes) {
+        if (isFlagged(map[y][x]) && y <= minYIndex) {
+          positions.push({ x, y })
+        }
+      }
+    }
+
+    return positions
+  }
+
   const isEnd = () => {
     const topIndex = yAxes[0]
     const positions = xAxes.map((x) => ({ x, y: topIndex }))
@@ -83,6 +98,8 @@ export function createMap(width, height, flag) {
     hasFlag,
 
     getContinuousLineOfIndex,
+    getValidPositios,
+
     isEnd,
   }
 }

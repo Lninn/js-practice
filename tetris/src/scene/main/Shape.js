@@ -70,12 +70,6 @@ export default class Shape {
     this.points = this.getPoints(this.block)
   }
 
-  isValidOfPreDown() {
-    const { board, points } = this
-
-    return board.isValidTransform(points, Transform.bottom)
-  }
-
   moveLeft() {
     const { board } = this
 
