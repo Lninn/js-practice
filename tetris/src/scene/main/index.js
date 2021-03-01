@@ -5,7 +5,7 @@ import Scene from '../Scene'
 import EndScene from '../end'
 import Animation from './Animaiton'
 import { drawBoard } from '../../utils'
-import { createStatus } from './status'
+import { getStatus } from './status'
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -20,7 +20,7 @@ export default class GameScene extends Scene {
 
     this.board = board
     this.animation = animation
-    this.status = createStatus()
+    this.status = getStatus()
   }
 
   register(shape) {
@@ -67,13 +67,13 @@ export default class GameScene extends Scene {
     const { board, status } = this
 
     board.updateWithYAxes()
-    status.toggle()
+    status.toggleNormal()
   }
 
   animationStart(positionsList) {
     const { status, animation } = this
 
-    status.toggle()
+    status.toggleAnimation()
     animation.start(positionsList)
   }
 
@@ -93,7 +93,7 @@ export default class GameScene extends Scene {
     const { board, status } = this
 
     if (board.isEnd()) {
-      status.toEnd()
+      status.toggleEnd()
     } else {
       board.update(delta)
     }

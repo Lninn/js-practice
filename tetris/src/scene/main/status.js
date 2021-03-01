@@ -1,35 +1,27 @@
-export function createStatus() {
-  let value = 0
+export const getStatus = () => {
+  let status = 0
 
-  function isNormal() {
-    return value === 0
+  const isNormal = () => status === 0
+  const isAnimation = () => status === 1
+  const isEnd = () => status === 2
+
+  const toggleNormal = () => {
+    status = 0
   }
-
-  function isAnimation() {
-    return value === 1
+  const toggleAnimation = () => {
+    status = 1
   }
-
-  function isEnd() {
-    return value === 2
-  }
-
-  function toEnd() {
-    value = 2
-  }
-
-  function toggle() {
-    if (value === 0) {
-      value = 1
-    } else if (value === 1) {
-      value = 0
-    }
+  const toggleEnd = () => {
+    status = 2
   }
 
   return {
     isNormal,
     isAnimation,
     isEnd,
-    toEnd,
-    toggle,
+
+    toggleNormal,
+    toggleAnimation,
+    toggleEnd,
   }
 }
