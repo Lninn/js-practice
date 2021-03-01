@@ -20,9 +20,6 @@ export default class Board {
 
     this.shape = new Shape(this)
     this.scene.register(this.shape)
-
-    // for animation
-    this.indexs = []
   }
 
   isEnd() {
@@ -40,7 +37,7 @@ export default class Board {
     return flaggedOfMap.hasFlag(positions)
   }
 
-  updateFlagWithPoints(points = [], newFlag = FLAGGED) {
+  mark(points = [], newFlag = FLAGGED) {
     const { flaggedOfMap } = this
 
     const positions = pointsToPositions(points)
@@ -56,28 +53,10 @@ export default class Board {
   }
 
   updateWithYAxes() {
-    const { flaggedOfMap, indexs } = this
+    const { flaggedOfMap, shape } = this
 
-    let positions = flaggedOfMap.getValidPositios(indexs)
-
-    indexs.forEach((_) => {
-      flaggedOfMap.setFlags(positions, UN_FLAGGED)
-      positions = positions.map((position) => {
-        if (position.y === Config.BoardHeight - 1) {
-          return position
-        }
-
-        return {
-          ...position,
-          y: position.y + 1,
-        }
-      })
-
-      flaggedOfMap.setFlags(positions, FLAGGED)
-    })
-
-    this.shape.reset()
-    this.indexs = []
+    flaggedOfMap.updateWithYAxes()
+    shape.reset()
   }
 
   update(delta) {
@@ -87,16 +66,11 @@ export default class Board {
       shape.y + shape.height >= Config.CanvasHeight ||
       this.isValidTransform(shape.points, Transform.bottom)
     ) {
-      this.updateFlagWithPoints(shape.points)
+      this.mark(shape.points)
+      const result = flaggedOfMap.check()
 
-      const indexs = flaggedOfMap.getContinuousLineOfIndex()
-      this.indexs = indexs
-      if (indexs.length) {
-        const positionsList = indexs.map((y) => {
-          return flaggedOfMap.xAxes.map((x) => ({ x, y }))
-        })
-        this.updateFlag(positionsList, UN_FLAGGED)
-        scene.animationStart(positionsList)
+      if (result) {
+        scene.animationStart(result)
       } else {
         shape.reset()
       }
@@ -105,24 +79,12 @@ export default class Board {
     }
   }
 
-  isEnd() {
-    return this.flaggedOfMap.isEnd()
-  }
-
-  isNormal() {
-    return !this.indexs.length
-  }
-
   draw(context) {
     const { flaggedOfMap, shape } = this
-    const flaggedYAxes = flaggedOfMap.getContinuousLineOfIndex()
 
     for (const y of flaggedOfMap.yAxes) {
       for (const x of flaggedOfMap.xAxes) {
-        if (
-          isFlagged(this.flaggedOfMap.getFlag({ x, y })) &&
-          !flaggedYAxes.includes(y)
-        ) {
+        if (isFlagged(this.flaggedOfMap.getFlag({ x, y }))) {
           drawRect(
             { x: x * Config.sideOfLength, y: y * Config.sideOfLength },
             context,
@@ -132,7 +94,7 @@ export default class Board {
       }
     }
 
-    if (this.isNormal()) {
+    if (flaggedOfMap.isNormal()) {
       shape.draw(context)
     }
   }

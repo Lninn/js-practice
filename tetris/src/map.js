@@ -1,11 +1,44 @@
 import { createNumbers } from './utils'
-import { isFlagged } from './constant'
+import { isFlagged, UN_FLAGGED, FLAGGED, Config } from './constant'
 
 export function createMap(width, height, flag) {
   const xAxes = createNumbers(width)
   const yAxes = createNumbers(height)
 
   const map = []
+  let fullLines = []
+
+  const addFullLines = (lines) => {
+    fullLines = lines
+  }
+
+  const clearFullLines = () => {
+    fullLines = []
+  }
+
+  const isNormal = () => !fullLines.length
+
+  const updateWithYAxes = () => {
+    let positions = getValidPositios(fullLines)
+
+    fullLines.forEach((_) => {
+      setFlags(positions, UN_FLAGGED)
+      positions = positions.map((position) => {
+        if (position.y === Config.BoardHeight - 1) {
+          return position
+        }
+
+        return {
+          ...position,
+          y: position.y + 1,
+        }
+      })
+
+      setFlags(positions, FLAGGED)
+    })
+
+    clearFullLines()
+  }
 
   for (let col = 0; col < height; col++) {
     map[col] = []
@@ -65,6 +98,25 @@ export function createMap(width, height, flag) {
     return result
   }
 
+  const check = () => {
+    const lines = getContinuousLineOfIndex()
+    if (!lines.length) {
+      return false
+    }
+
+    addFullLines(lines)
+
+    const positionsList = lines.map((y) => {
+      return xAxes.map((x) => ({ x, y }))
+    })
+
+    positionsList.forEach((positions) => {
+      setFlags(positions, UN_FLAGGED)
+    })
+
+    return positionsList
+  }
+
   function getValidPositios(indexs) {
     const positions = []
     const minYIndex = Math.min(...indexs)
@@ -101,5 +153,8 @@ export function createMap(width, height, flag) {
     getValidPositios,
 
     isEnd,
+    isNormal,
+    check,
+    updateWithYAxes,
   }
 }

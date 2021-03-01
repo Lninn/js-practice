@@ -70,11 +70,11 @@ export default class GameScene extends Scene {
     status.toggle()
   }
 
-  animationStart(positionsList, indexs) {
+  animationStart(positionsList) {
     const { status, animation } = this
 
     status.toggle()
-    animation.start(positionsList, indexs)
+    animation.start(positionsList)
   }
 
   update(delta) {
