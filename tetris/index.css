@@ -17,6 +17,8 @@ body {
 
 #tool {
   margin-left: 10px;
+  height: 480px;
+  color: #f2f2f2;
 }
 
 .tool-container {

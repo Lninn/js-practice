@@ -21,6 +21,9 @@ export default class GameScene extends Scene {
     this.timer = performance.now()
     this.fps = 10
     this.reset()
+
+    this.score = 0
+    this.scoreContainer = document.getElementById('score')
   }
 
   register(shape) {
@@ -119,11 +122,17 @@ export default class GameScene extends Scene {
     }
   }
 
+  setScore() {
+    this.scoreContainer.innerHTML = `Score: ${this.score}`
+  }
+
   updateOfClear(delta) {
     this.timer += delta
 
     if (this.timer >= 1000 / this.fps) {
       if (this.numOfStar < 0) {
+        this.score += this.points.length
+        this.setScore()
         this.reset()
         this.recover()
       } else {
