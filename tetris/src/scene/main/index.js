@@ -98,16 +98,18 @@ export default class GameScene extends Scene {
   }
 
   update(delta) {
+    const { app } = this
+
     if (this.status === GameScene.statusOfNormal) {
-      this.updateForNormal(delta)
+      this.updateOfNormal(delta)
     } else if (this.status === GameScene.statusOfClear) {
       this.updateOfClear(delta)
     } else if (this.status === GameScene.statusOfEnd) {
-      this.app.replaceScene(new EndScene(this.app))
+      app.replaceScene(new EndScene(app))
     }
   }
 
-  updateForNormal(delta) {
+  updateOfNormal(delta) {
     const { board } = this
 
     if (board.isEnd()) {
@@ -127,6 +129,7 @@ export default class GameScene extends Scene {
       } else {
         this.numOfStar -= 1
       }
+
       this.timer = 0
     }
   }
