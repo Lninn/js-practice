@@ -6,24 +6,27 @@ export default class Shape {
   constructor(board) {
     this.board = board
 
-    this.reset()
+    this.reset(true)
   }
 
-  reset() {
+  reset(initial = false) {
     this.fps = 1
     this.timer = 0
 
     this.x = ORIGINAL_POINT.x
     this.y = ORIGINAL_POINT.y
 
-    const block = getRandomBlock()
+    const block = initial ? getRandomBlock() : this.nextBlock
+
     const points = this.getPoints(block)
     const { width, height } = getSize(block)
 
     this.width = width
     this.height = height
-    this.block = block
     this.points = points
+    this.block = block
+
+    this.nextBlock = getRandomBlock()
   }
 
   transpose() {
