@@ -1,10 +1,9 @@
-import { KEY_CODES_ALPHABET, KEY_CODES_ARROW } from '../../constant'
+import { KEY_CODES_ALPHABET, KEY_CODES_ARROW, Config } from '../../constant'
 
 import Board from './Board'
 import Scene from '../Scene'
 import EndScene from '../end'
-import Animation from './Animaiton'
-import { drawBoard } from '../../utils'
+import { drawBoard, drawRect } from '../../utils'
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -15,12 +14,13 @@ export default class GameScene extends Scene {
 
   setup() {
     const board = new Board(this)
-    const animation = new Animation(this)
 
     this.board = board
-    this.animation = animation
-
     this.status = GameScene.statusOfNormal
+
+    this.timer = performance.now()
+    this.fps = 10
+    this.reset()
   }
 
   register(shape) {
@@ -63,6 +63,23 @@ export default class GameScene extends Scene {
     })
   }
 
+  startToClear(positionsList = []) {
+    const s = Config.sideOfLength
+
+    const points = []
+    for (const positions of positionsList) {
+      for (const position of positions) {
+        points.push({
+          x: position.x * s,
+          y: position.y * s,
+        })
+      }
+    }
+
+    this.points = points
+    this.numOfStar = 10
+  }
+
   recover() {
     const { board } = this
 
@@ -70,18 +87,21 @@ export default class GameScene extends Scene {
     this.status = GameScene.statusOfNormal
   }
 
-  animationStart(positionsList) {
-    const { animation } = this
+  reset() {
+    this.numOfStar = -1
+    this.points = []
+  }
 
+  animationStart(positionsList) {
     this.status = GameScene.statusOfClear
-    animation.start(positionsList)
+    this.startToClear(positionsList)
   }
 
   update(delta) {
     if (this.status === GameScene.statusOfNormal) {
       this.updateForNormal(delta)
     } else if (this.status === GameScene.statusOfClear) {
-      this.updateForAnimation(delta)
+      this.updateOfClear(delta)
     } else if (this.status === GameScene.statusOfEnd) {
       this.app.replaceScene(new EndScene(this.app))
     }
@@ -97,18 +117,32 @@ export default class GameScene extends Scene {
     }
   }
 
-  updateForAnimation(delta) {
-    const { animation } = this
+  updateOfClear(delta) {
+    this.timer += delta
 
-    animation.update(delta)
+    if (this.timer >= 1000 / this.fps) {
+      if (this.numOfStar < 0) {
+        this.reset()
+        this.recover()
+      } else {
+        this.numOfStar -= 1
+      }
+      this.timer = 0
+    }
   }
 
   draw() {
-    const { board, app, animation } = this
+    const { board, app } = this
     const { context } = app
 
     board.draw(context)
-    animation.draw(context)
+
+    if (this.numOfStar > 0 && this.numOfStar % 2 === 0) {
+      for (const point of this.points) {
+        drawRect(point, context, true)
+      }
+    }
+
     drawBoard(context)
   }
 }
