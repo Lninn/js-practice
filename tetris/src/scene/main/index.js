@@ -5,7 +5,6 @@ import Scene from '../Scene'
 import EndScene from '../end'
 import Animation from './Animaiton'
 import { drawBoard } from '../../utils'
-import { getStatus } from './status'
 
 export default class GameScene extends Scene {
   constructor(app) {
@@ -20,7 +19,8 @@ export default class GameScene extends Scene {
 
     this.board = board
     this.animation = animation
-    this.status = getStatus()
+
+    this.status = GameScene.statusOfNormal
   }
 
   register(shape) {
@@ -64,36 +64,34 @@ export default class GameScene extends Scene {
   }
 
   recover() {
-    const { board, status } = this
+    const { board } = this
 
     board.updateWithYAxes()
-    status.toggleNormal()
+    this.status = GameScene.statusOfNormal
   }
 
   animationStart(positionsList) {
-    const { status, animation } = this
+    const { animation } = this
 
-    status.toggleAnimation()
+    this.status = GameScene.statusOfClear
     animation.start(positionsList)
   }
 
   update(delta) {
-    const { status } = this
-
-    if (status.isNormal()) {
+    if (this.status === GameScene.statusOfNormal) {
       this.updateForNormal(delta)
-    } else if (status.isAnimation()) {
+    } else if (this.status === GameScene.statusOfClear) {
       this.updateForAnimation(delta)
-    } else if (status.isEnd()) {
+    } else if (this.status === GameScene.statusOfEnd) {
       this.app.replaceScene(new EndScene(this.app))
     }
   }
 
   updateForNormal(delta) {
-    const { board, status } = this
+    const { board } = this
 
     if (board.isEnd()) {
-      status.toggleEnd()
+      this.status = GameScene.statusOfEnd
     } else {
       board.update(delta)
     }
@@ -114,3 +112,7 @@ export default class GameScene extends Scene {
     drawBoard(context)
   }
 }
+
+GameScene.statusOfNormal = 1
+GameScene.statusOfClear = 2
+GameScene.statusOfEnd = 3
